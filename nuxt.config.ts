@@ -6,6 +6,8 @@ export default defineNuxtConfig({
     name: 'supabase-shop',
   },
 
+  css: ['#layers/supabase-shop/app/assets/css/tailwind.css'],
+
   eslint: {
     config: {
       nuxt: {

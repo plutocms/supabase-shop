@@ -359,7 +359,7 @@ watch(
               </template>
 
               <div
-                class="dark:bg-admin-content light:bg-white sticky -bottom-0.5 mb-8 -ml-0.5 w-full py-2 pl-0.5"
+                class="dark:bg-slate-800 light:bg-white sticky -bottom-0.5 mb-8 -ml-0.5 w-full py-2 pl-0.5"
               >
                 <div class="flex flex-col gap-y-3">
                   <div
@@ -430,7 +430,7 @@ watch(
         </div>
       </div>
 
-      <div class="bg-admin-sidebar w-[300px] shrink-0 rounded-2xl p-6">
+      <div class="bg-slate-900 w-[300px] shrink-0 rounded-2xl p-6">
         <div class="flex flex-col gap-y-6">
           <UFormField label="Description">
             <UTextarea
