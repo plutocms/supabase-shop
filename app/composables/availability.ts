@@ -7,7 +7,7 @@ export async function useAvailabilityStatus() {
   const availabilityStatus = ref<AvailabilityStatusData['data'] | null>(null)
 
   const availabilityStatusData = await $fetch<AvailabilityStatusData>(
-    '/api/product/availability-status'
+    '/api/product/availability-statuses'
   )
 
   availabilityStatus.value = availabilityStatusData.data || null
