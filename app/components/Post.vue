@@ -132,7 +132,7 @@ async function submitForm() {
     isSubmitting.value = true
 
     if (!isEditing.value) {
-      const { data } = await $fetch('/api/product/new', {
+      const { data } = await $fetch('/api/product/create', {
         method: 'POST',
         body: payload,
       })
