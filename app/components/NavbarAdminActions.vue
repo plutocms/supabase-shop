@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { NavbarAdminActionButtonProps } from '#layers/utils/shared/types/navbar'
+
 const route = useRoute('admin-product-edit-id')
 
 const items = computed<NavbarAdminActionButtonProps[]>(() => [
