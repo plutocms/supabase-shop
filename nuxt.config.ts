@@ -1,9 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: [
-    ['github:plutocms/utils', { giget: { silent: true } }],
-    ['github:plutocms/supabase', { install: true }],
-  ],
+  $development: {
+    extends: [
+      ['../../plutocms/utils/'],
+      ['../../plutocms/supabase/', { install: true }],
+    ],
+  },
+
+  $production: {
+    extends: [
+      ['github:plutocms/utils'],
+      ['github:plutocms/supabase', { install: true }],
+    ],
+  },
 
   $meta: {
     name: 'supabase-shop',
