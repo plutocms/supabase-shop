@@ -7,15 +7,15 @@ export default defineNuxtConfig({
     ],
   },
 
+  $meta: {
+    name: 'supabase-shop',
+  },
+
   $production: {
     extends: [
       ['github:plutocms/utils'],
       ['github:plutocms/supabase', { install: true }],
     ],
-  },
-
-  $meta: {
-    name: 'supabase-shop',
   },
 
   css: ['#layers/supabase-shop/app/assets/css/tailwind.css'],
