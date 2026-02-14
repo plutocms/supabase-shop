@@ -318,7 +318,7 @@ watch(
 
           <UButton
             v-if="isEditing"
-            :to="`/product/${props.productId}-${form.slug}`"
+            :to="`/product/${props.productId}/${form.slug}`"
             icon="lucide:eye"
             variant="link"
             as="NuxtLink"
@@ -441,7 +441,7 @@ watch(
           </UFormField>
 
           <UFormField
-            :help="`/product/${props.productId}-${form.slug}`"
+            :help="`/product/${props.productId}/${form.slug}`"
             label="Slug"
           >
             <UInput v-model="form.slug" placeholder="slug" class="w-full" />
