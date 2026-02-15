@@ -279,60 +279,13 @@ watch(
       @insert="handleInsertMedia"
     />
 
-    <div class="flex items-start justify-between gap-x-6">
-      <div class="self-center pt-6 pl-6">
-        <UButton
-          as="NuxtLink"
-          to="/admin/products"
-          variant="subtle"
-          color="neutral"
-          class="h-10 w-10 shrink-0 rounded-full text-2xl"
-          title="Back to Products list"
-          icon="lucide:arrow-left"
-          square
-        />
-      </div>
-
-      <div class="grow bg-transparent">
-        <input
-          v-model="form.name"
-          v-autofocus
-          placeholder="Add title"
-          type="text"
-          class="light:text-zinc-600 h-full w-full px-4 pt-8 text-4xl font-bold outline-0 dark:text-white"
-        />
-      </div>
-
-      <div class="pt-4 pr-4">
-        <div class="flex gap-x-2">
-          <UButton
-            :icon="isEditing ? 'lucide:save' : 'lucide:check'"
-            :loading="isSubmitting"
-            :disabled="form.name === ''"
-            type="button"
-            size="xl"
-            @click="submitForm"
-          >
-            {{ isEditing ? 'Save' : 'Publish' }}
-          </UButton>
-
-          <UButton
-            v-if="isEditing"
-            :to="`/product/${props.productId}/${form.slug}`"
-            icon="lucide:eye"
-            variant="link"
-            as="NuxtLink"
-            target="_blank"
-          >
-            Preview
-          </UButton>
-        </div>
-      </div>
+    <div>
+      <PostTitleInput v-model="form.name" placeholder="Add product name" />
     </div>
 
     <div class="flex gap-x-6 px-4 py-8">
       <div class="grow">
-        <div class="flex h-[500px] gap-x-1">
+        <div class="flex h-125 gap-x-1">
           <ScrollArea class="w-20 rounded-2xl">
             <div
               class="box-content flex w-full flex-col gap-y-3 pt-1 pr-4 pl-1"
@@ -381,7 +334,7 @@ watch(
             </div>
           </ScrollArea>
 
-          <div class="aspect-square w-[600px]">
+          <div class="aspect-square w-150">
             <div
               :class="[
                 form.media?.length > 0
@@ -430,8 +383,32 @@ watch(
         </div>
       </div>
 
-      <div class="bg-slate-900 w-[300px] shrink-0 rounded-2xl p-6">
+      <div class="bg-slate-900 w-75 shrink-0 rounded-2xl py-6 px-4">
         <div class="flex flex-col gap-y-6">
+          <div class="flex gap-x-2 justify-end">
+            <UButton
+              :icon="isEditing ? 'lucide:save' : 'lucide:check'"
+              :loading="isSubmitting"
+              :disabled="form.name === ''"
+              type="button"
+              size="xl"
+              @click="submitForm"
+            >
+              {{ isEditing ? 'Save' : 'Publish' }}
+            </UButton>
+
+            <UButton
+              v-if="isEditing"
+              :to="`/product/${props.productId}/${form.slug}`"
+              icon="lucide:eye"
+              variant="link"
+              as="NuxtLink"
+              target="_blank"
+            >
+              Preview
+            </UButton>
+          </div>
+
           <UFormField label="Description">
             <UTextarea
               v-model="form.description"
