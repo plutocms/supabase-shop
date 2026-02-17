@@ -261,7 +261,7 @@ watch(
 
 <template>
   <div
-    class="min-h-screen bg-linear-to-br from-slate-950 to-slate-900 py-10 px-2 md:px-8"
+    class="min-h-screen bg-linear-to-br from-slate-950 to-slate-900 py-8 px-2 md:px-8"
   >
     <div
       class="max-w-6xl mx-auto bg-white/5 rounded-3xl shadow-xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
@@ -394,7 +394,7 @@ watch(
 
       <!-- Right: Form Fields -->
       <div
-        class="w-full md:max-w-xs shrink-0 bg-slate-900/80 rounded-2xl p-6 flex flex-col gap-8 shadow-lg overflow-y-auto max-h-[90vh]"
+        class="w-full md:max-w-xs shrink-0 bg-slate-900/80 rounded-2xl p-6 mt-6 flex flex-col gap-8 shadow-lg overflow-y-auto max-h-[90vh]"
       >
         <div class="flex flex-col gap-4">
           <div class="flex gap-2 justify-end">
