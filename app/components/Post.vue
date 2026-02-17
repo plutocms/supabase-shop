@@ -260,11 +260,9 @@ watch(
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-linear-to-br from-slate-950 to-slate-900 py-8 px-2 md:px-8"
-  >
+  <div class="min-h-screen bg-linear-to-br py-8 px-2 md:px-8">
     <div
-      class="max-w-6xl mx-auto bg-white/5 rounded-3xl shadow-xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
+      class="max-w-6xl mx-auto bg-slate-900 rounded-3xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
     >
       <!-- Left: Media and Title -->
       <div class="flex-1 flex flex-col gap-8">
@@ -273,11 +271,11 @@ watch(
           <PostTitleInput
             v-model="form.name"
             placeholder="Add product name"
-            class="text-3xl pl-0 font-bold text-slate-100 bg-transparent border-none focus:ring-0"
+            class="pl-0"
           />
         </div>
 
-        <div class="flex flex-col md:flex-row gap-6 items-start">
+        <div class="flex flex-col md:flex-row gap-x-3 items-start">
           <!-- Media Gallery -->
           <div
             class="flex flex-row md:flex-col gap-4 items-center md:items-start"
@@ -394,7 +392,7 @@ watch(
 
       <!-- Right: Form Fields -->
       <div
-        class="w-full md:max-w-xs shrink-0 bg-slate-900/80 rounded-2xl p-6 mt-6 flex flex-col gap-8 shadow-lg overflow-y-auto max-h-[90vh]"
+        class="w-full md:max-w-xs shrink-0 bg-slate-950 rounded-2xl p-4 mt-6 flex flex-col gap-8 overflow-y-auto max-h-[90vh]"
       >
         <div class="flex flex-col gap-4">
           <div class="flex gap-2 justify-end">
