@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { Form } from '#layers/supabase-shop/app/components/Post.vue'
-
-const form = ref<Form>({
+const form = ref<FormProduct>({
   name: '',
   description: '',
   price: 0,

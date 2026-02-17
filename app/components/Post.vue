@@ -3,18 +3,6 @@ import type { InputMenuItem, SelectItem } from '@nuxt/ui'
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 
 type ProductPayload = Database['public']['Tables']['products']['Insert']
-type MediaWithSaved = Media & {
-  is_saved?: boolean
-}
-
-export interface Form extends Omit<
-  Product,
-  'id' | 'created_at' | 'category' | 'availability'
-> {
-  media: MediaWithSaved[]
-  category: number | null
-  availability: number | null
-}
 </script>
 
 <script setup lang="ts">
@@ -54,7 +42,7 @@ const categoryList = computed<InputMenuItem[]>(() => {
   }))
 })
 
-const form = defineModel<Form>({
+const form = defineModel<FormProduct>({
   default: {
     name: '',
     slug: '',
@@ -272,81 +260,91 @@ watch(
 </script>
 
 <template>
-  <div>
-    <UploadMedia
-      v-model="isMediaModalOpen"
-      :product-id="props.productId"
-      @insert="handleInsertMedia"
-    />
+  <div
+    class="min-h-screen bg-linear-to-br from-slate-950 to-slate-900 py-10 px-2 md:px-8"
+  >
+    <div
+      class="max-w-6xl mx-auto bg-white/5 rounded-3xl shadow-xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
+    >
+      <!-- Left: Media and Title -->
+      <div class="flex-1 flex flex-col gap-8">
+        <!-- Title Input -->
+        <div>
+          <PostTitleInput
+            v-model="form.name"
+            placeholder="Add product name"
+            class="text-3xl pl-0 font-bold text-slate-100 bg-transparent border-none focus:ring-0"
+          />
+        </div>
 
-    <div>
-      <PostTitleInput v-model="form.name" placeholder="Add product name" />
-    </div>
+        <div class="flex flex-col md:flex-row gap-6 items-start">
+          <!-- Media Gallery -->
+          <div
+            class="flex flex-row md:flex-col gap-4 items-center md:items-start"
+          >
+            <ScrollArea class="w-20 md:w-24 rounded-2xl bg-slate-900/60 p-2">
+              <div class="flex md:flex-col gap-2">
+                <template v-if="form.media && form.media?.length > 0">
+                  <div
+                    v-for="(image, index) in form.media"
+                    :key="index"
+                    :class="[
+                      currentSelectedImage === index && 'ring-2 ring-green-400',
+                      !image.is_saved && 'opacity-50',
+                      is3d(image) ? 'hidden' : '',
+                    ]"
+                    :title="!image.is_saved ? 'Unsaved' : ''"
+                    class="h-14 w-14 overflow-hidden rounded-2xl bg-black/10 hover:bg-black/20 cursor-pointer transition-all"
+                    @click="currentSelectedImage = index"
+                  >
+                    <img
+                      v-if="image.name"
+                      :src="getMediaUrl(image.name)"
+                      class="h-full w-full object-cover"
+                    />
+                  </div>
+                </template>
 
-    <div class="flex gap-x-6 px-4 py-8">
-      <div class="grow">
-        <div class="flex h-125 gap-x-1">
-          <ScrollArea class="w-20 rounded-2xl">
-            <div
-              class="box-content flex w-full flex-col gap-y-3 pt-1 pr-4 pl-1"
-            >
-              <template v-if="form.media && form.media?.length > 0">
-                <div
-                  v-for="(image, index) in form.media"
-                  :key="index"
-                  :class="[
-                    currentSelectedImage === index && 'ring-2 ring-green-400',
-                    !image.is_saved && 'opacity-50',
-                    is3d(image) ? 'hidden' : '',
-                  ]"
-                  :title="!image.is_saved ? 'Unsaved' : ''"
-                  class="h-14 w-14 overflow-hidden rounded-2xl bg-black/10 hover:bg-black/20"
-                  @click="currentSelectedImage = index"
-                >
-                  <img
-                    v-if="image.name"
-                    :src="getMediaUrl(image.name)"
-                    class="h-full w-full object-cover"
-                  />
-                </div>
-              </template>
-
-              <div
-                class="dark:bg-slate-800 light:bg-white sticky -bottom-0.5 mb-8 -ml-0.5 w-full py-2 pl-0.5"
-              >
-                <div class="flex flex-col gap-y-3">
+                <div class="flex flex-col gap-2 mt-2">
                   <div
                     v-if="form.media && form.media.find((m) => is3d(m))"
-                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-black/90 hover:bg-black"
+                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-black/90 hover:bg-black cursor-pointer"
                     @click="openMediaModal"
                   >
                     <Icon name="lucide:rotate-3d" class="text-2xl" />
                   </div>
 
                   <div
-                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-black/90 hover:bg-black"
+                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-black/90 hover:bg-black cursor-pointer"
                     @click="openMediaModal"
                   >
                     <Icon name="lucide:plus" class="text-2xl" />
                   </div>
                 </div>
               </div>
-            </div>
-          </ScrollArea>
+            </ScrollArea>
 
-          <div class="aspect-square w-150">
+            <UploadMedia
+              v-model="isMediaModalOpen"
+              :product-id="props.productId"
+              @insert="handleInsertMedia"
+            />
+          </div>
+
+          <!-- Main Image -->
+          <div class="aspect-square w-60 md:w-96 shrink-0">
             <div
               :class="[
                 form.media?.length > 0
                   ? 'bg-black'
                   : 'bg-black/10 hover:bg-black/20',
               ]"
-              class="group relative h-full overflow-hidden rounded-3xl"
+              class="group relative h-full overflow-hidden rounded-3xl shadow-lg"
             >
               <label
                 v-if="!form.media || form.media?.length === 0"
                 for="main-image"
-                class="absolute top-0 left-0 h-full w-full"
+                class="absolute top-0 left-0 h-full w-full cursor-pointer"
                 @click="openMediaModal"
               />
 
@@ -381,22 +379,25 @@ watch(
             </div>
           </div>
         </div>
+
+        <!-- Description -->
+        <div class="mt-2">
+          <UFormField label="Description">
+            <UTextarea
+              v-model="form.description"
+              placeholder="Description"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
       </div>
 
-      <div class="bg-slate-900 w-75 shrink-0 rounded-2xl py-6 px-4">
-        <div class="flex flex-col gap-y-6">
-          <div class="flex gap-x-2 justify-end">
-            <UButton
-              :icon="isEditing ? 'lucide:save' : 'lucide:check'"
-              :loading="isSubmitting"
-              :disabled="form.name === ''"
-              type="button"
-              size="xl"
-              @click="submitForm"
-            >
-              {{ isEditing ? 'Save' : 'Publish' }}
-            </UButton>
-
+      <!-- Right: Form Fields -->
+      <div
+        class="w-full md:max-w-xs shrink-0 bg-slate-900/80 rounded-2xl p-6 flex flex-col gap-8 shadow-lg overflow-y-auto max-h-[90vh]"
+      >
+        <div class="flex flex-col gap-4">
+          <div class="flex gap-2 justify-end">
             <UButton
               v-if="isEditing"
               :to="`/product/${props.productId}/${form.slug}`"
@@ -407,18 +408,24 @@ watch(
             >
               Preview
             </UButton>
+
+            <UButton
+              :icon="isEditing ? 'lucide:save' : 'lucide:check'"
+              :loading="isSubmitting"
+              :disabled="form.name === ''"
+              type="button"
+              @click="submitForm"
+            >
+              {{ isEditing ? 'Save' : 'Publish' }}
+            </UButton>
           </div>
 
-          <UFormField label="Description">
-            <UTextarea
-              v-model="form.description"
-              placeholder="Description"
-              class="w-full"
-            />
-          </UFormField>
-
           <UFormField
-            :help="`/product/${props.productId}/${form.slug}`"
+            :help="
+              form.slug
+                ? `/product/${props.productId || '[id]'}/${form.slug}`
+                : undefined
+            "
             label="Slug"
           >
             <UInput v-model="form.slug" placeholder="slug" class="w-full" />
@@ -480,7 +487,6 @@ watch(
                     name: value,
                     onSuccess(category) {
                       form.category = category.id
-
                       isCategorySelectOpen = false
                     },
                     onRequest() {

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { Form } from '#layers/supabase-shop/app/components/Post.vue'
-
 const route = useRoute('admin-product-edit-id')
 
-const { data: product } = await useFetch<ProductItem>(
+const { data: product } = await useFetch(
   `/api/product/get/${route.params.id}`,
   {
     key: `/api/product/get/${route.params.id}`,
@@ -15,7 +13,7 @@ useHead({
   title: `Editing "${product.value?.name}"`,
 })
 
-const form = ref<Form>()
+const form = ref<FormProduct>()
 
 onMounted(() => {
   if (product.value) {
