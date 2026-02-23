@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     'github:plutocms/ui',
     'github:plutocms/utils',
     'github:plutocms/supabase',
+    'github:plutocms/supabase-storage',
   ],
 
   $meta: {
