@@ -18,8 +18,8 @@ useHead({
 
 const toast = useToast()
 
-const { availabilityStatus } = await useAvailabilityStatus()
 const { categories, refreshCategories, createCategory } = await useCategory()
+const { status } = await useProductAvailability()
 
 const { getMediaUrl } = useMedia()
 
@@ -63,7 +63,7 @@ const availabilityOptions = computed<SelectItem[]>(() => {
       disabled: true,
       value: null,
     },
-    ...(availabilityStatus.value?.map(
+    ...(status.value?.map(
       (status) =>
         ({
           id: status.id,

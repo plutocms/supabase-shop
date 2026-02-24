@@ -47,8 +47,9 @@ This layer provides the following dashboard views for managing products:
 
 This layer provides the following composables:
 
-- `useAvailabilityStatus`: retrieves a list of product availability statuses (in stock, commission, etc.).
+- `useProductAvailability`: retrieves a list of product availability statuses (in stock, commission, etc.).
 - `useProduct`: retrieves a list of products or a single product by ID.
+- `useProductCategory`: retrieves a list of product categories.
 
 ### API Routes
 

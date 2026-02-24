@@ -1,16 +1,16 @@
-export async function useAvailabilityStatus() {
+export async function useProductAvailability() {
   type AvailabilityStatus = Database['public']['Tables']['availability']['Row']
   interface AvailabilityStatusData {
     data: AvailabilityStatus[]
   }
 
-  const availabilityStatus = ref<AvailabilityStatusData['data'] | null>(null)
+  const status = ref<AvailabilityStatusData['data'] | null>(null)
 
   const availabilityStatusData = await $fetch<AvailabilityStatusData>(
     '/api/product/availability-statuses'
   )
 
-  availabilityStatus.value = availabilityStatusData.data || null
+  status.value = availabilityStatusData.data || null
 
-  return { availabilityStatus }
+  return { status }
 }
