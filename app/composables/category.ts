@@ -29,6 +29,30 @@ export async function useProductCategory() {
     return category ? category.label : null
   }
 
+  function getCategoryFromSlug(
+    slug: string | string[] | null | undefined
+  ): Category | null {
+    if (!slug) {
+      return null
+    }
+
+    const category = categories.value?.find((item) => item.slug === slug)
+
+    return category ?? null
+  }
+
+  function getCategoryLabelFromSlug(
+    slug: string | null | undefined
+  ): string | null {
+    if (!slug) {
+      return null
+    }
+
+    const category = getCategoryFromSlug(slug)
+
+    return category ? category.label : null
+  }
+
   interface CreateCategoryOptions {
     name: string
     description?: string
@@ -80,6 +104,8 @@ export async function useProductCategory() {
     refresh,
     getCategoryFromId,
     getCategoryLabelFromId,
+    getCategoryFromSlug,
+    getCategoryLabelFromSlug,
     create,
   }
 }
