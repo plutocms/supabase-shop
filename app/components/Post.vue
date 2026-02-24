@@ -18,8 +18,8 @@ useHead({
 
 const toast = useToast()
 
-const { categories, refreshCategories, createCategory } = await useCategory()
 const { status } = await useProductAvailability()
+const { categories, refresh, create } = await useProductCategory()
 
 const { getMediaUrl } = useMedia()
 
@@ -238,7 +238,7 @@ const isCategorySelectLoading = ref<boolean>(false)
 
 function onCategorySelectOpen(event: boolean) {
   if (event === true) {
-    refreshCategories()
+    refresh()
   }
 }
 
@@ -481,7 +481,7 @@ watch(
               create-item
               @create="
                 (value) =>
-                  createCategory({
+                  create({
                     name: value,
                     onSuccess(category) {
                       form.category = category.id

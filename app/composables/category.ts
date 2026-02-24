@@ -1,14 +1,11 @@
 export type Category = Database['public']['Tables']['categories']['Row']
 
-export async function useCategory() {
+export async function useProductCategory() {
   const toast = useToast()
 
-  const { data: categories, refresh: refreshCategories } = await useFetch(
-    '/api/category/list',
-    {
-      transform: (res) => res.data,
-    }
-  )
+  const { data: categories, refresh } = await useFetch('/api/category/list', {
+    transform: (res) => res.data,
+  })
 
   function getCategoryFromId(id: number | null | undefined): Category | null {
     if (!id) {
@@ -41,7 +38,7 @@ export async function useCategory() {
     onResponse?: () => void
   }
 
-  async function createCategory(options: CreateCategoryOptions) {
+  async function create(options: CreateCategoryOptions) {
     const payload: Omit<Category, 'id' | 'description'> = {
       label: options.name,
       slug: slugify(options.name),
@@ -56,7 +53,7 @@ export async function useCategory() {
       body: payload,
     })
       .then(async (response) => {
-        await refreshCategories()
+        await refresh()
 
         if (options.onSuccess) {
           options.onSuccess(response.data)
@@ -80,9 +77,9 @@ export async function useCategory() {
 
   return {
     categories,
-    refreshCategories,
+    refresh,
     getCategoryFromId,
     getCategoryLabelFromId,
-    createCategory,
+    create,
   }
 }
