@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: [
-    'github:plutocms/ui',
+    ['github:plutocms/ui', { install: true }],
     'github:plutocms/utils',
     'github:plutocms/supabase',
     'github:plutocms/supabase-storage',
