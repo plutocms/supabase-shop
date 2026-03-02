@@ -13,6 +13,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier --write ."
   },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "esbuild",
+    "unrs-resolver",
+    "vue-demi"
+  ],
+  "dependencies": {
+    "@plutocms/utils": "^0.0.1-alpha.3"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
     "@nuxt/eslint": "^1.11.0",
@@ -25,14 +34,5 @@
     "prettier": "^3.7.3",
     "vue": "3.5.25",
     "vue-router": "4.6.3"
-  },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "esbuild",
-    "unrs-resolver",
-    "vue-demi"
-  ],
-  "dependencies": {
-    "@plutocms/utils": "^0.0.1-alpha.3"
   }
 }
