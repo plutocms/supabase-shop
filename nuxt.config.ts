@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   extends: [
     ['@plutocms/ui', { install: true }],
     '@plutocms/utils',
-    ['github:plutocms/supabase', { install: true }],
+    ['@plutocms/supabase', { install: true }],
     '@plutocms/supabase-storage',
   ],
 
