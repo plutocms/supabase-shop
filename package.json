@@ -1,8 +1,8 @@
 {
-  "name": "supabase-shop",
+  "name": "@plutocms/supabase-shop",
   "type": "module",
   "version": "0.0.1-alpha.1",
-  "private": true,
+  "main": "./nuxt.config.ts",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
