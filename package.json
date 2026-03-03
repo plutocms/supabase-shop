@@ -15,12 +15,16 @@
   },
   "trustedDependencies": [
     "@parcel/watcher",
+    "@plutocms/supabase-storage",
+    "@plutocms/ui",
+    "@plutocms/utils",
     "esbuild",
     "unrs-resolver",
     "vue-demi"
   ],
   "dependencies": {
     "@plutocms/supabase-storage": "^0.0.1-alpha.1",
+    "@plutocms/ui": "^0.0.1-alpha.1",
     "@plutocms/utils": "^0.0.1-alpha.3"
   },
   "devDependencies": {
