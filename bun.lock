@@ -4,12 +4,14 @@
   "workspaces": {
     "": {
       "name": "supabase-shop",
+      "dependencies": {
+        "@nuxtjs/supabase": "^2.0.4",
+        "@plutocms/supabase": "^0.0.1-alpha.1",
+      },
       "devDependencies": {
         "@antfu/eslint-config": "^6.2.0",
         "@nuxt/eslint": "^1.11.0",
         "@nuxt/ui": "4.4.0",
-        "@nuxtjs/supabase": "^2.0.4",
-        "@plutocms/supabase": "^0.0.1-alpha.1",
         "@plutocms/supabase-storage": "^0.0.1-alpha.1",
         "@plutocms/ui": "^0.0.1-alpha.3",
         "@plutocms/utils": "^0.0.1-alpha.4",
@@ -1991,7 +1993,7 @@
 
     "stylehacks": ["stylehacks@7.0.7", "", { "dependencies": { "browserslist": "^4.27.0", "postcss-selector-parser": "^7.1.0" }, "peerDependencies": { "postcss": "^8.4.32" } }, "sha512-bJkD0JkEtbRrMFtwgpJyBbFIwfDDONQ1Ov3sDLZQP8HuJ73kBOyx66H4bOcAbVWmnfLdvQ0AJwXxOMkpujcO6g=="],
 
-    "supabase": ["supabase@2.76.15", "", { "dependencies": { "bin-links": "^6.0.0", "https-proxy-agent": "^7.0.2", "node-fetch": "^3.3.2", "tar": "7.5.9" }, "bin": { "supabase": "bin/supabase" } }, "sha512-m69o1XPAzZaIWfQiEeT+KY/Ci3OSA663RyoH9xECbXSxhr7dsipLCpCqT1E4MCob0mMhHh/7A+Eltx4y1qSwiQ=="],
+    "supabase": ["supabase@2.76.16", "", { "dependencies": { "bin-links": "^6.0.0", "https-proxy-agent": "^7.0.2", "node-fetch": "^3.3.2", "tar": "7.5.9" }, "bin": { "supabase": "bin/supabase" } }, "sha512-hZ1Kg88+pOlSAzvpas5RYLW6Op6a1OTUhOm8weP8vJf0emE/GO8rrou57irL3hopOwwSnye19VnxplW5+3g1zA=="],
 
     "superjson": ["superjson@2.2.6", "", { "dependencies": { "copy-anything": "^4" } }, "sha512-H+ue8Zo4vJmV2nRjpx86P35lzwDT3nItnIsocgumgr0hHMQ+ZGq5vrERg9kJBo5AWGmxZDhzDo+WVIJqkB0cGA=="],
 
