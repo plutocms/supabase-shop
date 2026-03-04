@@ -6,8 +6,8 @@
       "name": "supabase-shop",
       "dependencies": {
         "@nuxtjs/supabase": "^2.0.4",
-        "@plutocms/supabase": "^0.0.1-alpha.1",
-        "@plutocms/supabase-storage": "^0.0.1-alpha.1",
+        "@plutocms/supabase": "^0.0.1-alpha.2",
+        "@plutocms/supabase-storage": "^0.0.1-alpha.2",
         "@plutocms/ui": "^0.0.1-alpha.3",
         "@plutocms/utils": "^0.0.1-alpha.5",
       },
@@ -27,9 +27,12 @@
   },
   "trustedDependencies": [
     "@plutocms/supabase-storage",
+    "supabase",
     "esbuild",
+    "@plutocms/supabase",
     "@plutocms/ui",
     "unrs-resolver",
+    "@plutocms/pluto",
     "@plutocms/utils",
     "vue-demi",
     "@parcel/watcher",
@@ -449,9 +452,11 @@
 
     "@pkgr/core": ["@pkgr/core@0.2.9", "", {}, "sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA=="],
 
-    "@plutocms/supabase": ["@plutocms/supabase@0.0.1-alpha.1", "", { "dependencies": { "@nuxtjs/supabase": "2.0.3", "postgres": "^3.4.8", "supabase": "^2.76.15", "yup": "1.7.1" } }, "sha512-+ardqD4Lfe0+0GiiSi8LZ/Ios25F7YItz3nVZ1uKwIYStcCw0tB8TrZsCuKOKLsDYAxuECSKYCIkj1fE8QWldg=="],
+    "@plutocms/pluto": ["@plutocms/pluto@0.0.1-alpha.3", "", {}, "sha512-spWbocJJF3QVtwlXUV4mw/RUNDPGzDFx+IWXnatdECdnI/RHSO7A0FLAXEEgX2MsCjyGKZio38FQ2c8xV+TD6A=="],
 
-    "@plutocms/supabase-storage": ["@plutocms/supabase-storage@0.0.1-alpha.1", "", { "dependencies": { "@plutocms/utils": "^0.0.1-alpha.3" } }, "sha512-Xe8DzvC/58z5UrxM2ElJfIj89QoCJexVbMpe7ppbakyqkaDENt/bVYPec9VYveCf8SuePV96RytokdV5Lt4SNw=="],
+    "@plutocms/supabase": ["@plutocms/supabase@0.0.1-alpha.2", "", { "dependencies": { "@nuxtjs/supabase": "2.0.3", "@plutocms/pluto": "^0.0.1-alpha.3", "@plutocms/utils": "^0.0.1-alpha.5", "postgres": "^3.4.8", "supabase": "^2.76.15", "yup": "1.7.1" } }, "sha512-3swbLZRCbmcURd5vaP6f7lSMv20iqstQBHJrF57W0RUNvc5NfLdwXMYze2v7h4Jq7HX3fp53f489Co2H0WMIAQ=="],
+
+    "@plutocms/supabase-storage": ["@plutocms/supabase-storage@0.0.1-alpha.2", "", { "dependencies": { "@plutocms/supabase": "^0.0.1-alpha.2", "@plutocms/utils": "^0.0.1-alpha.5" } }, "sha512-FVpislJG8D+lii1zhvn6ArHHt08MG/RIOskFlV/nVKqeKPyWY2hOIvXrXxrUkY3uJ2wLTS6bQywiVVI8JOA7TA=="],
 
     "@plutocms/ui": ["@plutocms/ui@0.0.1-alpha.3", "", {}, "sha512-PGidGe0J6qpzSBqCpLcFnIKCgM63ZZkzQdmFnPENxRn6LwueLLOQjZe2U0RcXUmnLriyzZSDo5UUwFW01xuP3A=="],
 
