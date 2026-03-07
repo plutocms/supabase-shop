@@ -1,6 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ['@plutocms/ui', '@plutocms/utils', '@plutocms/supabase'],
+  extends: [
+    ['@plutocms/ui', { install: true }],
+    '@plutocms/utils',
+    '@plutocms/supabase',
+  ],
 
   $meta: {
     name: 'supabase-shop',
