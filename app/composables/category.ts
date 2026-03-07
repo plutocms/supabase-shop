@@ -1,4 +1,5 @@
-export type Category = Database['public']['Tables']['categories']['Row']
+export type ProductCategory =
+  Database['public']['Tables']['product_categories']['Row']
 
 export async function useProductCategory() {
   const toast = useToast()
@@ -7,7 +8,9 @@ export async function useProductCategory() {
     transform: (res) => res.data,
   })
 
-  function getCategoryFromId(id: number | null | undefined): Category | null {
+  function getCategoryFromId(
+    id: number | null | undefined
+  ): ProductCategory | null {
     if (!id) {
       return null
     }
@@ -31,7 +34,7 @@ export async function useProductCategory() {
 
   function getCategoryFromSlug(
     slug: string | string[] | null | undefined
-  ): Category | null {
+  ): ProductCategory | null {
     if (!slug) {
       return null
     }
@@ -56,14 +59,14 @@ export async function useProductCategory() {
   interface CreateCategoryOptions {
     name: string
     description?: string
-    onSuccess?: (category: Category) => void
+    onSuccess?: (category: ProductCategory) => void
     onError?: (error: Error) => void
     onRequest?: () => void
     onResponse?: () => void
   }
 
   async function create(options: CreateCategoryOptions) {
-    const payload: Omit<Category, 'id' | 'description'> = {
+    const payload: Omit<ProductCategory, 'id' | 'description'> = {
       label: options.name,
       slug: slugify(options.name),
     }

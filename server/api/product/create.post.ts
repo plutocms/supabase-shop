@@ -1,7 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 type FormBody = Database['public']['Tables']['products']['Insert'] & {
-  media: Media[]
+  media: ProductMedia[]
 }
 
 export default defineEventHandler(async (event) => {
@@ -17,6 +17,8 @@ export default defineEventHandler(async (event) => {
   const payload: Omit<FormBody, 'media'> = {
     ...bodyWithoutMedia,
     created_at: new Date().toISOString(),
+    availability: bodyWithoutMedia.availability || null,
+    category: bodyWithoutMedia.category || null,
   }
 
   const { data, error } = await client
@@ -29,13 +31,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: error.message })
   }
 
-  const mediaPayload = body.media.map((media) => ({
-    ...media,
-    product_id: data.id,
-  }))
+  const mediaPayload: Database['public']['Tables']['product_media']['Insert'][] =
+    body.media.map(({ id: _id, ...media }) => ({
+      ...media,
+      product_id: data.id,
+    }))
 
   const { error: mediaError } = await client
-    .from('media')
+    .from('product_media')
     .upsert(mediaPayload, { onConflict: 'id' })
     .select()
 

@@ -98,12 +98,11 @@ watch(
 const isSubmitting = ref<boolean>(false)
 
 async function submitForm() {
-  type Payload = Omit<ProductPayload, 'created_at'> & {
-    media: Media[]
+  type Payload = Omit<ProductPayload, 'created_at' | 'id'> & {
+    media: ProductMedia[]
   }
 
   const payload: Payload & { removedMediaIds?: number[] } = {
-    id: props.productId ?? undefined,
     slug: form.value?.slug ?? '',
     name: form.value?.name || 'Untitled',
     description: form.value?.description || null,
@@ -136,7 +135,11 @@ async function submitForm() {
       return
     }
 
-    await $fetch(`/api/product/edit/${payload.id}`, {
+    if (!props.productId) {
+      throw new Error('Missing product id for edit')
+    }
+
+    await $fetch(`/api/product/edit/${props.productId}`, {
       method: 'POST',
       body: payload,
     })
@@ -176,7 +179,7 @@ function closeMediaModal() {
   isMediaModalOpen.value = false
 }
 
-function is3d(item: Media | Media[] | null) {
+function is3d(item: ProductMedia | ProductMedia[] | null) {
   if (Array.isArray(item)) {
     return item.some((i) => i.name?.endsWith('.glb'))
   }
@@ -206,7 +209,7 @@ function removeMedia(index: number) {
   })
 }
 
-function handleInsertMedia(event: Media | Media[] | null) {
+function handleInsertMedia(event: ProductMedia | ProductMedia[] | null) {
   // Remove previous .glb media before inserting new one
   form.value.media = form.value.media.filter((m) => !m.name?.endsWith('.glb'))
 
@@ -322,7 +325,7 @@ watch(
               </div>
             </ScrollArea>
 
-            <UploadMedia
+            <UploadProductMedia
               v-model="isMediaModalOpen"
               :product-id="props.productId"
               @insert="handleInsertMedia"

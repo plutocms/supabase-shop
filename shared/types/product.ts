@@ -3,19 +3,20 @@ export interface ProductData {
 }
 
 export interface ProductItem extends PartialProduct {
-  media: Media[]
-  availability: Availability
-  category: Category
+  product_media: ProductMedia[]
+  product_availability: ProductAvailability
+  product_categories: ProductCategory
 }
 
-type Availability = Database['public']['Tables']['availability']['Row']
-type Category = Database['public']['Tables']['categories']['Row']
+type ProductAvailability =
+  Database['public']['Tables']['product_availability']['Row']
+type ProductCategory = Database['public']['Tables']['product_categories']['Row']
 
-export type Media = Database['public']['Tables']['media']['Row']
+export type ProductMedia = Database['public']['Tables']['product_media']['Row']
 export type Product = Database['public']['Tables']['products']['Row']
 export type PartialProduct = Omit<Product, 'availability' | 'category'>
 
-type MediaWithSaved = Media & {
+type MediaWithSaved = ProductMedia & {
   is_saved?: boolean
 }
 

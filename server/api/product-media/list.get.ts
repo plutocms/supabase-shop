@@ -3,13 +3,13 @@ import { serverSupabaseClient } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient<Database>(event)
 
-  const { data, error } = await client
-    .from('product_availability')
-    .select('id, label, slug')
-    .order('id', { ascending: true })
+  const { data, error } = await client.from('product_media').select('*')
 
   if (error) {
-    throw createError({ statusMessage: error.message })
+    throw createError({
+      message: 'error',
+    })
   }
+
   return { data }
 })

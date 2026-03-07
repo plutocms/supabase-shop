@@ -57,7 +57,7 @@ const columns = ref<TableColumn<ProductItem>[]>([
       }),
   },
   {
-    accessorKey: 'category.label',
+    accessorKey: 'product_categories.label',
     header: 'Category',
   },
   {

@@ -5,7 +5,9 @@ export default defineEventHandler(async (event) => {
 
   const { data, error } = await client
     .from('products')
-    .select('*, media(*), category(*), availability(*)')
+    .select(
+      '*, product_media(*), product_categories(*), product_availability(*)'
+    )
     .order('created_at', { ascending: false })
 
   if (error) {

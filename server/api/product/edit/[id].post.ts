@@ -1,7 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 type FormBody = Database['public']['Tables']['products']['Insert'] & {
-  media: Media[]
+  media: ProductMedia[]
   removedMediaIds?: number[]
 }
 
@@ -14,20 +14,24 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: 'No payload sent.' })
   }
 
-  if (!params) {
+  if (!params?.id) {
     throw createError({ statusMessage: 'No param sent.' })
   }
+
+  const productId = Number(params.id)
 
   const { media: _, removedMediaIds = [], ...bodyWithoutMedia } = body
 
   const payload: Omit<FormBody, 'media' | 'removedMediaIds'> = {
     ...bodyWithoutMedia,
+    availability: bodyWithoutMedia.availability || null,
+    category: bodyWithoutMedia.category || null,
   }
 
   const { data, error } = await client
     .from('products')
     .update(payload)
-    .eq('id', Number(body.id))
+    .eq('id', productId)
     .select('*')
     .single()
 
@@ -37,20 +41,22 @@ export default defineEventHandler(async (event) => {
 
   const mediaPayload = body.media.map((media) => ({
     ...media,
-    product_id: body.id,
+    product_id: productId,
   }))
 
   // Separate new media (no id) and existing media (with id)
   const newMedia = mediaPayload.filter((m) => !m.id)
+  const newMediaInsertPayload: Database['public']['Tables']['product_media']['Insert'][] =
+    newMedia.map(({ id, ...media }) => media)
   const existingMedia = mediaPayload.filter((m) => m.id)
 
   // Insert new media
-  let insertedMedia: Media[] = []
+  let insertedMedia: ProductMedia[] = []
 
   // Update removed media to set product_id to null
   if (removedMediaIds.length > 0) {
     const { error: removeError } = await client
-      .from('media')
+      .from('product_media')
       .update({ product_id: null })
       .in('id', removedMediaIds)
 
@@ -64,7 +70,7 @@ export default defineEventHandler(async (event) => {
     for (const media of existingMedia) {
       // Check if this media is already used by another product
       const { data: existing, error: fetchError } = await client
-        .from('media')
+        .from('product_media')
         .select('id,product_id')
         .eq('id', media.id)
         .single()
@@ -73,11 +79,15 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusMessage: fetchError.message })
       }
 
-      if (existing && existing.product_id && existing.product_id !== body.id) {
+      if (
+        existing &&
+        existing.product_id &&
+        existing.product_id !== productId
+      ) {
         // Create a new entry if used by another product
         const { data: newMedia, error: insertError } = await client
-          .from('media')
-          .insert({ ...media, id: undefined, product_id: body.id })
+          .from('product_media')
+          .insert({ ...media, id: undefined, product_id: productId })
           .select('*')
           .single()
 
@@ -85,15 +95,17 @@ export default defineEventHandler(async (event) => {
           throw createError({ statusMessage: insertError.message })
         }
 
-        insertedMedia.push(newMedia as Media)
-      } else if (existing && existing.product_id === body.id) {
+        insertedMedia.push(newMedia as ProductMedia)
+      } else if (existing && existing.product_id === productId) {
         // Already on this product, do nothing
         continue
       } else {
-        // Safe to upsert
+        // Safe to update existing media by id
+        const { id, ...mediaUpdate } = media
         const { error: updateError } = await client
-          .from('media')
-          .upsert([media], { onConflict: 'id' })
+          .from('product_media')
+          .update(mediaUpdate)
+          .eq('id', id)
 
         if (updateError) {
           throw createError({ statusMessage: updateError.message })
@@ -103,10 +115,10 @@ export default defineEventHandler(async (event) => {
   }
 
   // Insert new media
-  if (newMedia.length > 0) {
+  if (newMediaInsertPayload.length > 0) {
     const { data: media, error: mediaError } = await client
-      .from('media')
-      .upsert(newMedia, { onConflict: 'id' })
+      .from('product_media')
+      .upsert(newMediaInsertPayload)
       .select('*')
 
     if (mediaError) {
@@ -119,7 +131,7 @@ export default defineEventHandler(async (event) => {
   // Combine existing and newly inserted media for response
   // Only include existingMedia that actually belong to this product
   const filteredExistingMedia = existingMedia.filter(
-    (m) => m.product_id === body.id
+    (m) => m.product_id === productId
   )
   const media = [...filteredExistingMedia, ...insertedMedia]
 

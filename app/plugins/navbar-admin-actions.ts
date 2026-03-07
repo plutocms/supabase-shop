@@ -21,6 +21,12 @@ const sidebarActions = [
       },
     ],
   },
+
+  {
+    label: 'Product Medias',
+    href: '/admin/product-media',
+    icon: 'lucide:images',
+  },
 ]
 
 export default defineNuxtPlugin(() => {

@@ -17,7 +17,7 @@ const form = ref<FormProduct>()
 
 onMounted(() => {
   if (product.value) {
-    const media = product.value.media.map((item) => ({
+    const media = product.value.product_media.map((item) => ({
       ...item,
       is_saved: true,
     }))
@@ -33,9 +33,9 @@ onMounted(() => {
 
     form.value = {
       ...product.value,
-      category: product.value.category?.id ?? null,
+      category: product.value.product_categories?.id ?? null,
       media: [...otherMedia, ...glbMedia],
-      availability: product.value.availability?.id ?? null,
+      availability: product.value.product_availability?.id ?? null,
     }
   } else {
     form.value = undefined
