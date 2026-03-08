@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   extends: [
     ['@plutocms/ui', { install: true }],
     '@plutocms/utils',
-    '@plutocms/supabase',
+    ['@plutocms/supabase', { install: true }],
   ],
 
   $meta: {
