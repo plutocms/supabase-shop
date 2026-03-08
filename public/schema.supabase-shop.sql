@@ -47,39 +47,39 @@ INSERT INTO public.product_availability (label, slug) VALUES
   ('In stock', 'in-stock'),
   ('Commission', 'commission');
 
--- ---------- product_categories ----------
+-- ---------- product_category ----------
 
-CREATE TABLE public.product_categories (
+CREATE TABLE public.product_category (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   slug varchar NOT NULL UNIQUE,
   label text NOT NULL UNIQUE,
   description text,
-  CONSTRAINT product_categories_pkey PRIMARY KEY (id)
+  CONSTRAINT product_category_pkey PRIMARY KEY (id)
 );
 
-ALTER TABLE public.product_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_category ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read access"
-  ON public.product_categories
+  ON public.product_category
   FOR SELECT
   TO anon, authenticated
   USING (true);
 
 CREATE POLICY "Allow authenticated insert"
-  ON public.product_categories
+  ON public.product_category
   FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
 CREATE POLICY "Allow authenticated update"
-  ON public.product_categories
+  ON public.product_category
   FOR UPDATE
   TO authenticated
   USING (true)
   WITH CHECK (true);
 
 CREATE POLICY "Allow authenticated delete"
-  ON public.product_categories
+  ON public.product_category
   FOR DELETE
   TO authenticated
   USING (true);
@@ -102,7 +102,7 @@ CREATE TABLE public.products (
     FOREIGN KEY (availability) REFERENCES public.product_availability (id)
     ON DELETE SET NULL,
   CONSTRAINT products_category_fkey
-    FOREIGN KEY (category) REFERENCES public.product_categories (id)
+    FOREIGN KEY (category) REFERENCES public.product_category (id)
     ON DELETE SET NULL
 );
 

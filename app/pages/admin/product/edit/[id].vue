@@ -33,7 +33,7 @@ onMounted(() => {
 
     form.value = {
       ...product.value,
-      category: product.value.product_categories?.id ?? null,
+      category: product.value.product_category?.id ?? null,
       media: [...otherMedia, ...glbMedia],
       availability: product.value.product_availability?.id ?? null,
     }

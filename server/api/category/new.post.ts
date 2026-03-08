@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const { data, error } = await client
-    .from('product_categories')
+    .from('product_category')
     .insert(body)
     .select()
     .single()

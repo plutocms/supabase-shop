@@ -5,12 +5,12 @@ export interface ProductData {
 export interface ProductItem extends PartialProduct {
   product_media: ProductMedia[]
   product_availability: ProductAvailability
-  product_categories: ProductCategory
+  product_category: ProductCategory
 }
 
 type ProductAvailability =
   Database['public']['Tables']['product_availability']['Row']
-type ProductCategory = Database['public']['Tables']['product_categories']['Row']
+type ProductCategory = Database['public']['Tables']['product_category']['Row']
 
 export type ProductMedia = Database['public']['Tables']['product_media']['Row']
 export type Product = Database['public']['Tables']['products']['Row']

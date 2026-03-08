@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     const { data, error } = await client
       .from('products')
       .select(
-        '*, product_media(*), product_categories(*), product_availability(*)'
+        '*, product_media(*), product_category(*), product_availability(*)'
       )
       .eq('id', Number(params?.id))
       .limit(1)

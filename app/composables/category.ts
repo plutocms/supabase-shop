@@ -1,5 +1,5 @@
 export type ProductCategory =
-  Database['public']['Tables']['product_categories']['Row']
+  Database['public']['Tables']['product_category']['Row']
 
 export async function useProductCategory() {
   const toast = useToast()
