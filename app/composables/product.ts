@@ -6,6 +6,7 @@ export function useProduct(productId?: number | null | undefined) {
     execute: _getProductList,
   } = useFetch('/api/product/list', {
     key: 'products',
+    transform: (res) => res.data,
     immediate: false,
   })
 
@@ -16,6 +17,7 @@ export function useProduct(productId?: number | null | undefined) {
     execute: _getProduct,
   } = useFetch(`/api/product/get/${productId}`, {
     key: `product-${productId}`,
+    transform: (res) => res?.data,
     immediate: false,
   })
 
