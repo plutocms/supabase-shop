@@ -13,7 +13,7 @@ export function useProduct(productId?: number | null | undefined) {
   const {
     data: product,
     pending: _pendingProduct,
-    refresh: refreshProduct,
+    refresh: _refreshProduct,
     execute: _getProduct,
   } = useFetch(`/api/product/get/${productId}`, {
     key: `product-${productId}`,
@@ -39,10 +39,10 @@ export function useProduct(productId?: number | null | undefined) {
 
   function refresh() {
     if (productId) {
-      refreshProduct()
-    } else {
-      _refreshProductList()
+      _refreshProduct()
     }
+
+    _refreshProductList()
   }
 
   return {
