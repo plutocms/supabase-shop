@@ -1,30 +1,52 @@
-export async function useProduct(productId?: number | null | undefined) {
-  const list = ref<ProductData | null>(null)
-  const pending = ref(false)
+export function useProduct(productId?: number | null | undefined) {
+  const {
+    data: products,
+    pending: _pendingProductList,
+    refresh: _refreshProductList,
+    execute: _getProductList,
+  } = useFetch('/api/product/list', {
+    key: 'products',
+    immediate: false,
+  })
+
+  const {
+    data: product,
+    pending: _pendingProduct,
+    refresh: refreshProduct,
+    execute: _getProduct,
+  } = useFetch(`/api/product/get/${productId}`, {
+    key: `product-${productId}`,
+    immediate: false,
+  })
 
   if (!productId) {
-    pending.value = true
-
-    const productsData = await $fetch<ProductData>(`/api/product/list`)
-
-    pending.value = false
-
-    list.value = productsData || null
+    _getProductList()
   }
-
-  const product = ref<ProductItem | null>(null)
 
   if (productId) {
-    const productData = await $fetch<{ data: ProductItem | null }>(
-      `/api/product/get/${productId}`
-    )
-
-    product.value = productData.data || null
+    _getProduct()
   }
+
+  const pending = computed<boolean>(() => {
+    if (productId) {
+      return _pendingProduct.value
+    }
+
+    return _pendingProductList.value
+  })
 
   function refresh() {
-    return useProduct(productId)
+    if (productId) {
+      refreshProduct()
+    } else {
+      _refreshProductList()
+    }
   }
 
-  return { list, product, refresh, pending }
+  return {
+    products,
+    product,
+    refresh,
+    pending,
+  }
 }
