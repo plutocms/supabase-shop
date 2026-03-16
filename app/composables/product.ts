@@ -1,4 +1,10 @@
-export function useProduct(productId?: number | null | undefined) {
+export function useProduct(
+  productSlugOrId?: number | string | string[] | null
+) {
+  if (Array.isArray(productSlugOrId)) {
+    productSlugOrId = productSlugOrId[0]
+  }
+
   const {
     data: products,
     pending: _pendingProductList,
@@ -15,22 +21,22 @@ export function useProduct(productId?: number | null | undefined) {
     pending: _pendingProduct,
     refresh: _refreshProduct,
     execute: _getProduct,
-  } = useFetch(`/api/product/get/${productId}`, {
-    key: `product-${productId}`,
+  } = useFetch(`/api/product/get/${productSlugOrId}`, {
+    key: `product-${productSlugOrId}`,
     transform: (res) => res?.data,
     immediate: false,
   })
 
-  if (!productId) {
+  if (!productSlugOrId) {
     _getProductList()
   }
 
-  if (productId) {
+  if (productSlugOrId) {
     _getProduct()
   }
 
   const pending = computed<boolean>(() => {
-    if (productId) {
+    if (productSlugOrId) {
       return _pendingProduct.value
     }
 
@@ -38,7 +44,7 @@ export function useProduct(productId?: number | null | undefined) {
   })
 
   function refresh() {
-    if (productId) {
+    if (productSlugOrId) {
       _refreshProduct()
     }
 
