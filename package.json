@@ -17,7 +17,6 @@
     "@parcel/watcher",
     "@plutocms/pluto",
     "@plutocms/supabase",
-    "@plutocms/supabase-storage",
     "@plutocms/ui",
     "@plutocms/utils",
     "esbuild",
