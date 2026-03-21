@@ -401,7 +401,7 @@ watch(
           <div class="flex gap-2 justify-end">
             <UButton
               v-if="isEditing"
-              :to="`/product/${props.productId}/${form.slug}`"
+              :to="`/product/${form.slug}`"
               icon="lucide:eye"
               variant="link"
               as="NuxtLink"
@@ -422,11 +422,7 @@ watch(
           </div>
 
           <UFormField
-            :help="
-              form.slug
-                ? `/product/${props.productId || '[id]'}/${form.slug}`
-                : undefined
-            "
+            :help="form.slug ? `/product/${form.slug}` : undefined"
             label="Slug"
           >
             <UInput v-model="form.slug" placeholder="slug" class="w-full" />
