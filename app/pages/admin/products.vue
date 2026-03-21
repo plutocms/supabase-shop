@@ -142,7 +142,18 @@ async function deleteProduct(productId: number | null) {
 
     <AdminView>
       <div class="flex justify-between">
-        <h1 class="text-4xl font-bold">All products</h1>
+        <hgroup class="flex items-center gap-x-3">
+          <h1 class="text-4xl font-bold">All products</h1>
+
+          <UButton
+            :loading="pending"
+            icon="lucide:refresh-ccw"
+            variant="ghost"
+            title="Refresh"
+            square
+            @click="refresh()"
+          />
+        </hgroup>
 
         <UButton icon="lucide:plus" as="NuxtLink" to="/admin/product/new">
           Add product
@@ -159,6 +170,7 @@ async function deleteProduct(productId: number | null) {
               // td: 'py-1!',
             },
           }"
+          :loading="pending"
         />
       </UCard>
     </AdminView>
