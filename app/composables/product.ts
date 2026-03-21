@@ -5,56 +5,64 @@ export function useProduct(
     productSlugOrId = productSlugOrId[0]
   }
 
-  const {
-    data: products,
-    pending: _pendingProductList,
-    refresh: _refreshProductList,
-    execute: _getProductList,
-  } = useFetch('/api/product/list', {
+  const listFetch = useFetch('/api/product/list', {
     key: 'products',
     transform: (res) => res.data,
-    immediate: false,
+    immediate: !productSlugOrId,
+    server: !productSlugOrId,
   })
 
-  const {
-    data: product,
-    pending: _pendingProduct,
-    refresh: _refreshProduct,
-    execute: _getProduct,
-  } = useFetch(`/api/product/get/${productSlugOrId}`, {
+  const productFetch = useFetch(`/api/product/get/${productSlugOrId}`, {
     key: `product-${productSlugOrId}`,
     transform: (res) => res?.data,
-    immediate: false,
+    immediate: !!productSlugOrId,
+    server: !!productSlugOrId,
   })
-
-  if (!productSlugOrId) {
-    _getProductList()
-  }
-
-  if (productSlugOrId) {
-    _getProduct()
-  }
 
   const pending = computed<boolean>(() => {
     if (productSlugOrId) {
-      return _pendingProduct.value
+      return productFetch.pending.value
     }
 
-    return _pendingProductList.value
+    return listFetch.pending.value
   })
 
   function refresh() {
     if (productSlugOrId) {
-      _refreshProduct()
+      productFetch.refresh()
     }
 
-    _refreshProductList()
+    listFetch.refresh()
   }
 
-  return {
-    products,
-    product,
+  const activeFetch = productSlugOrId ? productFetch : listFetch
+
+  interface UseProductResultBase {
+    products: typeof listFetch.data
+    product: typeof productFetch.data
+    refresh: () => void
+    pending: typeof pending
+  }
+
+  type UseProductResult = UseProductResultBase & {
+    then: (
+      onFulfilled?: ((value: UseProductResultBase) => unknown) | null,
+      onRejected?: ((reason: unknown) => unknown) | null
+    ) => Promise<unknown>
+  }
+
+  const result: UseProductResult = {
+    products: listFetch.data,
+    product: productFetch.data,
     refresh,
     pending,
+    then(onFulfilled, onRejected) {
+      return activeFetch.then(() => {
+        const { then: _then, ...base } = result
+        return onFulfilled?.(base)
+      }, onRejected)
+    },
   }
+
+  return result
 }
