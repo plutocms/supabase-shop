@@ -6,7 +6,7 @@ useHead({
   title: 'All products',
 })
 
-const { list: products, refresh: refreshProducts } = await useProduct()
+const { products, refresh, pending } = useProduct()
 
 const columns = ref<TableColumn<ProductItem>[]>([
   {
@@ -100,7 +100,7 @@ async function deleteProduct(productId: number | null) {
       method: 'DELETE',
     })
 
-    refreshProducts()
+    refresh()
 
     closeRemoveProductModal()
   } catch (error) {
@@ -151,7 +151,7 @@ async function deleteProduct(productId: number | null) {
 
       <UCard :ui="{ body: 'sm:p-0 p-0' }">
         <UTable
-          :data="products?.data"
+          :data="products"
           :columns="columns"
           :meta="{
             class: {
