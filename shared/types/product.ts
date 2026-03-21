@@ -3,9 +3,9 @@ export interface ProductData {
 }
 
 export interface ProductItem extends PartialProduct {
-  product_media: ProductMedia[]
-  product_availability: ProductAvailability
-  product_category: ProductCategory
+  product_media: ProductMedia[] | null
+  product_availability: ProductAvailability | null
+  product_category: ProductCategory | null
 }
 
 type ProductAvailability =

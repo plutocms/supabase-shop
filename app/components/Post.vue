@@ -265,7 +265,7 @@ watch(
 <template>
   <div class="min-h-screen bg-linear-to-br py-8 px-2 md:px-8">
     <div
-      class="max-w-6xl mx-auto bg-slate-900 rounded-3xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
+      class="max-w-6xl mx-auto light:bg-slate-50 dark:bg-slate-900 rounded-3xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
     >
       <!-- Left: Media and Title -->
       <div class="flex-1 flex flex-col gap-8">
@@ -278,12 +278,14 @@ watch(
           />
         </div>
 
-        <div class="flex flex-col md:flex-row gap-x-3 items-start">
+        <div class="flex flex-col md:flex-row items-start">
           <!-- Media Gallery -->
           <div
             class="flex flex-row md:flex-col gap-4 items-center md:items-start"
           >
-            <ScrollArea class="w-20 md:w-24 rounded-2xl bg-slate-900/60 p-2">
+            <ScrollArea
+              class="w-20 md:w-24 rounded-2xl dark:bg-slate-900/60 light:bg-slate-50 p-2"
+            >
               <div class="flex md:flex-col gap-2">
                 <template v-if="form.media && form.media?.length > 0">
                   <div
@@ -309,14 +311,14 @@ watch(
                 <div class="flex flex-col gap-2 mt-2">
                   <div
                     v-if="form.media && form.media.find((m) => is3d(m))"
-                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-black/90 hover:bg-black cursor-pointer"
+                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
                     @click="openMediaModal"
                   >
                     <Icon name="lucide:rotate-3d" class="text-2xl" />
                   </div>
 
                   <div
-                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-black/90 hover:bg-black cursor-pointer"
+                    class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
                     @click="openMediaModal"
                   >
                     <Icon name="lucide:plus" class="text-2xl" />
@@ -395,13 +397,13 @@ watch(
 
       <!-- Right: Form Fields -->
       <div
-        class="w-full md:max-w-xs shrink-0 bg-slate-950 rounded-2xl p-4 mt-6 flex flex-col gap-8 overflow-y-auto max-h-[90vh]"
+        class="w-full md:max-w-xs shrink-0 dark:bg-slate-950 light:bg-slate-100 rounded-2xl p-4 mt-6 flex flex-col gap-8 overflow-y-auto max-h-[90vh]"
       >
         <div class="flex flex-col gap-4">
           <div class="flex gap-2 justify-end">
             <UButton
               v-if="isEditing"
-              :to="`/product/${props.productId}/${form.slug}`"
+              :to="`/product/${form.slug}`"
               icon="lucide:eye"
               variant="link"
               as="NuxtLink"
@@ -422,15 +424,9 @@ watch(
           </div>
 
           <UFormField
-            :help="
-              form.slug
-                ? `/product/${props.productId || '[id]'}/${form.slug}`
-                : undefined
-            "
+            :help="form.slug ? `/product/${form.slug}` : undefined"
             label="Slug"
-          >
-            <UInput v-model="form.slug" placeholder="slug" class="w-full" />
-          </UFormField>
+          />
 
           <UFormField label="Price">
             <UInputNumber

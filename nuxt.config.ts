@@ -11,4 +11,15 @@ export default defineNuxtConfig({
   },
 
   css: ['#layers/supabase-shop/app/assets/css/tailwind.css'],
+
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'cookie',
+        'tailwind-merge',
+      ],
+    },
+  },
 })

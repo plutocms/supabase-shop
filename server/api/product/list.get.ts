@@ -12,5 +12,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: error.message })
   }
 
-  return { data }
+  const dataWithUrls = data?.map((product) => ({
+    ...product,
+    product_media: product.product_media?.map((item) => ({
+      ...item,
+      url: client.storage
+        .from('product-media')
+        .getPublicUrl(`uploads/${item.name}`).data.publicUrl,
+    })),
+  }))
+
+  return { data: dataWithUrls }
 })

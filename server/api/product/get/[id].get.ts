@@ -5,12 +5,16 @@ export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient<Database>(event)
 
   if (params) {
+    const lookup = params.id
+    const id = Number.parseInt(lookup as string, 10)
+    const isId = !Number.isNaN(id)
+
     const { data, error } = await client
       .from('products')
       .select(
         '*, product_media(*), product_category(*), product_availability(*)'
       )
-      .eq('id', Number(params?.id))
+      .eq(isId ? 'id' : 'slug', isId ? id : (lookup as string))
       .limit(1)
       .single()
 
@@ -18,6 +22,16 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusMessage: error.message })
     }
 
-    return { data }
+    const dataWithUrls = {
+      ...data,
+      product_media: data.product_media?.map((item) => ({
+        ...item,
+        url: client.storage
+          .from('product-media')
+          .getPublicUrl(`uploads/${item.name}`).data.publicUrl,
+      })),
+    }
+
+    return { data: dataWithUrls }
   }
 })

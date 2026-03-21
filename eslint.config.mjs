@@ -7,6 +7,8 @@ export default withNuxt(
   // @ts-expect-error
   antfu({
     rules: {
+      'antfu/consistent-chaining': 'off',
+
       'node/prefer-global/process': ['off', 'never'],
 
       'style/arrow-parens': ['warn', 'always'],

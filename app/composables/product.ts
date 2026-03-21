@@ -1,30 +1,68 @@
-export async function useProduct(productId?: number | null | undefined) {
-  const list = ref<ProductData | null>(null)
-  const pending = ref(false)
-
-  if (!productId) {
-    pending.value = true
-
-    const productsData = await $fetch<ProductData>(`/api/product/list`)
-
-    pending.value = false
-
-    list.value = productsData || null
+export function useProduct(
+  productSlugOrId?: number | string | string[] | null
+) {
+  if (Array.isArray(productSlugOrId)) {
+    productSlugOrId = productSlugOrId[0]
   }
 
-  const product = ref<ProductItem | null>(null)
+  const listFetch = useFetch('/api/product/list', {
+    key: 'products',
+    transform: (res) => res.data,
+    immediate: !productSlugOrId,
+    server: !productSlugOrId,
+  })
 
-  if (productId) {
-    const productData = await $fetch<{ data: ProductItem | null }>(
-      `/api/product/get/${productId}`
-    )
+  const productFetch = useFetch(`/api/product/get/${productSlugOrId}`, {
+    key: `product-${productSlugOrId}`,
+    transform: (res) => res?.data,
+    immediate: !!productSlugOrId,
+    server: !!productSlugOrId,
+  })
 
-    product.value = productData.data || null
-  }
+  const pending = computed<boolean>(() => {
+    if (productSlugOrId) {
+      return productFetch.pending.value
+    }
+
+    return listFetch.pending.value
+  })
 
   function refresh() {
-    return useProduct(productId)
+    if (productSlugOrId) {
+      productFetch.refresh()
+    }
+
+    listFetch.refresh()
   }
 
-  return { list, product, refresh, pending }
+  const activeFetch = productSlugOrId ? productFetch : listFetch
+
+  interface UseProductResultBase {
+    products: typeof listFetch.data
+    product: typeof productFetch.data
+    refresh: () => void
+    pending: typeof pending
+  }
+
+  type UseProductResult = UseProductResultBase & {
+    then: (
+      onFulfilled?: ((value: UseProductResultBase) => unknown) | null,
+      onRejected?: ((reason: unknown) => unknown) | null
+    ) => Promise<unknown>
+  }
+
+  const result: UseProductResult = {
+    products: listFetch.data,
+    product: productFetch.data,
+    refresh,
+    pending,
+    then(onFulfilled, onRejected) {
+      return activeFetch.then(() => {
+        const { then: _then, ...base } = result
+        return onFulfilled?.(base)
+      }, onRejected)
+    },
+  }
+
+  return result
 }
