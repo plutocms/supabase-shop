@@ -11,5 +11,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  return { data }
+  const dataWithUrls = data?.map((item) => ({
+    ...item,
+    url: client.storage
+      .from('product-media')
+      .getPublicUrl(`uploads/${item.name}`).data.publicUrl,
+  }))
+
+  return { data: dataWithUrls }
 })
