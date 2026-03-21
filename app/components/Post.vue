@@ -424,9 +424,7 @@ watch(
           <UFormField
             :help="form.slug ? `/product/${form.slug}` : undefined"
             label="Slug"
-          >
-            <UInput v-model="form.slug" placeholder="slug" class="w-full" />
-          </UFormField>
+          />
 
           <UFormField label="Price">
             <UInputNumber
