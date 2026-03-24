@@ -19,6 +19,7 @@ export default defineNuxtConfig({
         '@vue/devtools-kit',
         'cookie',
         'tailwind-merge',
+        '@vueuse/integrations/useChangeCase',
       ],
     },
   },
