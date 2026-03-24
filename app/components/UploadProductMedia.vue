@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
-import { fileNameToKebabCase } from '#imports'
 
 const props = defineProps<{
   productId?: number
@@ -14,7 +13,7 @@ const isMediaModalOpen = defineModel<boolean>({
   default: false,
 })
 
-const { mediaList, refreshMediaList, mediaStatus, getMediaUrl } = useMedia()
+const { mediaList, refreshMediaList, mediaStatus } = useProductMedia()
 
 const imageList = computed(() => {
   return mediaList.value?.data.filter((item) => !item.name?.endsWith('.glb'))
@@ -93,7 +92,9 @@ onChange(async () => {
 const isUploaded = ref<boolean>(false)
 const isUploading = ref<boolean>(false)
 
-type Media = Database['public']['Tables']['product_media']['Row']
+type Media = Database['public']['Tables']['product_media']['Row'] & {
+  url?: string
+}
 const uploadedMedia = ref<Media | null>(null)
 
 async function uploadMedia() {
@@ -277,7 +278,7 @@ const isInsertButtonDisabled = computed(
 
                   <img
                     v-if="file.name"
-                    :src="getMediaUrl(file.name)"
+                    :src="file.url"
                     :alt="file.alt || file.name"
                     class="h-full w-full object-contain"
                   />
@@ -373,11 +374,8 @@ const isInsertButtonDisabled = computed(
                 <div class="wrap-break-word">{{ files?.[0]?.name }}</div>
 
                 <div v-if="isUploaded && files?.[0]?.name" class="truncate">
-                  <ULink
-                    :href="getMediaUrl(fileNameToKebabCase(files[0].name))"
-                    target="_blank"
-                  >
-                    {{ getMediaUrl(fileNameToKebabCase(files[0].name)) }}
+                  <ULink :href="uploadedMedia?.url" target="_blank">
+                    {{ uploadedMedia?.url }}
                   </ULink>
                 </div>
 

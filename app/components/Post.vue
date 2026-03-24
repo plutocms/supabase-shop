@@ -21,8 +21,6 @@ const toast = useToast()
 const { status } = await useProductAvailability()
 const { categories, refresh, create } = await useProductCategory()
 
-const { getMediaUrl } = useMedia()
-
 const productSlug = useChangeCase('', 'kebabCase')
 
 const currentSelectedImage = ref<number>(0)
@@ -302,7 +300,7 @@ watch(
                   >
                     <img
                       v-if="image.name"
-                      :src="getMediaUrl(image.name)"
+                      :src="image.url"
                       class="h-full w-full object-cover"
                     />
                   </div>
@@ -376,7 +374,7 @@ watch(
 
               <img
                 v-if="!!form.media?.[currentSelectedImage]?.name"
-                :src="getMediaUrl(form.media[currentSelectedImage]!.name!)"
+                :src="form.media[currentSelectedImage]?.url"
                 class="h-full w-full object-contain"
               />
             </div>
