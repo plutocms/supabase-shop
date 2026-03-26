@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NavbarAdminActionButtonProps } from '#layers/utils/shared/types/navbar'
 
-const route = useRoute('admin-product-edit-id')
+const route = useRoute()
 
 const items = computed<NavbarAdminActionButtonProps[]>(() => [
   {
@@ -14,7 +14,7 @@ const items = computed<NavbarAdminActionButtonProps[]>(() => [
   {
     label: 'Edit product',
     icon: 'lucide:pen-line',
-    to: `/admin/product/edit/${route.params.id}`,
+    to: `/admin/product/edit/${route.params.id || route.params.slug}`,
     show: route.path.startsWith('/product/'),
   },
 ])
