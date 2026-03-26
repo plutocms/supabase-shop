@@ -92,10 +92,37 @@ onChange(async () => {
 const isUploaded = ref<boolean>(false)
 const isUploading = ref<boolean>(false)
 
-type Media = Database['public']['Tables']['product_media']['Row'] & {
-  url?: string
+const uploadedMedia = ref<ProductMedia | null>(null)
+
+async function hydrateUploadedMediaUrl() {
+  const id = uploadedMedia.value?.id
+
+  if (!id || uploadedMedia.value?.url) {
+    return
+  }
+
+  await refreshMediaList()
+
+  const mediaWithUrl = mediaList.value?.data.find((item) => item.id === id)
+
+  if (!mediaWithUrl?.url) {
+    return
+  }
+
+  uploadedMedia.value = {
+    ...uploadedMedia.value,
+    ...mediaWithUrl,
+    product_id: props.productId ?? null,
+  }
 }
-const uploadedMedia = ref<Media | null>(null)
+
+watch(isUploaded, async (value) => {
+  if (!value) {
+    return
+  }
+
+  await hydrateUploadedMediaUrl()
+})
 
 async function uploadMedia() {
   let response
@@ -159,24 +186,34 @@ function selectSingleMedia(id: number) {
   selectedMedia.value = [id]
 }
 
+type EmitValue = Database['public']['Tables']['product_media']['Row']
+
 const transformedSelectedMedia = computed<EmitValue[]>(() => {
   const value = selectedMedia.value
-    ?.map((item) => {
+    .map((item) => {
       if (!mediaList.value) {
         return undefined
       }
 
-      return {
-        ...mediaList.value.data.find((dataItem) => item === dataItem.id),
+      const mediaItem = mediaList.value.data.find(
+        (dataItem) => item === dataItem.id
+      )
+
+      if (!mediaItem) {
+        return undefined
+      }
+
+      const transformedMediaItem: EmitValue = {
+        ...mediaItem,
         product_id: props.productId ?? null,
       }
+
+      return transformedMediaItem
     })
     .filter((item): item is EmitValue => item !== undefined)
 
   return value
 })
-
-type EmitValue = Database['public']['Tables']['product_media']['Row']
 
 function insertMedia() {
   if (currentTab.value === '0' || currentTab.value === '1') {
@@ -374,7 +411,7 @@ const isInsertButtonDisabled = computed(
                 <div class="wrap-break-word">{{ files?.[0]?.name }}</div>
 
                 <div v-if="isUploaded && files?.[0]?.name" class="truncate">
-                  <ULink :href="uploadedMedia?.url" target="_blank">
+                  <ULink :href="uploadedMedia?.url ?? ''" target="_blank">
                     {{ uploadedMedia?.url }}
                   </ULink>
                 </div>
