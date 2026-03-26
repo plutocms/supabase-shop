@@ -31,19 +31,40 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusMessage: error.message })
   }
 
-  const mediaPayload: Database['public']['Tables']['product_media']['Insert'][] =
-    body.media.map(({ id: _id, ...media }) => ({
-      ...media,
-      product_id: data.id,
-    }))
+  const mediaWithProductId = body.media.map((media) => ({
+    ...media,
+    product_id: data.id,
+  }))
 
-  const { error: mediaError } = await client
-    .from('product_media')
-    .upsert(mediaPayload, { onConflict: 'id' })
-    .select()
+  const existingMedia = mediaWithProductId.filter((m) => m.id)
+  const newMedia = mediaWithProductId.filter((m) => !m.id)
 
-  if (mediaError) {
-    throw createError({ statusMessage: mediaError.message })
+  // Update product_id on media that was already uploaded/inserted
+  for (const media of existingMedia) {
+    const { id, ...mediaUpdate } = media
+    const { error: updateError } = await client
+      .from('product_media')
+      .update(mediaUpdate)
+      .eq('id', id)
+
+    if (updateError) {
+      throw createError({ statusMessage: updateError.message })
+    }
+  }
+
+  // Insert truly new media (no id yet)
+  if (newMedia.length > 0) {
+    const newMediaPayload: Database['public']['Tables']['product_media']['Insert'][] =
+      newMedia.map(({ id: _id, ...media }) => media)
+
+    const { error: mediaError } = await client
+      .from('product_media')
+      .insert(newMediaPayload)
+      .select()
+
+    if (mediaError) {
+      throw createError({ statusMessage: mediaError.message })
+    }
   }
 
   return {
