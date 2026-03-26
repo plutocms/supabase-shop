@@ -1,6 +1,4 @@
-export function useMedia() {
-  const config = useRuntimeConfig()
-
+export function useProductMedia() {
   const {
     data: mediaList,
     refresh: refreshMediaList,
@@ -9,13 +7,5 @@ export function useMedia() {
     key: '/api/product-media/list',
   })
 
-  function getMediaUrl(fileName: string | null | undefined): string {
-    if (!fileName) {
-      return ''
-    }
-
-    return `${config.public.supabase.url}/storage/v1/object/public/product-media/uploads/${fileName}`
-  }
-
-  return { mediaList, refreshMediaList, mediaStatus, getMediaUrl }
+  return { mediaList, refreshMediaList, mediaStatus }
 }
