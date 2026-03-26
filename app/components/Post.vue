@@ -300,7 +300,7 @@ watch(
                   >
                     <img
                       v-if="image.name"
-                      :src="image.url"
+                      :src="image.url ?? ''"
                       class="h-full w-full object-cover"
                     />
                   </div>
@@ -374,7 +374,7 @@ watch(
 
               <img
                 v-if="!!form.media?.[currentSelectedImage]?.name"
-                :src="form.media[currentSelectedImage]?.url"
+                :src="form.media[currentSelectedImage]?.url ?? ''"
                 class="h-full w-full object-contain"
               />
             </div>

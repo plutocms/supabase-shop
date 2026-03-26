@@ -12,10 +12,7 @@ type ProductAvailability =
   Database['public']['Tables']['product_availability']['Row']
 type ProductCategory = Database['public']['Tables']['product_category']['Row']
 
-export type ProductMedia =
-  Database['public']['Tables']['product_media']['Row'] & {
-    url?: string
-  }
+export type ProductMedia = Database['public']['Tables']['product_media']['Row']
 
 export type Product = Database['public']['Tables']['products']['Row']
 export type PartialProduct = Omit<Product, 'availability' | 'category'>
