@@ -3,17 +3,9 @@ useHead({
   title: 'Media',
 })
 
-const { getMediaUrl } = useMedia()
-
 const selectedMedia = ref<number[]>([])
 
-const {
-  data: mediaList,
-  refresh: refreshMediaList,
-  status: mediaStatus,
-} = useFetch('/api/product-media/list', {
-  key: '/api/product-media/list',
-})
+const { mediaList, refreshMediaList, mediaStatus } = useProductMedia()
 
 function isSelected(id: number) {
   return selectedMedia.value.includes(id)
@@ -82,7 +74,7 @@ function selectMedia(id: number) {
 
             <img
               v-if="file.name"
-              :src="getMediaUrl(file.name)"
+              :src="file.url"
               :alt="file.alt || file.name"
               class="h-full w-full object-contain"
             />

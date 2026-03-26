@@ -145,6 +145,7 @@ CREATE TABLE public.product_media (
   created_at timestamptz NOT NULL DEFAULT now(),
   name varchar NOT NULL,
   alt varchar,
+  url text,
   storage_path varchar,
   mime_type varchar,
   size bigint,
