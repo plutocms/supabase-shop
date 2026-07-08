@@ -19,6 +19,13 @@ export default defineEventHandler(async (event) => {
       .single()
 
     if (error) {
+      if (error.code === 'PGRST116') {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Product not found',
+        })
+      }
+
       throw createError({ statusMessage: error.message })
     }
 

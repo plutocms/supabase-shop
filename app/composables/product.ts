@@ -42,6 +42,7 @@ export function useProduct(
     product: typeof productFetch.data
     refresh: () => void
     pending: typeof pending
+    error: typeof activeFetch.error
   }
 
   type UseProductResult = UseProductResultBase & {
@@ -62,6 +63,7 @@ export function useProduct(
         return onFulfilled?.(base)
       }, onRejected)
     },
+    error: activeFetch.error,
   }
 
   return result
