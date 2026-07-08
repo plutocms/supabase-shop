@@ -54,6 +54,13 @@ const form = defineModel<FormProduct>({
   },
 })
 
+const description = computed<string | undefined>({
+  get: () => form.value.description ?? undefined,
+  set: (value) => {
+    form.value.description = value ?? null
+  },
+})
+
 const availabilityOptions = computed<SelectItem[]>(() => {
   return [
     {
@@ -385,7 +392,7 @@ watch(
         <div class="mt-2">
           <UFormField label="Description">
             <UTextarea
-              v-model="form.description"
+              v-model="description"
               placeholder="Description"
               class="w-full"
             />

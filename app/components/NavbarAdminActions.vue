@@ -14,7 +14,11 @@ const items = computed<NavbarAdminActionButtonProps[]>(() => [
   {
     label: 'Edit product',
     icon: 'lucide:pen-line',
-    to: `/admin/product/edit/${route.params.id || route.params.slug}`,
+    to: `/admin/product/edit/${
+      ('id' in route.params && route.params.id) ||
+      ('slug' in route.params && route.params.slug) ||
+      ''
+    }`,
     show: route.path.startsWith('/product/'),
   },
 ])

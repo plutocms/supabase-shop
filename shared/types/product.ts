@@ -1,3 +1,5 @@
+import type { Database } from '#shared/types/supabase'
+
 export interface ProductData {
   data: ProductItem[]
 }
