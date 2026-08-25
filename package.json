@@ -2,6 +2,27 @@
   "name": "@plutocms/supabase-shop",
   "type": "module",
   "version": "0.0.1-alpha.21",
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@plutocms/pluto",
+    "@plutocms/supabase",
+    "@plutocms/ui",
+    "@plutocms/utils",
+    "esbuild",
+    "supabase",
+    "unrs-resolver",
+    "vue-demi"
+  ],
+  "description": "Shop dashboard layer for Pluto CMS",
+  "author": "Victor Ribeiro",
+  "homepage": "https://github.com/plutocms/supabase-shop#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plutocms/supabase-shop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/plutocms/supabase-shop/issues"
+  },
   "main": "./nuxt.config.ts",
   "scripts": {
     "build": "nuxt build",
@@ -14,17 +35,6 @@
     "lint:fix": "eslint . --fix && prettier --write .",
     "typecheck": "nuxi typecheck"
   },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "@plutocms/pluto",
-    "@plutocms/supabase",
-    "@plutocms/ui",
-    "@plutocms/utils",
-    "esbuild",
-    "supabase",
-    "unrs-resolver",
-    "vue-demi"
-  ],
   "dependencies": {
     "@nuxtjs/supabase": "^2.0.4",
     "@plutocms/supabase": "^0.0.1-alpha.17",
@@ -43,5 +53,8 @@
     "vue": "3.5.25",
     "vue-router": "4.6.3",
     "vue-tsc": "^3.3.7"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
