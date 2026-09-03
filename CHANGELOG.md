@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/plutocms/supabase-shop/compare/v0.1.1...v0.1.2) (2026-09-03)
+
+
+### Bug Fixes
+
+* lint errors in the ProductMedia regression test ([44256c8](https://github.com/plutocms/supabase-shop/commit/44256c8f3793fa14c979a2980fac9f3ffc677056))
+
 ## [0.1.1](https://github.com/plutocms/supabase-shop/compare/v0.1.0...v0.1.1) (2026-09-03)
 
 
