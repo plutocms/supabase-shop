@@ -186,7 +186,7 @@ function selectSingleMedia(id: number) {
   selectedMedia.value = [id]
 }
 
-type EmitValue = Database['public']['Tables']['product_media']['Row']
+type EmitValue = ProductMedia
 
 const transformedSelectedMedia = computed<EmitValue[]>(() => {
   const value = selectedMedia.value
