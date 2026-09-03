@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/plutocms/supabase-shop/compare/v0.1.0...v0.1.1) (2026-09-03)
+
+
+### Bug Fixes
+
+* never ship the generated shared/types/supabase.ts placeholder ([673b245](https://github.com/plutocms/supabase-shop/commit/673b24571833e5e2b0431c80dc742b68cb33fe6b))
+
 ## [0.1.0](https://github.com/plutocms/supabase-shop/compare/v0.0.1-alpha.21...v0.1.0) (2026-09-03)
 
 
