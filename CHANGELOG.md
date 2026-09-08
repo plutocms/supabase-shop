@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/plutocms/supabase-shop/compare/v0.1.2...v0.1.3) (2026-09-08)
+
+
+### Bug Fixes
+
+* use a factory function for the Post form defineModel default ([08f5b7f](https://github.com/plutocms/supabase-shop/commit/08f5b7ff46e66f9b3e4999fd548086c5d6d02272))
+
 ## [0.1.2](https://github.com/plutocms/supabase-shop/compare/v0.1.1...v0.1.2) (2026-09-03)
 
 
