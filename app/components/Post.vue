@@ -41,7 +41,7 @@ const categoryList = computed<InputMenuItem[]>(() => {
 })
 
 const form = defineModel<FormProduct>({
-  default: {
+  default: () => ({
     name: '',
     slug: '',
     description: '',
@@ -51,7 +51,7 @@ const form = defineModel<FormProduct>({
     is_custom: false,
     stock_quantity: null,
     availability: null,
-  },
+  }),
 })
 
 const description = computed<string | undefined>({
