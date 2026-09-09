@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/plutocms/supabase-shop/compare/v0.1.3...v0.2.0) (2026-09-09)
+
+
+### Features
+
+* make shop admin views responsive ([#34](https://github.com/plutocms/supabase-shop/issues/34)) ([6aa87ed](https://github.com/plutocms/supabase-shop/commit/6aa87ed109dc45262d8095b573c16c965bbaea40))
+
 ## [0.1.3](https://github.com/plutocms/supabase-shop/compare/v0.1.2...v0.1.3) (2026-09-08)
 
 
