@@ -49,7 +49,7 @@ const tabs = ref<TabsItem[]>([
     slot: 'three-dimensional',
   },
   {
-    label: 'Upload from your computer',
+    label: 'Upload',
     icon: 'lucide:upload',
     slot: 'upload',
   },
@@ -253,11 +253,20 @@ const isInsertButtonDisabled = computed(
 
     <ModalContent>
       <div>
-        <UTabs v-model="currentTab" :items="tabs" class="w-full">
+        <UTabs
+          v-model="currentTab"
+          :items="tabs"
+          :ui="{ trigger: 'min-w-0 px-2' }"
+          class="w-full"
+        >
           <template #gallery>
             <div class="@container flex flex-col gap-y-6 pt-6">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-x-4">
+              <div
+                class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+              >
+                <div
+                  class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-x-4"
+                >
                   <div>
                     <span v-if="selectedMedia.length === 0">
                       Showing {{ imageList?.length }} file{{
@@ -283,10 +292,11 @@ const isInsertButtonDisabled = computed(
                   </div>
                 </div>
 
-                <div>
+                <div class="flex">
                   <UButton
                     :loading="mediaStatus === 'pending'"
                     icon="lucide:refresh-cw"
+                    class="w-full justify-center sm:w-auto"
                     @click="refreshMediaList()"
                   >
                     Refresh
@@ -326,13 +336,16 @@ const isInsertButtonDisabled = computed(
 
           <template #three-dimensional>
             <div class="@container flex flex-col gap-y-6 pt-6">
-              <div class="flex items-center justify-between">
+              <div
+                class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+              >
                 <div>You can only select one 3D model at a time.</div>
 
-                <div>
+                <div class="flex">
                   <UButton
                     :loading="mediaStatus === 'pending'"
                     icon="lucide:refresh-cw"
+                    class="w-full justify-center sm:w-auto"
                     @click="refreshMediaList()"
                   >
                     Refresh
@@ -377,7 +390,7 @@ const isInsertButtonDisabled = computed(
           </template>
 
           <template #upload>
-            <div class="flex gap-x-4">
+            <div class="flex flex-col gap-4 lg:flex-row lg:gap-x-4">
               <div
                 class="group relative aspect-video grow overflow-hidden rounded-3xl bg-black hover:bg-black/20"
               >
@@ -407,7 +420,9 @@ const isInsertButtonDisabled = computed(
                 />
               </div>
 
-              <div class="flex w-75 shrink-0 flex-col gap-y-4">
+              <div
+                class="flex w-full min-w-0 shrink-0 flex-col gap-y-4 lg:w-75"
+              >
                 <div class="wrap-break-word">{{ files?.[0]?.name }}</div>
 
                 <div v-if="isUploaded && files?.[0]?.name" class="truncate">
@@ -425,7 +440,7 @@ const isInsertButtonDisabled = computed(
                   </UFormField>
                 </div>
 
-                <div class="flex items-center gap-x-2">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <UButton
                     v-if="!isUploaded && mediaBlobList?.length > 0"
                     color="error"
@@ -455,13 +470,23 @@ const isInsertButtonDisabled = computed(
     </ModalContent>
 
     <ModalFooter>
-      <div class="flex items-center gap-x-3">
-        <UButton variant="ghost" icon="lucide:x"> Close </UButton>
+      <div
+        class="flex w-full flex-col-reverse gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-x-3"
+      >
+        <UButton
+          variant="ghost"
+          icon="lucide:x"
+          class="justify-center"
+          @click="closeMediaModal"
+        >
+          Close
+        </UButton>
 
         <UButton
           :disabled="isInsertButtonDisabled"
           variant="solid"
           icon="lucide:check"
+          class="justify-center"
           @click="insertMedia"
         >
           Insert
