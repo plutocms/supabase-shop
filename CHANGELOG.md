@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/plutocms/supabase-shop/compare/v0.2.0...v0.2.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* **admin:** align shop styles with layer theme ([#36](https://github.com/plutocms/supabase-shop/issues/36)) ([3089f90](https://github.com/plutocms/supabase-shop/commit/3089f904902eef11caf8e8497a8769c2515b4816))
+
 ## [0.2.0](https://github.com/plutocms/supabase-shop/compare/v0.1.3...v0.2.0) (2026-09-09)
 
 
