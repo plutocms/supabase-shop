@@ -270,7 +270,7 @@ watch(
 <template>
   <div class="min-h-full bg-linear-to-br px-4 py-6 lg:px-8 lg:py-8">
     <div
-      class="light:bg-slate-50 dark:bg-slate-900 mx-auto flex max-w-6xl flex-col gap-6 rounded-3xl lg:flex-row lg:gap-10 lg:p-8"
+      class="bg-transparent mx-auto flex max-w-6xl flex-col gap-6 rounded-3xl lg:flex-row lg:gap-10 lg:p-8"
     >
       <!-- Left: Media and Title -->
       <div class="flex-1 flex flex-col gap-8">
@@ -290,9 +290,7 @@ watch(
           <div
             class="flex flex-row items-center gap-4 lg:flex-col lg:items-start"
           >
-            <ScrollArea
-              class="dark:bg-slate-900/60 light:bg-slate-50 w-full rounded-2xl p-2 lg:w-24"
-            >
+            <ScrollArea class="w-full rounded-2xl p-2 lg:w-24">
               <div
                 class="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible"
               >
@@ -412,7 +410,7 @@ watch(
 
       <!-- Right: Form Fields -->
       <div
-        class="dark:bg-slate-950 light:bg-slate-100 flex w-full shrink-0 flex-col gap-8 rounded-2xl p-4 lg:mt-6 lg:max-h-[90vh] lg:max-w-xs lg:overflow-y-auto"
+        class="dark:bg-zinc-950 light:bg-zinc-100 flex w-full shrink-0 flex-col gap-8 rounded-2xl p-4 lg:mt-6 lg:max-h-[90vh] lg:max-w-xs lg:overflow-y-auto"
       >
         <div class="flex flex-col gap-4">
           <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
