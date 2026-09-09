@@ -8,6 +8,13 @@ useHead({
 
 const { products, refresh, pending } = useProduct()
 
+function formatProductPrice(price: number) {
+  return formatCurrency(price, {
+    currency: 'BRL',
+    spaceBetween: true,
+  })
+}
+
 const columns = ref<TableColumn<ProductItem>[]>([
   {
     accessorKey: 'id',
@@ -141,9 +148,13 @@ async function deleteProduct(productId: number | null) {
     </Modal>
 
     <AdminView>
-      <div class="flex justify-between">
-        <hgroup class="flex items-center gap-x-3">
-          <h1 class="text-4xl font-bold">All products</h1>
+      <div
+        class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <hgroup
+          class="flex items-center justify-between gap-x-3 lg:justify-start"
+        >
+          <h1 class="text-3xl font-bold lg:text-4xl">All products</h1>
 
           <UButton
             :loading="pending"
@@ -155,23 +166,86 @@ async function deleteProduct(productId: number | null) {
           />
         </hgroup>
 
-        <UButton icon="lucide:plus" as="NuxtLink" to="/admin/product/new">
-          Add product
-        </UButton>
+        <div class="flex lg:shrink-0">
+          <UButton
+            icon="lucide:plus"
+            as="NuxtLink"
+            to="/admin/product/new"
+            class="flex-1 justify-center lg:flex-none"
+          >
+            Add product
+          </UButton>
+        </div>
       </div>
 
-      <UCard :ui="{ body: 'sm:p-0 p-0' }">
-        <UTable
-          :data="products"
-          :columns="columns"
-          :meta="{
-            class: {
-              tr: 'group',
-              // td: 'py-1!',
-            },
-          }"
-          :loading="pending"
-        />
+      <div class="grid gap-3 lg:hidden">
+        <UCard v-for="product in products" :key="product.id">
+          <div class="flex flex-col gap-4">
+            <div class="min-w-0">
+              <NuxtLink
+                :to="`/admin/product/edit/${product.id}`"
+                class="block truncate text-lg font-semibold hover:underline"
+              >
+                {{ product.name }}
+              </NuxtLink>
+              <p class="mt-1 truncate text-sm text-muted">
+                /{{ product.slug }}
+              </p>
+            </div>
+
+            <dl class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <dt class="text-muted">Price</dt>
+                <dd class="font-medium">
+                  {{ formatProductPrice(product.price) }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-muted">Category</dt>
+                <dd class="font-medium">
+                  {{ product.product_category?.label || 'Uncategorized' }}
+                </dd>
+              </div>
+            </dl>
+
+            <div class="flex gap-2 border-t border-default pt-3">
+              <UButton
+                :to="`/admin/product/edit/${product.id}`"
+                icon="lucide:pen-line"
+                color="neutral"
+                variant="soft"
+                class="flex-1 justify-center"
+              >
+                Edit
+              </UButton>
+              <UButton
+                icon="lucide:trash"
+                color="error"
+                variant="soft"
+                class="flex-1 justify-center"
+                @click="openRemoveProductModal(product.id)"
+              >
+                Remove
+              </UButton>
+            </div>
+          </div>
+        </UCard>
+      </div>
+
+      <UCard :ui="{ body: 'sm:p-0 p-0' }" class="hidden lg:block">
+        <div class="overflow-x-auto">
+          <UTable
+            :data="products"
+            :columns="columns"
+            :meta="{
+              class: {
+                tr: 'group',
+                // td: 'py-1!',
+              },
+            }"
+            :loading="pending"
+          />
+        </div>
       </UCard>
     </AdminView>
   </div>

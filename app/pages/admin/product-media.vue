@@ -28,9 +28,11 @@ function selectMedia(id: number) {
   <main>
     <AdminView>
       <div class="flex flex-col gap-y-4">
-        <h1 class="text-4xl font-bold">Media</h1>
+        <h1 class="text-3xl font-bold lg:text-4xl">Media</h1>
 
-        <div class="flex items-end justify-between">
+        <div
+          class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
+        >
           <div>
             <span v-if="selectedMedia.length === 0">
               Showing {{ mediaList?.data.length }} file{{
@@ -44,10 +46,11 @@ function selectMedia(id: number) {
             </span>
           </div>
 
-          <div>
+          <div class="flex">
             <UButton
               :loading="mediaStatus === 'pending'"
               icon="lucide:refresh-cw"
+              class="w-full justify-center sm:w-auto"
               @click="refreshMediaList()"
             >
               Refresh
@@ -55,7 +58,7 @@ function selectMedia(id: number) {
           </div>
         </div>
 
-        <div class="grid grid-cols-5 gap-3">
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-5">
           <div
             v-for="file in mediaList?.data"
             :key="file.id"

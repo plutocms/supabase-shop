@@ -268,9 +268,9 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-screen bg-linear-to-br py-8 px-2 md:px-8">
+  <div class="min-h-full bg-linear-to-br px-4 py-6 lg:px-8 lg:py-8">
     <div
-      class="max-w-6xl mx-auto light:bg-slate-50 dark:bg-slate-900 rounded-3xl pt-0 md:pt-0 md:p-8 flex flex-col md:flex-row gap-10"
+      class="light:bg-slate-50 dark:bg-slate-900 mx-auto flex max-w-6xl flex-col gap-6 rounded-3xl lg:flex-row lg:gap-10 lg:p-8"
     >
       <!-- Left: Media and Title -->
       <div class="flex-1 flex flex-col gap-8">
@@ -283,17 +283,21 @@ watch(
           />
         </div>
 
-        <div class="flex flex-col md:flex-row items-start">
+        <div
+          class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start"
+        >
           <!-- Media Gallery -->
           <div
-            class="flex flex-row md:flex-col gap-4 items-center md:items-start"
+            class="flex flex-row items-center gap-4 lg:flex-col lg:items-start"
           >
             <ScrollArea
-              class="w-20 md:w-24 rounded-2xl dark:bg-slate-900/60 light:bg-slate-50 p-2"
+              class="dark:bg-slate-900/60 light:bg-slate-50 w-full rounded-2xl p-2 lg:w-24"
             >
-              <div class="flex md:flex-col gap-2">
+              <div
+                class="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible"
+              >
                 <template v-if="form.media && form.media?.length > 0">
-                  <div
+                  <button
                     v-for="(image, index) in form.media"
                     :key="index"
                     :class="[
@@ -302,6 +306,8 @@ watch(
                       is3d(image) ? 'hidden' : '',
                     ]"
                     :title="!image.is_saved ? 'Unsaved' : ''"
+                    :aria-label="`Select media ${index + 1}`"
+                    type="button"
                     class="h-14 w-14 overflow-hidden rounded-2xl bg-black/10 hover:bg-black/20 cursor-pointer transition-all"
                     @click="currentSelectedImage = index"
                   >
@@ -310,24 +316,28 @@ watch(
                       :src="image.url ?? ''"
                       class="h-full w-full object-cover"
                     />
-                  </div>
+                  </button>
                 </template>
 
-                <div class="flex flex-col gap-2 mt-2">
-                  <div
+                <div class="flex shrink-0 gap-2 lg:mt-2 lg:flex-col">
+                  <button
                     v-if="form.media && form.media.find((m) => is3d(m))"
+                    type="button"
+                    aria-label="Manage 3D model"
                     class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
                     @click="openMediaModal"
                   >
                     <Icon name="lucide:rotate-3d" class="text-2xl" />
-                  </div>
+                  </button>
 
-                  <div
+                  <button
+                    type="button"
+                    aria-label="Add media"
                     class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
                     @click="openMediaModal"
                   >
                     <Icon name="lucide:plus" class="text-2xl" />
-                  </div>
+                  </button>
                 </div>
               </div>
             </ScrollArea>
@@ -340,7 +350,7 @@ watch(
           </div>
 
           <!-- Main Image -->
-          <div class="aspect-square w-60 md:w-96 shrink-0">
+          <div class="aspect-square w-full max-w-96 shrink-0 self-center">
             <div
               :class="[
                 form.media?.length > 0
@@ -402,10 +412,10 @@ watch(
 
       <!-- Right: Form Fields -->
       <div
-        class="w-full md:max-w-xs shrink-0 dark:bg-slate-950 light:bg-slate-100 rounded-2xl p-4 mt-6 flex flex-col gap-8 overflow-y-auto max-h-[90vh]"
+        class="dark:bg-slate-950 light:bg-slate-100 flex w-full shrink-0 flex-col gap-8 rounded-2xl p-4 lg:mt-6 lg:max-h-[90vh] lg:max-w-xs lg:overflow-y-auto"
       >
         <div class="flex flex-col gap-4">
-          <div class="flex gap-2 justify-end">
+          <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <UButton
               v-if="isEditing"
               :to="`/product/${form.slug}`"
@@ -413,6 +423,7 @@ watch(
               variant="link"
               as="NuxtLink"
               target="_blank"
+              class="justify-center"
             >
               Preview
             </UButton>
@@ -422,6 +433,7 @@ watch(
               :loading="isSubmitting"
               :disabled="form.name === ''"
               type="button"
+              class="justify-center"
               @click="submitForm"
             >
               {{ isEditing ? 'Save' : 'Publish' }}
