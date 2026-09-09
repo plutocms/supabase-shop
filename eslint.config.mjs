@@ -82,6 +82,14 @@ export default withNuxt(
       'style/operator-linebreak': 'off',
 
       'vue/singleline-html-element-content-newline': 'off',
+
+      'style/no-mixed-operators': 'off',
+
+      'style/indent': 'off',
+
+      'vue/html-indent': 'off',
+      'vue/brace-style': 'off',
+      'style/indent-binary-ops': 'off',
     },
   })
 )
