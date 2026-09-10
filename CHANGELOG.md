@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/plutocms/supabase-shop/compare/v0.2.1...v0.2.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* **deps:** require supabase 0.2.2 ([5203870](https://github.com/plutocms/supabase-shop/commit/5203870aa833622d4088a51d5c4b39c0ead262c6))
+
 ## [0.2.1](https://github.com/plutocms/supabase-shop/compare/v0.2.0...v0.2.1) (2026-09-09)
 
 
