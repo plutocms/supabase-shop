@@ -1,6 +1,8 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+  await requireAdmin(event)
+
   if (!event.context.params?.id) {
     throw createError({ message: 'No id provided.' })
   }
