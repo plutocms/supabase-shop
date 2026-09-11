@@ -5,7 +5,7 @@
 
 -- ---------- product_availability ----------
 
-CREATE TABLE public.product_availability (
+CREATE TABLE IF NOT EXISTS public.product_availability (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   label text NOT NULL,
@@ -16,6 +16,8 @@ CREATE TABLE public.product_availability (
 ALTER TABLE public.product_availability ENABLE ROW LEVEL SECURITY;
 
 -- Everyone can read availability statuses
+DROP POLICY IF EXISTS "Allow public read access" ON public.product_availability;
+
 CREATE POLICY "Allow public read access"
   ON public.product_availability
   FOR SELECT
@@ -54,11 +56,12 @@ CREATE POLICY "Allow authenticated delete"
 -- Seed default availability statuses
 INSERT INTO public.product_availability (label, slug) VALUES
   ('In stock', 'in-stock'),
-  ('Commission', 'commission');
+  ('Commission', 'commission')
+ON CONFLICT (slug) DO NOTHING;
 
 -- ---------- product_category ----------
 
-CREATE TABLE public.product_category (
+CREATE TABLE IF NOT EXISTS public.product_category (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   slug varchar NOT NULL UNIQUE,
   label text NOT NULL UNIQUE,
@@ -67,6 +70,8 @@ CREATE TABLE public.product_category (
 );
 
 ALTER TABLE public.product_category ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.product_category;
 
 CREATE POLICY "Allow public read access"
   ON public.product_category
@@ -101,7 +106,7 @@ CREATE POLICY "Allow authenticated delete"
 
 -- ---------- products ----------
 
-CREATE TABLE public.products (
+CREATE TABLE IF NOT EXISTS public.products (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   slug text NOT NULL UNIQUE,
   name text NOT NULL,
@@ -121,12 +126,14 @@ CREATE TABLE public.products (
     ON DELETE SET NULL
 );
 
-CREATE INDEX idx_products_category ON public.products (category);
-CREATE INDEX idx_products_availability ON public.products (availability);
-CREATE INDEX idx_products_slug ON public.products (slug);
-CREATE INDEX idx_products_created_at ON public.products (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products (category);
+CREATE INDEX IF NOT EXISTS idx_products_availability ON public.products (availability);
+CREATE INDEX IF NOT EXISTS idx_products_slug ON public.products (slug);
+CREATE INDEX IF NOT EXISTS idx_products_created_at ON public.products (created_at DESC);
 
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.products;
 
 CREATE POLICY "Allow public read access"
   ON public.products
@@ -161,7 +168,7 @@ CREATE POLICY "Allow authenticated delete"
 
 -- ---------- product_media ----------
 
-CREATE TABLE public.product_media (
+CREATE TABLE IF NOT EXISTS public.product_media (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   name varchar NOT NULL,
@@ -177,9 +184,11 @@ CREATE TABLE public.product_media (
     ON DELETE CASCADE
 );
 
-CREATE INDEX idx_product_media_product_id ON public.product_media (product_id);
+CREATE INDEX IF NOT EXISTS idx_product_media_product_id ON public.product_media (product_id);
 
 ALTER TABLE public.product_media ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.product_media;
 
 CREATE POLICY "Allow public read access"
   ON public.product_media
@@ -234,6 +243,8 @@ VALUES (
 ON CONFLICT DO NOTHING;
 
 -- Storage RLS policies for the product-media bucket
+DROP POLICY IF EXISTS "product-media: public read" ON storage.objects;
+
 CREATE POLICY "product-media: public read"
   ON storage.objects FOR SELECT
   TO anon, authenticated
