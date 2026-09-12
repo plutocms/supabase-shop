@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/plutocms/supabase-shop/compare/v0.4.0...v0.5.0) (2026-09-12)
+
+
+### Features
+
+* **permissions:** gate shop mutations on named capabilities ([#48](https://github.com/plutocms/supabase-shop/issues/48)) ([ff1d2ff](https://github.com/plutocms/supabase-shop/commit/ff1d2ff7761dadc750e45252aaac4747244ec3b1))
+
 ## [0.4.0](https://github.com/plutocms/supabase-shop/compare/v0.3.0...v0.4.0) (2026-09-12)
 
 
