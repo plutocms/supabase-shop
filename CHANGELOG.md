@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/plutocms/supabase-shop/compare/v0.3.0...v0.4.0) (2026-09-12)
+
+
+### Features
+
+* **registry:** migrate to definePlutoExtension ([#46](https://github.com/plutocms/supabase-shop/issues/46)) ([81488f5](https://github.com/plutocms/supabase-shop/commit/81488f5bc60f1b8ef11c0d495351407fb15fb59c))
+
 ## [0.3.0](https://github.com/plutocms/supabase-shop/compare/v0.2.3...v0.3.0) (2026-09-12)
 
 
