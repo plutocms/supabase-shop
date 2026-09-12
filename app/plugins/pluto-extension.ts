@@ -3,6 +3,15 @@ import NavbarAdminActions from '../components/NavbarAdminActions.vue'
 export default defineNuxtPlugin(() => {
   definePlutoExtension({
     id: 'supabase-shop',
+    capabilities: [
+      { id: 'products-manage', key: 'products:manage', label: 'Create and edit products' },
+      { id: 'products-delete', key: 'products:delete', label: 'Delete products' },
+      {
+        id: 'shop-manage-taxonomy',
+        key: 'shop:manage_taxonomy',
+        label: 'Manage product categories and availability',
+      },
+    ],
     navbarActions: [{ id: 'product-actions', component: NavbarAdminActions }],
     nav: [
       {

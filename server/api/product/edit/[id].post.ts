@@ -6,7 +6,7 @@ type FormBody = Database['public']['Tables']['products']['Insert'] & {
 }
 
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  await requireCapability(event, 'products:manage')
 
   const client = await serverSupabaseClient<Database>(event)
   const params = event.context.params

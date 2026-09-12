@@ -7,7 +7,7 @@ interface Payload {
 }
 
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  await requireCapability(event, 'shop:manage_taxonomy')
 
   const client = await serverSupabaseClient<Database>(event)
 

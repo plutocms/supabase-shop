@@ -2,13 +2,17 @@
 import type { NavbarAdminActionButtonProps } from '#layers/utils/shared/types/navbar'
 
 const route = useRoute()
+const { can } = usePlutoPermissions()
 
 const items = computed<NavbarAdminActionButtonProps[]>(() => [
   {
     label: 'Add product',
     icon: 'lucide:plus',
     to: '/admin/product/new',
-    show: !route.path.startsWith('/admin/product/new'),
+    // This hides the button only. It is a UI convenience, not a
+    // security check. The server route still enforces
+    // products:manage on its own.
+    show: !route.path.startsWith('/admin/product/new') && can('products:manage'),
   },
 
   {
