@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.0](https://github.com/plutocms/supabase-shop/compare/v0.2.3...v0.3.0) (2026-09-12)
+
+
+### Features
+
+* **migrations:** move to versioned db/migrations layout ([#44](https://github.com/plutocms/supabase-shop/issues/44)) ([1bb72c7](https://github.com/plutocms/supabase-shop/commit/1bb72c73f3a089dec5d9b0a36fd882d02e463cdd))
+
+
+### Bug Fixes
+
+* **deps:** move @vueuse/integrations to dependencies ([#40](https://github.com/plutocms/supabase-shop/issues/40)) ([4c343af](https://github.com/plutocms/supabase-shop/commit/4c343af5f91ebef3a5ef23f014c306548c9a59d5))
+* **deps:** require @plutocms/supabase 0.4.1 ([#45](https://github.com/plutocms/supabase-shop/issues/45)) ([93e95bc](https://github.com/plutocms/supabase-shop/commit/93e95bcc9961750d6bc5e5489b8ef1fbe6d5f8e5))
+* **products:** require admin for product/category/media mutations ([#42](https://github.com/plutocms/supabase-shop/issues/42)) ([b2036a5](https://github.com/plutocms/supabase-shop/commit/b2036a57d30e3fd045adcb47fc7f89dc473b7dcf))
+* **schema:** make shop schema creation fully idempotent ([#43](https://github.com/plutocms/supabase-shop/issues/43)) ([9cbfe9d](https://github.com/plutocms/supabase-shop/commit/9cbfe9d6465f45f60e192a9d12f0e5d156c809bb))
+
 ## [0.2.3](https://github.com/plutocms/supabase-shop/compare/v0.2.2...v0.2.3) (2026-09-10)
 
 
