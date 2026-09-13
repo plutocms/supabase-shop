@@ -19,15 +19,12 @@ export type ProductMedia = Database['public']['Tables']['product_media']['Row']
 export type Product = Database['public']['Tables']['products']['Row']
 export type PartialProduct = Omit<Product, 'availability' | 'category'>
 
-type MediaWithSaved = ProductMedia & {
+/**
+ * A `product_media` row, plus a client-only `is_saved` flag. The media
+ * content field widget (`PlutoProductMediaField.vue`) and the media
+ * reconciliation hook (`server/utils/reconcile-product-media.ts`) both use
+ * this shape for the virtual `media` field's payload.
+ */
+export type MediaWithSaved = ProductMedia & {
   is_saved?: boolean
-}
-
-export interface FormProduct extends Omit<
-  Product,
-  'id' | 'created_at' | 'category' | 'availability'
-> {
-  media: MediaWithSaved[]
-  category: number | null
-  availability: number | null
 }
