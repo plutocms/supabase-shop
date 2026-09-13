@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/plutocms/supabase-shop/compare/v0.5.0...v0.6.0) (2026-09-13)
+
+
+### Features
+
+* **products:** adopt the pluto content model ([#50](https://github.com/plutocms/supabase-shop/issues/50)) ([c4b07ce](https://github.com/plutocms/supabase-shop/commit/c4b07ceeefdc04e8ec1a1e4ec79fdb2d95d2112d))
+
 ## [0.5.0](https://github.com/plutocms/supabase-shop/compare/v0.4.0...v0.5.0) (2026-09-12)
 
 
