@@ -10,6 +10,7 @@
         "@plutocms/ui": "^0.2.1",
         "@plutocms/utils": "^0.2.1",
         "@vueuse/integrations": "14.1.0",
+        "zod": "^4.6.2",
       },
       "devDependencies": {
         "@antfu/eslint-config": "^6.2.0",

@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { z } from 'zod'
 
 interface Payload {
   slug: string
@@ -6,26 +7,19 @@ interface Payload {
   description?: string | null
 }
 
+/** Matches `product_category`'s real columns (see db/migrations/001_baseline.sql): `slug` and `label` are required, `description` is optional. */
+export const newCategoryPayloadSchema = z.object({
+  slug: z.string().trim().min(1, 'A non-empty slug is required.'),
+  label: z.string().trim().min(1, 'A non-empty label is required.'),
+  description: z.string().nullish(),
+})
+
 export default defineEventHandler(async (event) => {
   await requireCapability(event, 'shop:manage_taxonomy')
 
   const client = await serverSupabaseClient<Database>(event)
 
-  const body = await readBody<Partial<Payload>>(event)
-
-  if (typeof body?.slug !== 'string' || body.slug.trim().length === 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'A non-empty slug is required.',
-    })
-  }
-
-  if (typeof body?.label !== 'string' || body.label.trim().length === 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'A non-empty label is required.',
-    })
-  }
+  const body = await parseBody(event, newCategoryPayloadSchema)
 
   const payload: Payload = {
     slug: body.slug,
