@@ -1,4 +1,3 @@
-import { productType } from '#shared/content/product'
 import NavbarAdminActions from '../components/NavbarAdminActions.vue'
 import PlutoProductAvailabilityField from '../components/PlutoProductAvailabilityField.vue'
 import PlutoProductCategoryField from '../components/PlutoProductCategoryField.vue'

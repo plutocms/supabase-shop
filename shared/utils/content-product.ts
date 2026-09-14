@@ -6,11 +6,25 @@
 //
 // `defineContentType` and the field types come from `@plutocms/pluto`'s
 // `shared/utils`/`shared/types`, auto-imported the same way every other
-// shared/utils export is across this layer (see `postType` in
-// `supabase-blog/shared/content/post.ts` for the same pattern). This file
-// needs no explicit import for them, and no server-only imports either —
-// the media reconciliation hook lives in `server/utils/reconcile-product-media.ts`
+// shared/utils export is across this layer. This file needs no explicit
+// import for them, and no server-only imports either — the media
+// reconciliation hook lives in `server/utils/reconcile-product-media.ts`
 // and is attached in `server/plugins/content.ts`, not here.
+//
+// This file lives under `shared/utils/`, not a bespoke `shared/content/`
+// folder — load-bearing, not stylistic. Nuxt's shared-imports auto-import
+// only wires a real runtime import for names under `shared/utils/**` and
+// `shared/types/**`; a value exported from an arbitrary `shared/`
+// subfolder gets a type-only declaration (enough for `nuxi typecheck`) but
+// no actual import in the compiled bundle. That gap only shows up for a
+// *consumer* extending this layer as a dependency, so wave 6 shipped
+// `productType` under `shared/content/` with an explicit
+// `#shared/content/product` import — an alias that resolves only to the
+// *top-level app's own* `shared/` folder, never to this layer's. Any real
+// site extending this layer crashed at Nitro startup ("productType is not
+// defined"). Moving the file here and dropping the explicit import is the
+// fix, confirmed the same way for `@plutocms/supabase-blog`'s equivalent
+// `postType` against `pluto-supabase-blog-template`.
 //
 // `media` carries no storage column of its own — `product_media` is a
 // separate table, reconciled by the hook above — so it is `virtual: true`.
