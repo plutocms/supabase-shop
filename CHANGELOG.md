@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/plutocms/supabase-shop/compare/v0.6.1...v0.6.2) (2026-09-14)
+
+
+### Bug Fixes
+
+* **security:** validate category creation payload with zod ([#54](https://github.com/plutocms/supabase-shop/issues/54)) ([467bd9c](https://github.com/plutocms/supabase-shop/commit/467bd9c1be11648d1b788659644b29596dd0aadd))
+
 ## [0.6.1](https://github.com/plutocms/supabase-shop/compare/v0.6.0...v0.6.1) (2026-09-14)
 
 
