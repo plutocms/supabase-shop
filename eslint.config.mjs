@@ -4,7 +4,6 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 
 // See: https://eslint.vuejs.org/rules
 export default withNuxt(
-  // @ts-expect-error
   antfu({
     rules: {
       'antfu/consistent-chaining': 'off',

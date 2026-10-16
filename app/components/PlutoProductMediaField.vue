@@ -24,7 +24,9 @@ const emit = defineEmits<{
 const route = useRoute()
 
 const productId = computed<number | undefined>(() => {
-  const raw = route.params.id
+  // A consumer app with typed pages types `params` as a union of every
+  // route's params. Some members have no `id`, so narrow with `in` first.
+  const raw = 'id' in route.params ? route.params.id : undefined
   const id = Array.isArray(raw) ? raw[0] : raw
   return id ? Number(id) : undefined
 })
