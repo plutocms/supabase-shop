@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3](https://github.com/plutocms/supabase-shop/compare/v0.6.2...v0.6.3) (2026-10-16)
+
+
+### Bug Fixes
+
+* **deps:** upgrade dependencies ([#56](https://github.com/plutocms/supabase-shop/issues/56)) ([07581b2](https://github.com/plutocms/supabase-shop/commit/07581b25c2a68d22e9399e5cf83847e007b996a8))
+
 ## [0.6.2](https://github.com/plutocms/supabase-shop/compare/v0.6.1...v0.6.2) (2026-09-14)
 
 
