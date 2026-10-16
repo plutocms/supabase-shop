@@ -1,5 +1,5 @@
-import { serverSupabaseClient } from '#supabase/server'
 import { z } from 'zod'
+import { serverSupabaseClient } from '#supabase/server'
 
 interface Payload {
   slug: string
