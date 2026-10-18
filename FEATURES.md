@@ -7,5 +7,6 @@ See the workspace-level `CLAUDE.md` (one directory up) for the delegation, writi
 policies shared by every project here.
 
 - Product admin (list, create, edit, delete) built on `@plutocms/pluto`'s content model, with a
-  media gallery and the is-custom/availability/stock cross-field rule.
+  media gallery and the is-custom/availability/stock cross-field rule. The media upload checks
+  the type and size, and explains each rejected or failed upload.
   @.claude/skills/shop-products/SKILL.md

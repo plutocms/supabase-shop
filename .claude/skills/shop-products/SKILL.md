@@ -178,7 +178,38 @@ These hand-written routes are unchanged, and still load-bearing — the public s
 - `app/composables/product.ts` (`useProduct`), `app/composables/category.ts`
   (`useProductCategory`), `app/composables/media.ts` (`useProductMedia`),
   `app/components/UploadProductMedia.vue`, `app/pages/admin/product-media.vue` — all still in
-  use, unchanged.
+  use. Only the upload path changed (see "Product media upload rules" below).
+
+## Product media upload rules
+
+`shared/utils/product-media-upload.ts` holds one set of rules for the `product-media` library.
+The upload route and the picker both use it:
+
+- `PRODUCT_MEDIA_MIME_TYPES` — JPEG, PNG, WebP, GIF, AVIF, and `model/gltf-binary`. These are
+  the image and model types of the `product-media` bucket (`db/migrations/001_baseline.sql`).
+  Keep the list in step with the bucket.
+- `PRODUCT_MEDIA_MAX_BYTES` — 50 MB, the `file_size_limit` of the bucket.
+- `productMediaMimeType(type, name)` — browsers often send a `.glb` file as
+  `application/octet-stream`, and the bucket rejects that type. This function stores a `.glb`
+  as `model/gltf-binary`. It changes no other type.
+- `productMediaUploadProblem(file)` — returns `{ statusCode: 415 | 413, message }`, or `null`
+  when the file passes.
+
+`POST /api/product-media/new` checks every file before it touches storage. A wrong type
+returns 415, and a file that is too big returns 413. The `statusMessage` tells the user what to
+do. The route reads the file part by its `filename` and the `alt` part by name, not by position.
+
+`UploadProductMedia.vue` uses Nuxt UI `UFileUpload`. It runs the same check before it keeps a
+file, and it shows the reason in a `UAlert`. A failed upload shows the route's message, and the
+file stays selected, so the user can try again.
+
+The helper names carry a "product media" prefix on purpose. An app can extend this layer and
+`@plutocms/supabase-storage` together, and that layer auto-imports its own generic upload
+helpers.
+
+Known gap: the route uploads with `upsert: true`. A new file with the same kebab-case name as
+an existing one replaces that file in storage, and every `product_media` row that points to the
+name shows the new file. `@plutocms/supabase-storage` retries with a random suffix instead.
 
 ## Known gaps
 
