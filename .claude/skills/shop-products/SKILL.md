@@ -192,8 +192,9 @@ The upload route and the picker both use it:
 - `productMediaMimeType(type, name)` — browsers often send a `.glb` file as
   `application/octet-stream`, and the bucket rejects that type. This function stores a `.glb`
   as `model/gltf-binary`. It changes no other type.
-- `productMediaUploadProblem(file)` — returns `{ statusCode: 415 | 413, message }`, or `null`
-  when the file passes.
+- `productMediaUploadProblem(file)` — returns `{ statusCode: 415 | 413, message, key, params }`,
+  or `null` when the file passes. `message` is English. `key` and `params` are the translation key
+  and its values (see "Translation" below).
 
 `POST /api/product-media/new` checks every file before it touches storage. A wrong type
 returns 415, and a file that is too big returns 413. The `statusMessage` tells the user what to
@@ -213,6 +214,53 @@ product that uses it. The route uploads with `upsert: false`. On a name clash, i
 with a short random suffix (`productMediaSuffixedName`: `chair.glb` → `chair-x7k2.glb`) and
 stores the final name in the row. If the row insert fails after the upload, the route removes
 the uploaded file, then returns the insert error.
+
+## Translation
+
+The admin text of this layer uses the i18n system of `@plutocms/pluto` (see the `i18n` skill
+in `pluto`). The shipped languages are `en` and `pt-BR`. The English text is the same, byte for
+byte, as before.
+
+- `i18n/locales/en.json` and `i18n/locales/pt-BR.json` hold all keys. The layer namespace is
+  `supabase-shop`. Shared words use `pluto.common.*` (for example `pluto.common.refresh`).
+- The `product` content type keeps its English literals in `shared/utils/content-product.ts`.
+  The keys `content.product.label`, `content.product.labelPlural`, and
+  `content.product.fields.<field>.label` translate it. Core finds them by convention. The
+  generic list and form use them, and `PlutoContentField` hands each widget a translated copy of
+  its field. The widgets show `field.label` and `field.description` as they get them.
+- `app/plugins/pluto-extension.ts` holds keys, not text, for the nav labels, the page titles,
+  and the capability labels. Pluto resolves them with `tx()`.
+- A count uses plural forms (`zero | one | other`): `supabase-shop.media.showing`. pt-BR treats
+  0 as singular, so the `zero` form sets the 0 text.
+- The price widget keeps the `BRL` currency. It passes the admin locale to `UInputNumber`, so
+  the number format follows the admin language ("R$ 1.234,56" in pt-BR).
+- Category and availability names come from the database. They stay as stored.
+
+### Upload problems and server errors
+
+`productMediaUploadProblem` returns the English `message` (for the route `statusMessage`) and a
+`key` with `params`. The route throws `createPlutoError({ statusCode, message, key, params })`,
+so the response carries `data.i18n`. The picker translates the problem with
+`t(problem.key, problem.params)` before it sends a file. For a failed upload, it shows the
+translated 403 key (`supabase-shop.upload.noPermission`), or `usePlutoErrorText()` with the
+fallback key `supabase-shop.upload.failed`.
+
+Routes with a fixed message use `supabase-shop.errors.*` keys: `noFileSent`, `productNotFound`,
+`mediaListFailed`. The `statusMessage` stays English. A raw database or storage error message
+stays as the server sends it.
+
+The file size in an upload problem ("60 MB") uses English units and a dot as the decimal mark in
+all languages.
+
+### Tests
+
+`test/i18n-locale-files.test.ts` checks that every locale has the same keys, placeholders, and
+plural form count as `en`, and no empty value. The top-level namespaces are only
+`supabase-shop` and `content`, and `content` holds only `product`. It checks that the English
+`content.product.*` labels equal the literals of the type. It also scans `app/`, `server/`, and
+`shared/` for literal `supabase-shop.*` and `pluto.*` keys. Each key must exist, and each
+`supabase-shop.*` key of `en.json` must be used. Keep a key that the code builds at run time as
+a full literal. `test/fixtures/i18n-stub.ts` builds a translator over the English messages.
 
 ## Known gaps
 

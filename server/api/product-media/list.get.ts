@@ -6,8 +6,10 @@ export default defineEventHandler(async (event) => {
   const { data, error } = await client.from('product_media').select('*')
 
   if (error) {
-    throw createError({
+    throw createPlutoError({
+      statusCode: 500,
       message: 'error',
+      key: 'supabase-shop.errors.mediaListFailed',
     })
   }
 

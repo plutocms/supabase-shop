@@ -13,6 +13,9 @@ const isMediaModalOpen = defineModel<boolean>({
   default: false,
 })
 
+const { t } = usePlutoI18n()
+const translateError = usePlutoErrorText()
+
 const { mediaList, refreshMediaList, mediaStatus } = useProductMedia()
 
 const imageList = computed(() => {
@@ -37,19 +40,19 @@ watch(currentTab, () => {
   }
 })
 
-const tabs = ref<TabsItem[]>([
+const tabs = computed<TabsItem[]>(() => [
   {
-    label: 'Gallery',
+    label: t('supabase-shop.picker.tabs.gallery'),
     icon: 'lucide:blocks',
     slot: 'gallery',
   },
   {
-    label: '3D Models',
+    label: t('supabase-shop.picker.tabs.models'),
     icon: 'lucide:rotate-3d',
     slot: 'three-dimensional',
   },
   {
-    label: 'Upload',
+    label: t('supabase-shop.picker.tabs.upload'),
     icon: 'lucide:upload',
     slot: 'upload',
   },
@@ -74,7 +77,7 @@ watch(selectedFile, (file) => {
     return
   }
   const problem = productMediaUploadProblem(file)
-  uploadError.value = problem?.message ?? null
+  uploadError.value = problem ? t(problem.key, problem.params) : null
   if (problem) {
     selectedFile.value = null
   }
@@ -83,18 +86,22 @@ watch(selectedFile, (file) => {
 // UFileUpload emits `reject` for dropped files that do not match `accept`.
 function onReject(rejected: File[]) {
   uploadError.value = rejected
-    .map((file) => productMediaUploadProblem(file)?.message
-      ?? `"${file.name}" is not a supported file type. Upload a JPEG, PNG, WebP, GIF, or AVIF image, or a .glb 3D model.`)
+    .map((file) => {
+      const problem = productMediaUploadProblem(file)
+      return problem
+        ? t(problem.key, problem.params)
+        : t('supabase-shop.upload.unsupportedType', { name: file.name })
+    })
     .join(' ')
 }
 
 /** The upload route's own message (413, 415, ...), in words for the user. */
 function uploadErrorMessage(error: unknown): string {
-  const failure = error as { statusCode?: number, statusMessage?: string, data?: { statusMessage?: string, message?: string } }
+  const failure = error as { statusCode?: number }
   if (failure?.statusCode === 403) {
-    return 'You do not have permission to upload product media.'
+    return t('supabase-shop.upload.noPermission')
   }
-  return failure?.data?.statusMessage || failure?.data?.message || failure?.statusMessage || 'The upload failed. Try again.'
+  return translateError(error, 'supabase-shop.upload.failed')
 }
 
 const isUploaded = ref<boolean>(false)
@@ -259,7 +266,9 @@ const isInsertButtonDisabled = computed(
 
 <template>
   <Modal v-model="isMediaModalOpen" :custom-size="1200" prevent-click-outside>
-    <ModalHeader @close="closeMediaModal">Insert media</ModalHeader>
+    <ModalHeader @close="closeMediaModal">
+      {{ t('supabase-shop.picker.title') }}
+    </ModalHeader>
 
     <ModalContent>
       <div>
@@ -279,14 +288,16 @@ const isInsertButtonDisabled = computed(
                 >
                   <div>
                     <span v-if="selectedMedia.length === 0">
-                      Showing {{ imageList?.length }} file{{
-                        imageList?.length === 1 ? '' : 's'
-                      }}
+                      {{ t('supabase-shop.media.showing', imageList?.length ?? 0) }}
                     </span>
 
                     <span v-else>
-                      {{ selectedMedia.length }} of
-                      {{ imageList?.length }} files selected
+                      {{
+                        t('supabase-shop.media.selectedOf', {
+                          selected: selectedMedia.length,
+                          total: imageList?.length,
+                        })
+                      }}
                     </span>
                   </div>
 
@@ -297,7 +308,7 @@ const isInsertButtonDisabled = computed(
                       icon="lucide:x"
                       @click="selectedMedia = []"
                     >
-                      Cancel selection
+                      {{ t('supabase-shop.picker.cancelSelection') }}
                     </UButton>
                   </div>
                 </div>
@@ -309,7 +320,7 @@ const isInsertButtonDisabled = computed(
                     class="w-full justify-center sm:w-auto"
                     @click="refreshMediaList()"
                   >
-                    Refresh
+                    {{ t('pluto.common.refresh') }}
                   </UButton>
                 </div>
               </div>
@@ -349,7 +360,7 @@ const isInsertButtonDisabled = computed(
               <div
                 class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
               >
-                <div>You can only select one 3D model at a time.</div>
+                <div>{{ t('supabase-shop.picker.oneModelOnly') }}</div>
 
                 <div class="flex">
                   <UButton
@@ -358,7 +369,7 @@ const isInsertButtonDisabled = computed(
                     class="w-full justify-center sm:w-auto"
                     @click="refreshMediaList()"
                   >
-                    Refresh
+                    {{ t('pluto.common.refresh') }}
                   </UButton>
                 </div>
               </div>
@@ -405,10 +416,10 @@ const isInsertButtonDisabled = computed(
                 v-model="selectedFile"
                 :accept="PRODUCT_MEDIA_ACCEPT"
                 :disabled="isUploading || isUploaded"
-                :description="`Or click to browse. Up to ${PRODUCT_MEDIA_MAX_SIZE}.`"
+                :description="t('supabase-shop.picker.dropDescription', { size: PRODUCT_MEDIA_MAX_SIZE })"
                 :ui="{ fileLeadingAvatar: 'size-full rounded-lg bg-elevated [&>img]:object-contain' }"
+                :label="t('supabase-shop.picker.dropLabel')"
                 icon="lucide:image-up"
-                label="Drop an image or a .glb 3D model here"
                 class="min-h-72 grow"
                 @reject="onReject"
               />
@@ -419,10 +430,10 @@ const isInsertButtonDisabled = computed(
                 <UAlert
                   v-if="uploadError"
                   :description="uploadError"
+                  :title="t('supabase-shop.picker.errorTitle')"
                   color="error"
                   variant="subtle"
                   icon="lucide:circle-alert"
-                  title="This file cannot be uploaded"
                   close
                   @update:open="uploadError = null"
                 />
@@ -436,10 +447,10 @@ const isInsertButtonDisabled = computed(
                 </div>
 
                 <div v-if="!isUploaded && selectedFile">
-                  <UFormField label="Alt text">
+                  <UFormField :label="t('supabase-shop.picker.altText')">
                     <UInput
                       v-model="form.alt"
-                      placeholder="e.g: Image of a cute dog"
+                      :placeholder="t('supabase-shop.picker.altPlaceholder')"
                     />
                   </UFormField>
                 </div>
@@ -452,7 +463,7 @@ const isInsertButtonDisabled = computed(
                     icon="lucide:x"
                     @click="removeImage"
                   >
-                    Cancel
+                    {{ t('pluto.common.cancel') }}
                   </UButton>
 
                   <UButton
@@ -462,7 +473,11 @@ const isInsertButtonDisabled = computed(
                     loading-icon="lucide:loader-circle"
                     @click="uploadMedia"
                   >
-                    Upload{{ isUploading ? 'ing...' : '' }}
+                    {{
+                      isUploading
+                        ? t('supabase-shop.picker.uploading')
+                        : t('supabase-shop.picker.upload')
+                    }}
                   </UButton>
                 </div>
               </div>
@@ -482,7 +497,7 @@ const isInsertButtonDisabled = computed(
           class="justify-center"
           @click="closeMediaModal"
         >
-          Close
+          {{ t('pluto.common.close') }}
         </UButton>
 
         <UButton
@@ -492,9 +507,9 @@ const isInsertButtonDisabled = computed(
           class="justify-center"
           @click="insertMedia"
         >
-          Insert
+          {{ t('supabase-shop.picker.insert') }}
           <span v-show="selectedMedia.length > 0">
-            ({{ selectedMedia.length }} selected)
+            {{ t('supabase-shop.picker.selectedCount', selectedMedia.length) }}
           </span>
         </UButton>
       </div>

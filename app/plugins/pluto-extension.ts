@@ -10,12 +10,12 @@ export default defineNuxtPlugin(() => {
   definePlutoExtension({
     id: 'supabase-shop',
     capabilities: [
-      { id: 'products-manage', key: 'products:manage', label: 'Create and edit products' },
-      { id: 'products-delete', key: 'products:delete', label: 'Delete products' },
+      { id: 'products-manage', key: 'products:manage', label: 'supabase-shop.capabilities.productsManage' },
+      { id: 'products-delete', key: 'products:delete', label: 'supabase-shop.capabilities.productsDelete' },
       {
         id: 'shop-manage-taxonomy',
         key: 'shop:manage_taxonomy',
-        label: 'Manage product categories and availability',
+        label: 'supabase-shop.capabilities.manageTaxonomy',
       },
     ],
     navbarActions: [{ id: 'product-actions', component: NavbarAdminActions }],
@@ -23,27 +23,27 @@ export default defineNuxtPlugin(() => {
       {
         id: 'products',
         order: 300,
-        label: 'Products',
+        label: 'supabase-shop.nav.products',
         icon: 'lucide:box',
         to: '/admin/products',
         defaultOpen: true,
         children: [
-          { label: 'Create new product', to: '/admin/product/new' },
-          { label: 'All products', to: '/admin/products' },
+          { label: 'supabase-shop.nav.createProduct', to: '/admin/product/new' },
+          { label: 'supabase-shop.nav.allProducts', to: '/admin/products' },
         ],
       },
       {
         id: 'product-media',
         order: 310,
-        label: 'Product Medias',
+        label: 'supabase-shop.nav.productMedia',
         icon: 'lucide:images',
         to: '/admin/product-media',
       },
     ],
     pages: [
-      { id: 'products', path: '/admin/products', title: 'Products', icon: 'lucide:box' },
-      { id: 'product-new', path: '/admin/product/new', title: 'New product', parent: 'supabase-shop:products' },
-      { id: 'product-media', path: '/admin/product-media', title: 'Product Medias', icon: 'lucide:images' },
+      { id: 'products', path: '/admin/products', title: 'supabase-shop.nav.products', icon: 'lucide:box' },
+      { id: 'product-new', path: '/admin/product/new', title: 'supabase-shop.pages.newProduct', parent: 'supabase-shop:products' },
+      { id: 'product-media', path: '/admin/product-media', title: 'supabase-shop.nav.productMedia', icon: 'lucide:images' },
     ],
     contentTypes: [{ id: 'product', type: productType }],
     // Registered by `widget:` name only, never bare `fieldType:` — a

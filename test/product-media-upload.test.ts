@@ -7,6 +7,7 @@ import {
   productMediaSuffixedName,
   productMediaUploadProblem
 } from '../shared/utils/product-media-upload'
+import { createI18nStub } from './fixtures/i18n-stub'
 
 describe('productMediaMimeType', () => {
   it('stores a .glb sent as application/octet-stream as model/gltf-binary', () => {
@@ -41,6 +42,8 @@ describe('productMediaUploadProblem', () => {
     expect(productMediaUploadProblem({ name: 'logo.svg', type: 'image/svg+xml', size: 10 })).toEqual({
       statusCode: 415,
       message: '"logo.svg" is not a supported file type. Upload a JPEG, PNG, WebP, GIF, or AVIF image, or a .glb 3D model.',
+      key: 'supabase-shop.upload.unsupportedType',
+      params: { name: 'logo.svg' },
     })
   })
 
@@ -52,7 +55,23 @@ describe('productMediaUploadProblem', () => {
     expect(productMediaUploadProblem({ name: 'big.jpg', type: 'image/jpeg', size: 60 * 1024 * 1024 })).toEqual({
       statusCode: 413,
       message: '"big.jpg" is 60 MB. The limit is 50 MB.',
+      key: 'supabase-shop.upload.tooBig',
+      params: { name: 'big.jpg', size: '60 MB', limit: '50 MB' },
     })
+  })
+
+  it('has an English key text that is the same as the English message', () => {
+    const { t } = createI18nStub()
+    const problems = [
+      productMediaUploadProblem({ name: 'logo.svg', type: 'image/svg+xml', size: 10 }),
+      productMediaUploadProblem({ name: 'big.jpg', type: 'image/jpeg', size: 60 * 1024 * 1024 }),
+      productMediaUploadProblem({ name: 'huge photo.png', type: 'image/png', size: 1.5 * 1024 * 1024 * 1024 }),
+    ]
+
+    for (const problem of problems) {
+      expect(problem).not.toBeNull()
+      expect(t(problem!.key, problem!.params)).toBe(problem!.message)
+    }
   })
 })
 

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+const { t } = usePlutoI18n()
+
 useHead({
-  title: 'Media',
+  title: () => t('supabase-shop.media.title'),
 })
 
 const selectedMedia = ref<number[]>([])
@@ -28,21 +30,25 @@ function selectMedia(id: number) {
   <main>
     <AdminView>
       <div class="flex flex-col gap-y-4">
-        <h1 class="text-3xl font-bold lg:text-4xl">Media</h1>
+        <h1 class="text-3xl font-bold lg:text-4xl">
+          {{ t('supabase-shop.media.title') }}
+        </h1>
 
         <div
           class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
         >
           <div>
             <span v-if="selectedMedia.length === 0">
-              Showing {{ mediaList?.data.length }} file{{
-                mediaList?.data.length === 1 ? '' : 's'
-              }}
+              {{ t('supabase-shop.media.showing', mediaList?.data.length ?? 0) }}
             </span>
 
             <span v-else>
-              {{ selectedMedia.length }} of {{ mediaList?.data.length }} files
-              selected
+              {{
+                t('supabase-shop.media.selectedOf', {
+                  selected: selectedMedia.length,
+                  total: mediaList?.data.length,
+                })
+              }}
             </span>
           </div>
 
@@ -53,7 +59,7 @@ function selectMedia(id: number) {
               class="w-full justify-center sm:w-auto"
               @click="refreshMediaList()"
             >
-              Refresh
+              {{ t('pluto.common.refresh') }}
             </UButton>
           </div>
         </div>

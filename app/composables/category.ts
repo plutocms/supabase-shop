@@ -3,6 +3,7 @@ export type ProductCategory =
 
 export async function useProductCategory() {
   const toast = useToast()
+  const { t } = usePlutoI18n()
 
   const { data: categories, refresh } = await useFetch('/api/category/list', {
     transform: (res) => res.data,
@@ -87,8 +88,8 @@ export async function useProductCategory() {
         }
 
         toast.add({
-          title: `${options.name} created`,
-          description: 'Your category has been created successfully.',
+          title: t('supabase-shop.category.created', { name: options.name }),
+          description: t('supabase-shop.category.createdDescription'),
           color: 'success',
         })
       })

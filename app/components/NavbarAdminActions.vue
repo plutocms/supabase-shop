@@ -2,11 +2,12 @@
 import type { NavbarAdminActionButtonProps } from '#layers/utils/shared/types/navbar'
 
 const route = useRoute()
+const { t } = usePlutoI18n()
 const { can } = usePlutoPermissions()
 
 const items = computed<NavbarAdminActionButtonProps[]>(() => [
   {
-    label: 'Add product',
+    label: t('supabase-shop.navbar.addProduct'),
     icon: 'lucide:plus',
     to: '/admin/product/new',
     // This hides the button only. It is a UI convenience, not a
@@ -16,7 +17,7 @@ const items = computed<NavbarAdminActionButtonProps[]>(() => [
   },
 
   {
-    label: 'Edit product',
+    label: t('supabase-shop.navbar.editProduct'),
     icon: 'lucide:pen-line',
     to: `/admin/product/edit/${
       ('id' in route.params && route.params.id) ||

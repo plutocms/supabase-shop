@@ -12,7 +12,11 @@ export default defineEventHandler(async (event) => {
   const altPart = formData?.find((part) => part.name === 'alt')
 
   if (!filePart?.filename) {
-    throw createError({ statusCode: 400, statusMessage: 'No file sent.' })
+    throw createPlutoError({
+      statusCode: 400,
+      message: 'No file sent.',
+      key: 'supabase-shop.errors.noFileSent',
+    })
   }
 
   // Check the type and size before the file touches storage. The bucket
@@ -24,9 +28,11 @@ export default defineEventHandler(async (event) => {
   })
 
   if (problem) {
-    throw createError({
+    throw createPlutoError({
       statusCode: problem.statusCode,
-      statusMessage: problem.message,
+      message: problem.message,
+      key: problem.key,
+      params: problem.params,
     })
   }
 
