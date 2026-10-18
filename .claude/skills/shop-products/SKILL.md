@@ -207,9 +207,12 @@ The helper names carry a "product media" prefix on purpose. An app can extend th
 `@plutocms/supabase-storage` together, and that layer auto-imports its own generic upload
 helpers.
 
-Known gap: the route uploads with `upsert: true`. A new file with the same kebab-case name as
-an existing one replaces that file in storage, and every `product_media` row that points to the
-name shows the new file. `@plutocms/supabase-storage` retries with a random suffix instead.
+The route never replaces an existing file. Several `product_media` rows can point to one file
+by name (the reconciliation hook clones rows), so an overwrite would change the image of every
+product that uses it. The route uploads with `upsert: false`. On a name clash, it retries once
+with a short random suffix (`productMediaSuffixedName`: `chair.glb` → `chair-x7k2.glb`) and
+stores the final name in the row. If the row insert fails after the upload, the route removes
+the uploaded file, then returns the insert error.
 
 ## Known gaps
 

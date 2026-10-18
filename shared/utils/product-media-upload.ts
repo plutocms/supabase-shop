@@ -40,6 +40,19 @@ export function productMediaMimeType(mimeType: string | undefined, fileName: str
   return type
 }
 
+/**
+ * Adds `-<suffix>` before the file extension: `chair.glb` → `chair-x7k2.glb`.
+ * The upload route uses it to give a new file a free name, so an upload
+ * never replaces an existing file.
+ */
+export function productMediaSuffixedName(fileName: string, suffix: string): string {
+  const match = fileName.match(/^(.+)(\.[^./]+)$/)
+  if (!match) {
+    return `${fileName}-${suffix}`
+  }
+  return `${match[1]}-${suffix}${match[2]}`
+}
+
 /** Formats a byte count for people: "512 KB", "50 MB". */
 function formatSize(bytes: number): string {
   const units = ['bytes', 'KB', 'MB', 'GB']

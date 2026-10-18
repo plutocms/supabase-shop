@@ -30,15 +30,21 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const fileName = fileNameToKebabCase(filePart.filename)
-
-  const { data: mediaUploadData, error: mediaUploadError } =
-    await client.storage
+  const contentType = productMediaMimeType(filePart.type, filePart.filename)
+  const upload = (name: string) =>
+    client.storage
       .from('product-media')
-      .upload(`uploads/${fileName}`, filePart.data, {
-        contentType: productMediaMimeType(filePart.type, filePart.filename),
-        upsert: true,
-      })
+      .upload(`uploads/${name}`, filePart.data, { contentType, upsert: false })
+
+  // Never replace an existing file: other product_media rows can point to
+  // it by name. On a name clash, retry once with a short random suffix.
+  let fileName = fileNameToKebabCase(filePart.filename)
+  let { data: mediaUploadData, error: mediaUploadError } = await upload(fileName)
+
+  if (mediaUploadError && isStorageCollision(mediaUploadError)) {
+    fileName = productMediaSuffixedName(fileName, Math.random().toString(36).slice(2, 6))
+    ;({ data: mediaUploadData, error: mediaUploadError } = await upload(fileName))
+  }
 
   if (mediaUploadError) {
     throw createError({
@@ -57,8 +63,22 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (error) {
+    // The file uploaded, but the row failed. Remove the file, so a retry
+    // does not leave an orphan. A cleanup failure must not hide the real
+    // error.
+    const { error: cleanupError } = await client.storage
+      .from('product-media')
+      .remove([`uploads/${fileName}`])
+    if (cleanupError) {
+      console.warn('[product-media] could not remove the orphaned file', fileName, cleanupError.message)
+    }
     throw createError({ statusCode: 500, statusMessage: error.message })
   }
 
   return { mediaUploadData, data }
 })
+
+/** True when a Storage upload error means "an object already exists at this path". */
+function isStorageCollision(error: { statusCode?: string | number, message?: string }): boolean {
+  return String(error.statusCode) === '409' || Boolean(error.message?.toLowerCase().includes('already exists'))
+}

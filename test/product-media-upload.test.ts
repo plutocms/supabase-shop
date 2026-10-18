@@ -4,6 +4,7 @@ import {
   PRODUCT_MEDIA_MAX_BYTES,
   PRODUCT_MEDIA_MAX_SIZE,
   productMediaMimeType,
+  productMediaSuffixedName,
   productMediaUploadProblem
 } from '../shared/utils/product-media-upload'
 
@@ -63,5 +64,17 @@ describe('limits', () => {
 
   it('accepts the bucket image types and .glb in the picker', () => {
     expect(PRODUCT_MEDIA_ACCEPT).toBe('image/jpeg,image/png,image/webp,image/gif,image/avif,.glb')
+  })
+})
+
+describe('productMediaSuffixedName', () => {
+  it('adds the suffix before the extension', () => {
+    expect(productMediaSuffixedName('chair.glb', 'x7k2')).toBe('chair-x7k2.glb')
+    expect(productMediaSuffixedName('my.photo.jpg', 'ab12')).toBe('my.photo-ab12.jpg')
+  })
+
+  it('appends the suffix to a name without an extension', () => {
+    expect(productMediaSuffixedName('readme', 'ab12')).toBe('readme-ab12')
+    expect(productMediaSuffixedName('.hidden', 'ab12')).toBe('.hidden-ab12')
   })
 })
