@@ -72,14 +72,19 @@ export const PRODUCT_MEDIA_MAX_SIZE = formatSize(PRODUCT_MEDIA_MAX_BYTES)
 export interface ProductMediaUploadProblem {
   /** 415 for a wrong type, 413 for a file that is too big. */
   statusCode: 413 | 415
-  /** The reason, in words for the user. */
+  /** The reason in English, in words for the user. The server uses it. */
   message: string
+  /** The translation key of the same reason, for the picker. */
+  key: 'supabase-shop.upload.unsupportedType' | 'supabase-shop.upload.tooBig'
+  /** The values for the translated message. */
+  params: Record<string, string>
 }
 
 /**
  * Explains why a file cannot go into the product-media library, or returns
  * `null` when the file passes. The route turns a problem into a 415 or 413
- * response. The picker shows the message before it sends the file.
+ * response. The picker shows the translated `key` before it sends the file.
+ * The `message` stays English.
  */
 export function productMediaUploadProblem(file: { name: string, type?: string, size: number }): ProductMediaUploadProblem | null {
   const mimeType = productMediaMimeType(file.type, file.name)
@@ -87,12 +92,16 @@ export function productMediaUploadProblem(file: { name: string, type?: string, s
     return {
       statusCode: 415,
       message: `"${file.name}" is not a supported file type. Upload a JPEG, PNG, WebP, GIF, or AVIF image, or a .glb 3D model.`,
+      key: 'supabase-shop.upload.unsupportedType',
+      params: { name: file.name },
     }
   }
   if (file.size > PRODUCT_MEDIA_MAX_BYTES) {
     return {
       statusCode: 413,
       message: `"${file.name}" is ${formatSize(file.size)}. The limit is ${PRODUCT_MEDIA_MAX_SIZE}.`,
+      key: 'supabase-shop.upload.tooBig',
+      params: { name: file.name, size: formatSize(file.size), limit: PRODUCT_MEDIA_MAX_SIZE },
     }
   }
   return null

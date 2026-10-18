@@ -1,0 +1,109 @@
+{
+  "supabase-shop": {
+    "nav": {
+      "products": "Products",
+      "createProduct": "Create new product",
+      "allProducts": "All products",
+      "productMedia": "Product Medias"
+    },
+    "pages": {
+      "newProduct": "New product"
+    },
+    "capabilities": {
+      "productsManage": "Create and edit products",
+      "productsDelete": "Delete products",
+      "manageTaxonomy": "Manage product categories and availability"
+    },
+    "navbar": {
+      "addProduct": "Add product",
+      "editProduct": "Edit product"
+    },
+    "category": {
+      "placeholder": "e.g: Chibi",
+      "created": "{name} created",
+      "createdDescription": "Your category has been created successfully.",
+      "createFailed": "An error occurred while creating the category."
+    },
+    "mediaField": {
+      "add": "Add media",
+      "manage3d": "Manage 3D model",
+      "select": "Select media {index}",
+      "unsaved": "Unsaved",
+      "remove": "Remove media",
+      "removed": "Media removed",
+      "removedDescription": "The selected media has been removed.",
+      "added": "Media added",
+      "addedDescription": "The selected media has been added."
+    },
+    "media": {
+      "title": "Media",
+      "showing": "Showing {count} files | Showing {count} file | Showing {count} files",
+      "selectedOf": "{selected} of {total} files selected"
+    },
+    "picker": {
+      "title": "Insert media",
+      "tabs": {
+        "gallery": "Gallery",
+        "models": "3D Models",
+        "upload": "Upload"
+      },
+      "cancelSelection": "Cancel selection",
+      "oneModelOnly": "You can only select one 3D model at a time.",
+      "dropLabel": "Drop an image or a .glb 3D model here",
+      "dropDescription": "Or click to browse. Up to {size}.",
+      "errorTitle": "This file cannot be uploaded",
+      "altText": "Alt text",
+      "altPlaceholder": "e.g: Image of a cute dog",
+      "upload": "Upload",
+      "uploading": "Uploading...",
+      "insert": "Insert",
+      "selectedCount": "({count} selected) | ({count} selected) | ({count} selected)"
+    },
+    "upload": {
+      "unsupportedType": "\"{name}\" is not a supported file type. Upload a JPEG, PNG, WebP, GIF, or AVIF image, or a .glb 3D model.",
+      "tooBig": "\"{name}\" is {size}. The limit is {limit}.",
+      "noPermission": "You do not have permission to upload product media.",
+      "failed": "The upload failed. Try again."
+    },
+    "errors": {
+      "noFileSent": "No file sent.",
+      "productNotFound": "Product not found",
+      "mediaListFailed": "Could not load the media library."
+    }
+  },
+  "content": {
+    "product": {
+      "label": "Product",
+      "labelPlural": "Products",
+      "fields": {
+        "name": {
+          "label": "Name"
+        },
+        "media": {
+          "label": "Media"
+        },
+        "description": {
+          "label": "Description"
+        },
+        "slug": {
+          "label": "Slug"
+        },
+        "price": {
+          "label": "Price"
+        },
+        "is_custom": {
+          "label": "Is custom"
+        },
+        "availability": {
+          "label": "Availability"
+        },
+        "stock_quantity": {
+          "label": "Stock quantity"
+        },
+        "category": {
+          "label": "Category"
+        }
+      }
+    }
+  }
+}

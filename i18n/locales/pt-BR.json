@@ -1,0 +1,109 @@
+{
+  "supabase-shop": {
+    "nav": {
+      "products": "Produtos",
+      "createProduct": "Criar produto",
+      "allProducts": "Ver produtos",
+      "productMedia": "Mídias do produto"
+    },
+    "pages": {
+      "newProduct": "Novo produto"
+    },
+    "capabilities": {
+      "productsManage": "Criar e editar produtos",
+      "productsDelete": "Excluir produtos",
+      "manageTaxonomy": "Gerenciar categorias e disponibilidade dos produtos"
+    },
+    "navbar": {
+      "addProduct": "Adicionar produto",
+      "editProduct": "Editar produto"
+    },
+    "category": {
+      "placeholder": "ex.: Chibi",
+      "created": "{name} criada",
+      "createdDescription": "A categoria foi criada com sucesso.",
+      "createFailed": "Ocorreu um erro ao criar a categoria."
+    },
+    "mediaField": {
+      "add": "Adicionar mídia",
+      "manage3d": "Gerenciar modelo 3D",
+      "select": "Selecionar mídia {index}",
+      "unsaved": "Não salva",
+      "remove": "Remover mídia",
+      "removed": "Mídia removida",
+      "removedDescription": "A mídia selecionada foi removida.",
+      "added": "Mídia adicionada",
+      "addedDescription": "A mídia selecionada foi adicionada."
+    },
+    "media": {
+      "title": "Mídias",
+      "showing": "Mostrando {count} arquivos | Mostrando {count} arquivo | Mostrando {count} arquivos",
+      "selectedOf": "{selected} de {total} arquivos selecionados"
+    },
+    "picker": {
+      "title": "Inserir mídia",
+      "tabs": {
+        "gallery": "Galeria",
+        "models": "Modelos 3D",
+        "upload": "Enviar"
+      },
+      "cancelSelection": "Cancelar seleção",
+      "oneModelOnly": "Só é possível selecionar um modelo 3D por vez.",
+      "dropLabel": "Solte uma imagem ou um modelo 3D .glb aqui",
+      "dropDescription": "Ou clique para procurar. Até {size}.",
+      "errorTitle": "Não foi possível enviar este arquivo",
+      "altText": "Texto alternativo",
+      "altPlaceholder": "ex.: Imagem de um cachorro fofo",
+      "upload": "Enviar",
+      "uploading": "Enviando...",
+      "insert": "Inserir",
+      "selectedCount": "({count} selecionadas) | ({count} selecionada) | ({count} selecionadas)"
+    },
+    "upload": {
+      "unsupportedType": "\"{name}\" não é um tipo de arquivo compatível. Envie uma imagem JPEG, PNG, WebP, GIF ou AVIF, ou um modelo 3D .glb.",
+      "tooBig": "\"{name}\" tem {size}. O limite é {limit}.",
+      "noPermission": "Você não tem permissão para enviar mídias de produto.",
+      "failed": "O envio falhou. Tente novamente."
+    },
+    "errors": {
+      "noFileSent": "Nenhum arquivo enviado.",
+      "productNotFound": "Produto não encontrado",
+      "mediaListFailed": "Não foi possível carregar a biblioteca de mídias."
+    }
+  },
+  "content": {
+    "product": {
+      "label": "Produto",
+      "labelPlural": "Produtos",
+      "fields": {
+        "name": {
+          "label": "Nome"
+        },
+        "media": {
+          "label": "Mídia"
+        },
+        "description": {
+          "label": "Descrição"
+        },
+        "slug": {
+          "label": "Slug"
+        },
+        "price": {
+          "label": "Preço"
+        },
+        "is_custom": {
+          "label": "Personalizado"
+        },
+        "availability": {
+          "label": "Disponibilidade"
+        },
+        "stock_quantity": {
+          "label": "Quantidade em estoque"
+        },
+        "category": {
+          "label": "Categoria"
+        }
+      }
+    }
+  }
+}

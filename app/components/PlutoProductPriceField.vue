@@ -2,6 +2,7 @@
 // The `product.price` field widget. Copies Post.vue's exact
 // `format-options` block. The hardcoded `BRL` currency is a known,
 // separate issue — see the shop-products skill — and is not fixed here.
+// The number format follows the admin language.
 const props = defineProps<{
   field: PlutoNumberField
   modelValue: unknown
@@ -11,6 +12,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: number | null]
 }>()
+
+const { locale } = usePlutoI18n()
 
 const value = computed(() => {
   const raw = props.modelValue
@@ -23,6 +26,7 @@ const value = computed(() => {
     <UInputNumber
       :model-value="value"
       :disabled="disabled"
+      :locale="locale"
       :format-options="{
         style: 'currency',
         currency: 'BRL',

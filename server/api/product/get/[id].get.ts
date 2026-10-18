@@ -20,9 +20,10 @@ export default defineEventHandler(async (event) => {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        throw createError({
+        throw createPlutoError({
           statusCode: 404,
-          statusMessage: 'Product not found',
+          message: 'Product not found',
+          key: 'supabase-shop.errors.productNotFound',
         })
       }
 

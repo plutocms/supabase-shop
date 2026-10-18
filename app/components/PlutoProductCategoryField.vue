@@ -21,6 +21,7 @@ interface CategoryOption {
 }
 
 const toast = useToast()
+const { t } = usePlutoI18n()
 const options = ref<CategoryOption[]>([])
 const pending = ref(false)
 const isOpen = ref(false)
@@ -56,16 +57,16 @@ async function createCategory(name: string) {
     isOpen.value = false
 
     toast.add({
-      title: `${name} created`,
-      description: 'Your category has been created successfully.',
+      title: t('supabase-shop.category.created', { name }),
+      description: t('supabase-shop.category.createdDescription'),
       color: 'success',
     })
   } catch (error) {
     console.error(error)
 
     toast.add({
-      title: 'Error',
-      description: 'An error occurred while creating the category.',
+      title: t('pluto.common.error'),
+      description: t('supabase-shop.category.createFailed'),
       color: 'error',
     })
   } finally {
@@ -82,11 +83,11 @@ async function createCategory(name: string) {
       :items="options"
       :loading="pending"
       :disabled="disabled"
+      :placeholder="t('supabase-shop.category.placeholder')"
       value-key="value"
       label-key="label"
       loading-icon="line-md:loading-loop"
       class="w-full"
-      placeholder="e.g: Chibi"
       create-item
       @update:model-value="emit('update:modelValue', $event)"
       @create="createCategory"

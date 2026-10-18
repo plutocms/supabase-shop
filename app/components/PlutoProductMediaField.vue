@@ -69,6 +69,7 @@ onMounted(async () => {
 })
 
 const toast = useToast()
+const { t } = usePlutoI18n()
 
 function openMediaModal() {
   isMediaModalOpen.value = true
@@ -96,8 +97,8 @@ function removeMedia(index: number) {
   emitUpdate()
 
   toast.add({
-    title: 'Media removed',
-    description: 'The selected media has been removed.',
+    title: t('supabase-shop.mediaField.removed'),
+    description: t('supabase-shop.mediaField.removedDescription'),
     color: 'info',
   })
 }
@@ -118,8 +119,8 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
   emitUpdate()
 
   toast.add({
-    title: 'Media added',
-    description: 'The selected media has been added.',
+    title: t('supabase-shop.mediaField.added'),
+    description: t('supabase-shop.mediaField.addedDescription'),
     color: 'success',
   })
 
@@ -143,8 +144,8 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
                   !image.is_saved && 'opacity-50',
                   is3d(image) ? 'hidden' : '',
                 ]"
-                :title="!image.is_saved ? 'Unsaved' : ''"
-                :aria-label="`Select media ${index + 1}`"
+                :title="!image.is_saved ? t('supabase-shop.mediaField.unsaved') : ''"
+                :aria-label="t('supabase-shop.mediaField.select', { index: index + 1 })"
                 type="button"
                 class="h-14 w-14 overflow-hidden rounded-2xl bg-black/10 hover:bg-black/20 cursor-pointer transition-all"
                 @click="currentSelectedImage = index"
@@ -157,8 +158,8 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
               <button
                 v-if="items.find((m) => is3d(m))"
                 :disabled="disabled"
+                :aria-label="t('supabase-shop.mediaField.manage3d')"
                 type="button"
-                aria-label="Manage 3D model"
                 class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
                 @click="openMediaModal"
               >
@@ -167,8 +168,8 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
 
               <button
                 :disabled="disabled"
+                :aria-label="t('supabase-shop.mediaField.add')"
                 type="button"
-                aria-label="Add media"
                 class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
                 @click="openMediaModal"
               >
@@ -198,9 +199,9 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
             <UButton
               v-if="items.length > 0"
               :disabled="disabled"
+              :title="t('supabase-shop.mediaField.remove')"
               variant="soft"
               color="error"
-              title="Remove media"
               square
               @click="removeMedia(currentSelectedImage)"
             >
