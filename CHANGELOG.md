@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0](https://github.com/plutocms/supabase-shop/compare/v0.8.0...v0.9.0) (2026-10-18)
+
+
+### Features
+
+* **i18n:** translate the shop admin ([#66](https://github.com/plutocms/supabase-shop/issues/66)) ([9974c28](https://github.com/plutocms/supabase-shop/commit/9974c28f7520a5d38face539472e8a6a74b5f30b))
+
+
+### Bug Fixes
+
+* **product-media:** never overwrite an existing file on upload ([#63](https://github.com/plutocms/supabase-shop/issues/63)) ([3af7091](https://github.com/plutocms/supabase-shop/commit/3af70912cd4b0b3f25b6a320417d42e65ee99177))
+
 ## [0.8.0](https://github.com/plutocms/supabase-shop/compare/v0.7.0...v0.8.0) (2026-10-18)
 
 
