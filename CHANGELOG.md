@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0](https://github.com/plutocms/supabase-shop/compare/v0.7.0...v0.8.0) (2026-10-18)
+
+
+### Features
+
+* **product-media:** check uploads and explain rejected files ([#60](https://github.com/plutocms/supabase-shop/issues/60)) ([61d9939](https://github.com/plutocms/supabase-shop/commit/61d9939c33bd9c91cbcf9b756bbd8b92d08c6e97))
+
+
+### Bug Fixes
+
+* **deps:** use @plutocms/supabase 0.9.1 ([#62](https://github.com/plutocms/supabase-shop/issues/62)) ([059bd55](https://github.com/plutocms/supabase-shop/commit/059bd5583268603d8d927f04a8a721d600f16ea0))
+
 ## [0.7.0](https://github.com/plutocms/supabase-shop/compare/v0.6.3...v0.7.0) (2026-10-17)
 
 
