@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/plutocms/supabase-shop/compare/v0.10.0...v0.10.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* **admin:** add tab titles to the product pages ([#69](https://github.com/plutocms/supabase-shop/issues/69)) ([c8e1c36](https://github.com/plutocms/supabase-shop/commit/c8e1c36b94688f88ff26807028782787b5c33fd8))
+
 ## [0.10.0](https://github.com/plutocms/supabase-shop/compare/v0.9.0...v0.10.0) (2026-10-20)
 
 
