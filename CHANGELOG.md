@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0](https://github.com/plutocms/supabase-shop/compare/v0.9.0...v0.10.0) (2026-10-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **admin:** move to the pluto 0.16 admin shell ([#67](https://github.com/plutocms/supabase-shop/issues/67))
+
+### Features
+
+* **admin:** move to the pluto 0.16 admin shell ([#67](https://github.com/plutocms/supabase-shop/issues/67)) ([3503811](https://github.com/plutocms/supabase-shop/commit/3503811f152dda4c7c4eacf17f4453f45718ba3d))
+
 ## [0.9.0](https://github.com/plutocms/supabase-shop/compare/v0.8.0...v0.9.0) (2026-10-18)
 
 
