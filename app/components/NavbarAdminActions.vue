@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import type { NavbarAdminActionButtonProps } from '#layers/utils/shared/types/navbar'
+// The navbar actions of this layer. Each one uses the core PlutoNavbarButton,
+// so it looks like every other action in the admin navbar.
+interface NavbarAction {
+  label: string
+  icon: string
+  to: string
+  show: boolean
+}
 
 const route = useRoute()
 const { t } = usePlutoI18n()
 const { can } = usePlutoPermissions()
 
-const items = computed<NavbarAdminActionButtonProps[]>(() => [
+const items = computed<NavbarAction[]>(() => [
   {
     label: t('supabase-shop.navbar.addProduct'),
     icon: 'lucide:plus',
@@ -31,11 +38,11 @@ const items = computed<NavbarAdminActionButtonProps[]>(() => [
 
 <template>
   <template v-for="item in items" :key="item.label">
-    <NavbarAdminActionButton
+    <PlutoNavbarButton
+      v-if="item.show"
       :label="item.label"
       :icon="item.icon"
       :to="item.to"
-      :show="item.show"
     />
   </template>
 </template>
