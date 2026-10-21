@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.11.0](https://github.com/plutocms/supabase-shop/compare/v0.10.2...v0.11.0) (2026-10-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* **product:** products.price is now integer cents. Apply migration 004_price_in_cents.sql once, and divide by 100 where you show a price (or use formatProductPrice).
+
+### Features
+
+* **product:** store product prices as integer cents ([#73](https://github.com/plutocms/supabase-shop/issues/73)) ([e30f441](https://github.com/plutocms/supabase-shop/commit/e30f44140f824a90fc2deb36d64ed132f8792837))
+
 ## [0.10.2](https://github.com/plutocms/supabase-shop/compare/v0.10.1...v0.10.2) (2026-10-21)
 
 
