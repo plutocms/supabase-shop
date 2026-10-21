@@ -49,9 +49,8 @@ export const productType = defineContentType({
     { name: 'name', type: 'text', label: 'Name', description: 'The name shown in the store.', required: true, inList: true, region: 'main', order: 10 },
     { name: 'media', type: 'media', label: 'Media', description: 'Photos of the piece, and one optional 3D model.', multiple: true, virtual: true, widget: 'product-media', region: 'main', order: 20 },
     { name: 'description', type: 'textarea', label: 'Description', description: 'The text shown on the product page.', region: 'main', order: 30 },
-    // Not in the list: the price is integer cents, and the generic list shows raw values. Put it
-    // back when core can format a list cell.
-    { name: 'price', type: 'number', label: 'Price', description: 'The price shown in the store.', required: true, integer: true, min: 0, widget: 'product-price', region: 'side', order: 50 },
+    // The price is integer cents. `listFormat` shows it as money in the generic list.
+    { name: 'price', type: 'number', label: 'Price', description: 'The price shown in the store.', required: true, integer: true, min: 0, inList: true, listFormat: (value) => (typeof value === 'number' ? formatProductPrice(value) : ''), widget: 'product-price', region: 'side', order: 50 },
     { name: 'is_custom', type: 'boolean', label: 'Is custom', description: 'Turn this on if you make the piece only when a customer orders it. The availability becomes "commission".', widget: 'product-is-custom', region: 'side', order: 60 },
     { name: 'availability', type: 'reference', label: 'Availability', description: 'Tells the customer if the piece can be bought now.', optionsUrl: '/api/product/availability-statuses', labelKey: 'label', valueKey: 'id', widget: 'product-availability', region: 'side', order: 70 },
     { name: 'stock_quantity', type: 'number', label: 'Stock quantity', description: 'How many units you have. It shows only for pieces in stock.', min: 0, widget: 'product-stock', region: 'side', order: 80 },
