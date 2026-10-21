@@ -25,6 +25,14 @@ watch(
   },
   { immediate: true }
 )
+
+// Field widgets load on demand, so they can mount in any order. A stale
+// `isCustom` from the last product form must not look like a change to the
+// availability and stock widgets of the next one. This widget owns the flag,
+// so it resets the flag when it unmounts.
+onUnmounted(() => {
+  bridge.value.isCustom = false
+})
 </script>
 
 <template>

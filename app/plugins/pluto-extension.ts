@@ -1,10 +1,27 @@
+import { defineAsyncComponent } from 'vue'
 import NavbarAdminActions from '../components/NavbarAdminActions.vue'
-import PlutoProductAvailabilityField from '../components/PlutoProductAvailabilityField.vue'
-import PlutoProductCategoryField from '../components/PlutoProductCategoryField.vue'
-import PlutoProductIsCustomField from '../components/PlutoProductIsCustomField.vue'
-import PlutoProductMediaField from '../components/PlutoProductMediaField.vue'
-import PlutoProductPriceField from '../components/PlutoProductPriceField.vue'
-import PlutoProductStockField from '../components/PlutoProductStockField.vue'
+
+// The navbar action stays eager, because it is in the bar. The product field
+// widgets load on demand and stay out of the entry chunk. Core shows a
+// skeleton for each field while its chunk loads.
+const PlutoProductAvailabilityField = defineAsyncComponent(
+  () => import('../components/PlutoProductAvailabilityField.vue')
+)
+const PlutoProductCategoryField = defineAsyncComponent(
+  () => import('../components/PlutoProductCategoryField.vue')
+)
+const PlutoProductIsCustomField = defineAsyncComponent(
+  () => import('../components/PlutoProductIsCustomField.vue')
+)
+const PlutoProductMediaField = defineAsyncComponent(
+  () => import('../components/PlutoProductMediaField.vue')
+)
+const PlutoProductPriceField = defineAsyncComponent(
+  () => import('../components/PlutoProductPriceField.vue')
+)
+const PlutoProductStockField = defineAsyncComponent(
+  () => import('../components/PlutoProductStockField.vue')
+)
 
 export default defineNuxtPlugin(() => {
   definePlutoExtension({

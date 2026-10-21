@@ -1,13 +1,29 @@
 export type ProductCategory =
   Database['public']['Tables']['product_category']['Row']
 
-export async function useProductCategory() {
+interface UseProductCategoryOptions {
+  /**
+   * When true, the fetch does not block navigation, and the list is empty
+   * while `pending` is true. The default is false: the call waits for the
+   * list, because store pages read it right after `await` (for example to
+   * find a category by its slug, or to answer 404).
+   */
+  lazy?: boolean
+}
+
+export async function useProductCategory(
+  options: UseProductCategoryOptions = {}
+) {
   const toast = useToast()
   const { t } = usePlutoI18n()
 
-  const { data: categories, refresh } = await useFetch('/api/category/list', {
-    transform: (res) => res.data,
-  })
+  const { data: categories, refresh, pending } = await useFetch(
+    '/api/category/list',
+    {
+      lazy: options.lazy ?? false,
+      transform: (res) => res.data,
+    }
+  )
 
   function getCategoryFromId(
     id: number | null | undefined
@@ -105,6 +121,7 @@ export async function useProductCategory() {
 
   return {
     categories,
+    pending,
     refresh,
     getCategoryFromId,
     getCategoryLabelFromId,
