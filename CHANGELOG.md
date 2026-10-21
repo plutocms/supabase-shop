@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/plutocms/supabase-shop/compare/v0.10.1...v0.10.2) (2026-10-21)
+
+
+### Bug Fixes
+
+* **product:** keep the media of other products and fix the 3D model flow ([#71](https://github.com/plutocms/supabase-shop/issues/71)) ([b2e742b](https://github.com/plutocms/supabase-shop/commit/b2e742b9dc657a7915082638d38a730a3bd8bae5))
+
 ## [0.10.1](https://github.com/plutocms/supabase-shop/compare/v0.10.0...v0.10.1) (2026-10-20)
 
 
