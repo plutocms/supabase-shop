@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/plutocms/supabase-shop/compare/v0.11.1...v0.11.2) (2026-10-21)
+
+
+### Bug Fixes
+
+* **deps:** use @plutocms/supabase 0.11.1 again ([#83](https://github.com/plutocms/supabase-shop/issues/83)) ([e000673](https://github.com/plutocms/supabase-shop/commit/e000673ccff55df1d53363fa24cfa5a8d947e5e9))
+
 ## [0.11.1](https://github.com/plutocms/supabase-shop/compare/v0.11.0...v0.11.1) (2026-10-21)
 
 
