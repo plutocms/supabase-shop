@@ -95,6 +95,7 @@ export async function reconcileProductMedia(
     const { error } = await client
       .from('product_media')
       .update({ product_id: null })
+      .eq('product_id', productId)
       .in('id', media.removedIds)
 
     if (error) {

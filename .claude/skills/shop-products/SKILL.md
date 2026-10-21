@@ -137,11 +137,13 @@ widget loads its own starting gallery in `onMounted`, from the hand-written
 "Public routes kept" below). A brand-new product (no route id yet) skips that fetch and starts
 with an empty gallery.
 
+The widget shows the photos as a main image with a thumbnail strip. It shows the one 3D model as its own tile, with a replace button (opens the picker on the 3D models tab, through the picker prop `startTab`) and a remove button. A new `.glb` puts the id of the old one in `removedIds`. A `.glb` is never the main image. `isProductMediaModel` (in `shared/utils/product-media-upload.ts`) decides what a model is. Add and remove show one muted line, "changes apply on save", not toasts. The first fetch has a skeleton and an error alert with retry.
+
 `server/utils/reconcile-product-media.ts` (`reconcileProductMedia`) reads `rawBody.media` in
 `type.hooks.afterCreate`/`afterUpdate` (wired in `server/plugins/content.ts`) and reconciles it
 into `product_media`, batched — one query per group, never a per-item loop:
 
-1. `removedIds` — one `update({ product_id: null })...in('id', removedIds)`. The row is never
+1. `removedIds` — one `update({ product_id: null })...eq('product_id', productId)...in('id', removedIds)`. The `eq` guard means a row of another product is never detached. The row is never
    deleted, only detached, so it stays in the shared library.
 2. `items` split into those with an `id` (existing rows) and those without (brand new).
 3. For existing ones: one batched `select('id, product_id')...in('id', ...)` fetches real

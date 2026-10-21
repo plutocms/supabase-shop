@@ -25,15 +25,19 @@
       "createFailed": "An error occurred while creating the category."
     },
     "mediaField": {
-      "add": "Add media",
-      "manage3d": "Manage 3D model",
-      "select": "Select media {index}",
-      "unsaved": "Unsaved",
-      "remove": "Remove media",
-      "removed": "Media removed",
-      "removedDescription": "The selected media has been removed.",
-      "added": "Media added",
-      "addedDescription": "The selected media has been added."
+      "add": "Add photos",
+      "manage3d": "Replace 3D model",
+      "add3d": "Add 3D model",
+      "model": "3D model",
+      "remove3d": "Remove 3D model",
+      "remove": "Remove photo",
+      "select": "Show photo {index}",
+      "unsaved": "Not saved yet",
+      "applyOnSave": "Changes to the media apply when you save.",
+      "loading": "Loading media",
+      "loadFailed": "The media did not load",
+      "loadFailedDescription": "Check your connection and try again.",
+      "retry": "Try again"
     },
     "media": {
       "title": "Media",
@@ -77,31 +81,40 @@
       "labelPlural": "Products",
       "fields": {
         "name": {
-          "label": "Name"
+          "label": "Name",
+          "description": "The name shown in the store."
         },
         "media": {
-          "label": "Media"
+          "label": "Media",
+          "description": "Photos of the piece, and one optional 3D model."
         },
         "description": {
-          "label": "Description"
+          "label": "Description",
+          "description": "The text shown on the product page."
         },
         "slug": {
-          "label": "Slug"
+          "label": "Slug",
+          "description": "The last part of the product link. It comes from the name. Use lowercase letters, numbers and hyphens."
         },
         "price": {
-          "label": "Price"
+          "label": "Price",
+          "description": "The price shown in the store."
         },
         "is_custom": {
-          "label": "Is custom"
+          "label": "Is custom",
+          "description": "Turn this on if you make the piece only when a customer orders it. The availability becomes \"commission\"."
         },
         "availability": {
-          "label": "Availability"
+          "label": "Availability",
+          "description": "Tells the customer if the piece can be bought now."
         },
         "stock_quantity": {
-          "label": "Stock quantity"
+          "label": "Stock quantity",
+          "description": "How many units you have. It shows only for pieces in stock."
         },
         "category": {
-          "label": "Category"
+          "label": "Category",
+          "description": "Groups similar pieces in the store."
         }
       }
     }

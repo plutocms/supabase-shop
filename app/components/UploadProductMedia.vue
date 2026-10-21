@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
 
-const props = defineProps<{
-  productId?: number
-}>()
+const props = withDefaults(
+  defineProps<{
+    productId?: number
+    /** The tab the picker shows each time it opens. */
+    startTab?: 'gallery' | 'models' | 'upload'
+  }>(),
+  { startTab: 'gallery' }
+)
 
 const emit = defineEmits<{
   insert: [value: EmitValue | EmitValue[] | null]
@@ -19,11 +24,11 @@ const translateError = usePlutoErrorText()
 const { mediaList, refreshMediaList, mediaStatus } = useProductMedia()
 
 const imageList = computed(() => {
-  return mediaList.value?.data.filter((item) => !item.name?.endsWith('.glb'))
+  return mediaList.value?.data.filter((item) => !isProductMediaModel(item))
 })
 
 const threeDModelList = computed(() => {
-  return mediaList.value?.data.filter((item) => item.name?.endsWith('.glb'))
+  return mediaList.value?.data.filter((item) => isProductMediaModel(item))
 })
 
 function closeMediaModal() {
@@ -31,6 +36,15 @@ function closeMediaModal() {
 }
 
 const currentTab = ref<'0' | '1' | '2'>('0')
+
+const START_TABS = { gallery: '0', models: '1', upload: '2' } as const
+
+// Open on the tab the caller asks for.
+watch(isMediaModalOpen, (open) => {
+  if (open) {
+    currentTab.value = START_TABS[props.startTab]
+  }
+})
 
 watch(currentTab, () => {
   resetAll()

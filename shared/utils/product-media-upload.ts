@@ -106,3 +106,11 @@ export function productMediaUploadProblem(file: { name: string, type?: string, s
   }
   return null
 }
+
+/**
+ * True when a `product_media` row is a 3D model (`.glb`). The check ignores
+ * the case of the name, and it also accepts the model MIME type.
+ */
+export function isProductMediaModel(entry: { name?: string | null, mime_type?: string | null } | null | undefined): boolean {
+  return Boolean(entry?.name?.toLowerCase().endsWith('.glb') || entry?.mime_type === 'model/gltf-binary')
+}

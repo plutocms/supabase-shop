@@ -34,6 +34,15 @@ describe('productType', () => {
     expect(field?.type).toBe('slug')
   })
 
+  it('puts the slug last in the side region', async () => {
+    const { productType } = await import('../shared/utils/content-product')
+
+    const side = productType.fields.filter((field) => field.region === 'side')
+    const last = side.reduce((a, b) => ((b.order ?? 0) > (a.order ?? 0) ? b : a))
+
+    expect(last.name).toBe('slug')
+  })
+
   it('has no duplicate field names', async () => {
     const { productType } = await import('../shared/utils/content-product')
 
