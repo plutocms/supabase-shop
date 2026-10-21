@@ -130,6 +130,32 @@ describe('content.product keys', () => {
     }
   })
 
+  it('give the English description of every field, byte for byte', async () => {
+    const { productType } = await import('../shared/utils/content-product')
+    const en = locales.en!
+
+    for (const field of productType.fields) {
+      expect(field.description, field.name).toBeTruthy()
+      expect(
+        en[`content.product.fields.${field.name}.description`],
+        field.name
+      ).toBe(field.description)
+    }
+  })
+
+  it('have a description key for every field in each locale', async () => {
+    const { productType } = await import('../shared/utils/content-product')
+
+    for (const code of codes) {
+      for (const field of productType.fields) {
+        expect(
+          locales[code]![`content.product.fields.${field.name}.description`],
+          `${code} ${field.name}`
+        ).toBeTruthy()
+      }
+    }
+  })
+
   it('have a label key for every field in each locale', async () => {
     const { productType } = await import('../shared/utils/content-product')
 

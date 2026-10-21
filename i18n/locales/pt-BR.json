@@ -25,15 +25,19 @@
       "createFailed": "Ocorreu um erro ao criar a categoria."
     },
     "mediaField": {
-      "add": "Adicionar mídia",
-      "manage3d": "Gerenciar modelo 3D",
-      "select": "Selecionar mídia {index}",
-      "unsaved": "Não salva",
-      "remove": "Remover mídia",
-      "removed": "Mídia removida",
-      "removedDescription": "A mídia selecionada foi removida.",
-      "added": "Mídia adicionada",
-      "addedDescription": "A mídia selecionada foi adicionada."
+      "add": "Adicionar fotos",
+      "manage3d": "Trocar modelo 3D",
+      "add3d": "Adicionar modelo 3D",
+      "model": "Modelo 3D",
+      "remove3d": "Remover modelo 3D",
+      "remove": "Remover foto",
+      "select": "Mostrar foto {index}",
+      "unsaved": "Ainda não salva",
+      "applyOnSave": "As alterações nas mídias são aplicadas ao salvar.",
+      "loading": "Carregando mídias",
+      "loadFailed": "Não foi possível carregar as mídias",
+      "loadFailedDescription": "Verifique sua conexão e tente de novo.",
+      "retry": "Tentar de novo"
     },
     "media": {
       "title": "Mídias",
@@ -77,31 +81,40 @@
       "labelPlural": "Produtos",
       "fields": {
         "name": {
-          "label": "Nome"
+          "label": "Nome",
+          "description": "O nome que aparece na loja."
         },
         "media": {
-          "label": "Mídia"
+          "label": "Fotos e modelo 3D",
+          "description": "Fotos da peça e, se quiser, um modelo 3D."
         },
         "description": {
-          "label": "Descrição"
+          "label": "Descrição",
+          "description": "O texto que aparece na página do produto."
         },
         "slug": {
-          "label": "Slug"
+          "label": "Endereço na loja",
+          "description": "A parte final do link do produto. Vem do nome. Use letras minúsculas, números e hífens."
         },
         "price": {
-          "label": "Preço"
+          "label": "Preço",
+          "description": "O preço que aparece na loja."
         },
         "is_custom": {
-          "label": "Personalizado"
+          "label": "Sob encomenda",
+          "description": "Ative se você faz a peça só quando o cliente encomenda. A disponibilidade passa a ser \"sob encomenda\"."
         },
         "availability": {
-          "label": "Disponibilidade"
+          "label": "Disponibilidade",
+          "description": "Mostra ao cliente se a peça pode ser comprada agora."
         },
         "stock_quantity": {
-          "label": "Quantidade em estoque"
+          "label": "Quantidade em estoque",
+          "description": "Quantas unidades você tem. Aparece só para peças em estoque."
         },
         "category": {
-          "label": "Categoria"
+          "label": "Categoria",
+          "description": "Agrupa peças parecidas na loja."
         }
       }
     }

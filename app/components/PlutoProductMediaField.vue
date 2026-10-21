@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // The `product.media` field widget — the virtual field that carries the
-// product's gallery through the generic form. Ports the thumbnail strip,
-// main image, remove button, and .glb 3D-model handling from the old
-// Post.vue, reusing UploadProductMedia.vue unchanged as the picker. See
-// the shop-products skill.
+// product's gallery through the generic form. It shows the photos as a main
+// image plus a thumbnail strip. It shows the 3D model (`.glb`) as its own
+// tile. It reuses UploadProductMedia.vue as the picker. See the
+// shop-products skill.
 //
 // Because `media` is virtual, `item.media` is always undefined when the
 // form first loads (see `mapColumnsToFields` in `@plutocms/pluto`) — this
@@ -11,6 +11,10 @@
 // hand-written `GET /api/product/get/:id` route, which still returns
 // `product_media` with public URLs. A brand-new product (no route id)
 // skips that fetch entirely and starts with an empty gallery.
+//
+// The widget never writes to the database. It sends `{ items, removedIds }`
+// to the form, and the server hook applies it on save. A product keeps at
+// most one 3D model: a new model puts the id of the old one in `removedIds`.
 defineProps<{
   field: PlutoMediaField
   modelValue: unknown
@@ -22,6 +26,7 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
+const { t } = usePlutoI18n()
 
 const productId = computed<number | undefined>(() => {
   // A consumer app with typed pages types `params` as a union of every
@@ -35,43 +40,50 @@ const items = ref<MediaWithSaved[]>([])
 const removedIds = ref<number[]>([])
 const currentSelectedImage = ref(0)
 const isMediaModalOpen = ref(false)
+const pickerStartTab = ref<'gallery' | 'models'>('gallery')
+const hasChanges = ref(false)
+const loadStatus = ref<'pending' | 'error' | 'ready'>(productId.value ? 'pending' : 'ready')
 
-const lastImageIndex = computed(() => items.value.length - 1)
+/** Photos only. A 3D model is never a photo, so it never becomes the main image. */
+const images = computed(() => items.value.filter((entry) => !isProductMediaModel(entry)))
+const model = computed(() => items.value.find((entry) => isProductMediaModel(entry)))
 
-function is3d(entry: MediaWithSaved | MediaWithSaved[] | null) {
-  if (Array.isArray(entry)) {
-    return entry.some((item) => item.name?.endsWith('.glb'))
-  }
-
-  return entry?.name?.endsWith('.glb')
-}
+const mainImage = computed(() => images.value[currentSelectedImage.value])
 
 function emitUpdate() {
-  emit('update:modelValue', { items: items.value, removedIds: removedIds.value })
+  hasChanges.value = true
+  emit('update:modelValue', { items: [...items.value], removedIds: [...removedIds.value] })
 }
 
-onMounted(async () => {
+function markRemoved(entry: MediaWithSaved) {
+  if (entry.id && !removedIds.value.includes(entry.id)) {
+    removedIds.value.push(entry.id)
+  }
+}
+
+async function loadMedia() {
   if (!productId.value) {
     return
   }
 
-  const { data } = await $fetch<{ data: { product_media: MediaWithSaved[] | null } }>(
-    `/api/product/get/${productId.value}`
-  )
+  loadStatus.value = 'pending'
 
-  const media = (data.product_media ?? []).map((entry) => ({ ...entry, is_saved: true }))
+  try {
+    const { data } = await $fetch<{ data: { product_media: MediaWithSaved[] | null } }>(
+      `/api/product/get/${productId.value}`
+    )
 
-  // Move .glb media to the end, matching the old edit page.
-  const glb = media.filter((entry) => entry.name?.toLowerCase().endsWith('.glb'))
-  const rest = media.filter((entry) => !entry.name?.toLowerCase().endsWith('.glb'))
+    items.value = (data.product_media ?? []).map((entry) => ({ ...entry, is_saved: true }))
+    loadStatus.value = 'ready'
+  } catch {
+    loadStatus.value = 'error'
+  }
+}
 
-  items.value = [...rest, ...glb]
-})
+onMounted(loadMedia)
 
-const toast = useToast()
-const { t } = usePlutoI18n()
-
-function openMediaModal() {
+function openPicker(tab: 'gallery' | 'models') {
+  pickerStartTab.value = tab
   isMediaModalOpen.value = true
 }
 
@@ -79,150 +91,228 @@ function closeMediaModal() {
   isMediaModalOpen.value = false
 }
 
-function removeMedia(index: number) {
-  const removed = items.value[index]
-
-  if (removed?.id) {
-    removedIds.value.push(removed.id)
+function removeImage(entry: MediaWithSaved | undefined) {
+  if (!entry) {
+    return
   }
 
-  items.value.splice(index, 1)
+  const index = images.value.indexOf(entry)
 
-  if (currentSelectedImage.value === index) {
-    currentSelectedImage.value = 0
-  } else if (currentSelectedImage.value > index) {
+  markRemoved(entry)
+  items.value = items.value.filter((item) => item !== entry)
+
+  if (index < currentSelectedImage.value) {
     currentSelectedImage.value -= 1
   }
 
-  emitUpdate()
+  currentSelectedImage.value = Math.max(0, Math.min(currentSelectedImage.value, images.value.length - 1))
 
-  toast.add({
-    title: t('supabase-shop.mediaField.removed'),
-    description: t('supabase-shop.mediaField.removedDescription'),
-    color: 'info',
-  })
+  emitUpdate()
+}
+
+function removeModel() {
+  const current = model.value
+
+  if (!current) {
+    return
+  }
+
+  markRemoved(current)
+  items.value = items.value.filter((item) => item !== current)
+
+  emitUpdate()
 }
 
 function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
-  // Remove any previous .glb media before inserting a new one — only one
-  // 3D model at a time, matching the old edit page.
-  items.value = items.value.filter((item) => !item.name?.endsWith('.glb'))
+  const incoming = Array.isArray(event) ? event : event ? [event] : []
 
-  if (Array.isArray(event)) {
-    items.value.push(...event)
-  } else if (event) {
-    items.value.push(event)
+  // An item that comes back must not stay in the removed list.
+  for (const entry of incoming) {
+    const removedIndex = entry.id ? removedIds.value.indexOf(entry.id) : -1
+
+    if (removedIndex !== -1) {
+      removedIds.value.splice(removedIndex, 1)
+    }
   }
 
-  currentSelectedImage.value = lastImageIndex.value
+  // Only one 3D model at a time. A new model replaces the old one, and the
+  // old one is detached on save through `removedIds`.
+  const newModel = incoming.findLast((entry) => isProductMediaModel(entry))
+
+  if (newModel) {
+    for (const old of items.value) {
+      if (isProductMediaModel(old) && old.id !== newModel.id) {
+        markRemoved(old)
+      }
+    }
+
+    items.value = items.value.filter((entry) => !isProductMediaModel(entry))
+    items.value.push(newModel)
+  }
+
+  const knownIds = new Set(items.value.map((entry) => entry.id).filter(Boolean))
+  const newImages = incoming.filter((entry) => !isProductMediaModel(entry) && !(entry.id && knownIds.has(entry.id)))
+
+  if (newImages.length > 0) {
+    items.value.push(...newImages)
+    currentSelectedImage.value = images.value.length - 1
+  }
 
   emitUpdate()
-
-  toast.add({
-    title: t('supabase-shop.mediaField.added'),
-    description: t('supabase-shop.mediaField.addedDescription'),
-    color: 'success',
-  })
-
   closeMediaModal()
 }
 </script>
 
 <template>
   <UFormField :label="field.label" :description="field.description">
-    <div class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start">
-      <!-- Media Gallery -->
-      <div class="flex flex-row items-center gap-4 lg:flex-col lg:items-start">
-        <ScrollArea class="w-full rounded-2xl p-2 lg:w-24">
-          <div class="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
-            <template v-if="items.length > 0">
-              <button
-                v-for="(image, index) in items"
-                :key="index"
-                :class="[
-                  currentSelectedImage === index && 'ring-2 ring-green-400',
-                  !image.is_saved && 'opacity-50',
-                  is3d(image) ? 'hidden' : '',
-                ]"
-                :title="!image.is_saved ? t('supabase-shop.mediaField.unsaved') : ''"
-                :aria-label="t('supabase-shop.mediaField.select', { index: index + 1 })"
-                type="button"
-                class="h-14 w-14 overflow-hidden rounded-2xl bg-black/10 hover:bg-black/20 cursor-pointer transition-all"
-                @click="currentSelectedImage = index"
-              >
-                <img v-if="image.name" :src="image.url ?? ''" class="h-full w-full object-cover" />
-              </button>
-            </template>
+    <div class="flex flex-col gap-4">
+      <UAlert
+        v-if="loadStatus === 'error'"
+        :title="t('supabase-shop.mediaField.loadFailed')"
+        :description="t('supabase-shop.mediaField.loadFailedDescription')"
+        :actions="[{ label: t('supabase-shop.mediaField.retry'), icon: 'lucide:refresh-cw', color: 'error', variant: 'outline', onClick: loadMedia }]"
+        color="error"
+        variant="subtle"
+        icon="lucide:circle-alert"
+      />
 
-            <div class="flex shrink-0 gap-2 lg:mt-2 lg:flex-col">
-              <button
-                v-if="items.find((m) => is3d(m))"
-                :disabled="disabled"
-                :aria-label="t('supabase-shop.mediaField.manage3d')"
-                type="button"
-                class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
-                @click="openMediaModal"
-              >
-                <Icon name="lucide:rotate-3d" class="text-2xl" />
-              </button>
-
-              <button
-                :disabled="disabled"
-                :aria-label="t('supabase-shop.mediaField.add')"
-                type="button"
-                class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl dark:bg-black/90 light:bg-white/90 hover:dark:bg-black/80 hover:light:bg-white/80 cursor-pointer"
-                @click="openMediaModal"
-              >
-                <Icon name="lucide:plus" class="text-2xl" />
-              </button>
-            </div>
-          </div>
-        </ScrollArea>
-
-        <UploadProductMedia v-model="isMediaModalOpen" :product-id="productId" @insert="handleInsertMedia" />
-      </div>
-
-      <!-- Main Image -->
-      <div class="aspect-square w-full max-w-96 shrink-0 self-center">
-        <div
-          :class="[items.length > 0 ? 'bg-black' : 'bg-black/10 hover:bg-black/20']"
-          class="group relative h-full overflow-hidden rounded-3xl shadow-lg"
-        >
-          <label
-            v-if="items.length === 0"
-            for="main-image"
-            class="absolute top-0 left-0 h-full w-full cursor-pointer"
-            @click="openMediaModal"
-          />
-
-          <div class="absolute right-0 bottom-0 p-3">
-            <UButton
-              v-if="items.length > 0"
-              :disabled="disabled"
-              :title="t('supabase-shop.mediaField.remove')"
-              variant="soft"
-              color="error"
-              square
-              @click="removeMedia(currentSelectedImage)"
-            >
-              <Icon name="lucide:trash" class="text-2xl" />
-            </UButton>
-          </div>
-
-          <div
-            v-if="items.length === 0"
-            class="pointer-events-none absolute top-0 left-0 grid h-full w-full place-items-center"
-          >
-            <Icon name="lucide:plus" class="text-5xl opacity-20 transition-opacity group-hover:opacity-100" />
-          </div>
-
-          <img
-            v-if="!!items[currentSelectedImage]?.name"
-            :src="items[currentSelectedImage]?.url ?? ''"
-            class="h-full w-full object-contain"
-          />
+      <div v-if="loadStatus === 'pending'" :aria-label="t('supabase-shop.mediaField.loading')" class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start" aria-busy="true">
+        <USkeleton class="aspect-square w-full max-w-96 shrink-0 rounded-md" />
+        <div class="flex gap-2 lg:flex-col">
+          <USkeleton v-for="n in 3" :key="n" class="size-14 rounded-md" />
         </div>
       </div>
+
+      <div v-else-if="loadStatus === 'ready'" class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start">
+        <!-- Main image -->
+        <div class="aspect-square w-full max-w-96 shrink-0 self-center lg:self-start">
+          <button
+            v-if="images.length === 0"
+            :disabled="disabled"
+            :aria-label="t('supabase-shop.mediaField.add')"
+            type="button"
+            class="group grid size-full cursor-pointer place-items-center rounded-md bg-muted transition-colors hover:bg-accented focus-visible:outline-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
+            @click="openPicker('gallery')"
+          >
+            <span class="flex flex-col items-center gap-2 text-muted group-hover:text-default">
+              <Icon name="lucide:image-plus" class="text-5xl" />
+              <span class="text-sm">{{ t('supabase-shop.mediaField.add') }}</span>
+            </span>
+          </button>
+
+          <div v-else class="relative size-full overflow-hidden rounded-md bg-elevated">
+            <img
+              v-if="mainImage?.name"
+              :src="mainImage.url ?? ''"
+              :alt="mainImage.alt || mainImage.name"
+              class="size-full object-contain"
+            />
+
+            <div class="absolute right-0 bottom-0 p-3">
+              <UButton
+                :disabled="disabled"
+                :aria-label="t('supabase-shop.mediaField.remove')"
+                :title="t('supabase-shop.mediaField.remove')"
+                icon="lucide:trash"
+                variant="soft"
+                color="error"
+                square
+                @click="removeImage(mainImage)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Thumbnails and the 3D model tile -->
+        <div class="flex flex-row flex-wrap items-start gap-2 lg:flex-col lg:flex-nowrap">
+          <button
+            v-for="(image, index) in images"
+            :key="image.id ?? `new-${index}`"
+            :class="[
+              currentSelectedImage === index && 'ring-2 ring-primary',
+              !image.is_saved && 'opacity-50',
+            ]"
+            :title="!image.is_saved ? t('supabase-shop.mediaField.unsaved') : ''"
+            :aria-label="t('supabase-shop.mediaField.select', { index: index + 1 })"
+            :aria-pressed="currentSelectedImage === index"
+            type="button"
+            class="size-14 shrink-0 cursor-pointer overflow-hidden rounded-md bg-elevated transition-colors hover:bg-accented focus-visible:outline-2 focus-visible:outline-primary"
+            @click="currentSelectedImage = index"
+          >
+            <img v-if="image.name" :src="image.url ?? ''" :alt="image.alt || image.name" class="size-full object-cover" />
+          </button>
+
+          <button
+            v-if="images.length > 0"
+            :disabled="disabled"
+            :aria-label="t('supabase-shop.mediaField.add')"
+            :title="t('supabase-shop.mediaField.add')"
+            type="button"
+            class="grid size-14 shrink-0 cursor-pointer place-items-center rounded-md bg-muted text-muted transition-colors hover:bg-accented hover:text-default focus-visible:outline-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
+            @click="openPicker('gallery')"
+          >
+            <Icon name="lucide:plus" class="text-2xl" />
+          </button>
+
+          <!-- 3D model: its own tile, with its own buttons -->
+          <div
+            v-if="model"
+            class="flex w-full min-w-0 items-center gap-2 rounded-md bg-elevated p-2 lg:w-56"
+          >
+            <Icon name="lucide:rotate-3d" class="shrink-0 text-2xl text-muted" />
+
+            <div class="min-w-0 grow">
+              <div class="text-xs text-muted">{{ t('supabase-shop.mediaField.model') }}</div>
+              <div :title="model.name ?? ''" class="truncate text-sm">{{ model.name }}</div>
+            </div>
+
+            <UButton
+              :disabled="disabled"
+              :aria-label="t('supabase-shop.mediaField.manage3d')"
+              :title="t('supabase-shop.mediaField.manage3d')"
+              icon="lucide:replace"
+              variant="ghost"
+              color="neutral"
+              square
+              @click="openPicker('models')"
+            />
+
+            <UButton
+              :disabled="disabled"
+              :aria-label="t('supabase-shop.mediaField.remove3d')"
+              :title="t('supabase-shop.mediaField.remove3d')"
+              icon="lucide:trash"
+              variant="ghost"
+              color="error"
+              square
+              @click="removeModel"
+            />
+          </div>
+
+          <UButton
+            v-else
+            :disabled="disabled"
+            icon="lucide:rotate-3d"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            @click="openPicker('models')"
+          >
+            {{ t('supabase-shop.mediaField.add3d') }}
+          </UButton>
+        </div>
+      </div>
+
+      <p v-if="hasChanges" class="text-sm text-muted">
+        {{ t('supabase-shop.mediaField.applyOnSave') }}
+      </p>
+
+      <UploadProductMedia
+        v-model="isMediaModalOpen"
+        :product-id="productId"
+        :start-tab="pickerStartTab"
+        @insert="handleInsertMedia"
+      />
     </div>
   </UFormField>
 </template>

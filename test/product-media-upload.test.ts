@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  isProductMediaModel,
   PRODUCT_MEDIA_ACCEPT,
   PRODUCT_MEDIA_MAX_BYTES,
   PRODUCT_MEDIA_MAX_SIZE,
@@ -95,5 +96,21 @@ describe('productMediaSuffixedName', () => {
   it('appends the suffix to a name without an extension', () => {
     expect(productMediaSuffixedName('readme', 'ab12')).toBe('readme-ab12')
     expect(productMediaSuffixedName('.hidden', 'ab12')).toBe('.hidden-ab12')
+  })
+})
+
+describe('isProductMediaModel', () => {
+  it('detects a .glb name in any case', () => {
+    expect(isProductMediaModel({ name: 'chair.glb' })).toBe(true)
+    expect(isProductMediaModel({ name: 'CHAIR.GLB' })).toBe(true)
+  })
+
+  it('detects the model MIME type', () => {
+    expect(isProductMediaModel({ name: 'chair', mime_type: 'model/gltf-binary' })).toBe(true)
+  })
+
+  it('rejects an image and an empty value', () => {
+    expect(isProductMediaModel({ name: 'chair.png', mime_type: 'image/png' })).toBe(false)
+    expect(isProductMediaModel(null)).toBe(false)
   })
 })
