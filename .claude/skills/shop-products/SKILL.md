@@ -291,11 +291,10 @@ a full literal. `test/fixtures/i18n-stub.ts` builds a translator over the Englis
 
 ## Known gaps
 
-- The product list view has no price column. The price is integer cents, and the generic list
-  would show the raw value (`4990`, not R$ 49,90), so the field has no `inList`. The list also
-  drops the category and created-at columns the old hand-written table had. `@plutocms/pluto`'s generic list only renders columns
-  a field marks `inList`, with no per-column custom cell rendering yet — a later wave's gap, not
-  worked around here.
+- The product list view shows the name and the price. The price field uses `listFormat`
+  (`@plutocms/pluto` 0.17 or later) with `formatProductPrice`, so the list shows R$ 49,90, not
+  the raw cents. The list drops the category and created-at columns the old hand-written table
+  had: a reference field has no `listFormat` that resolves its label yet.
 - The edit page has no "Preview" link to the live product page anymore. The old `Post.vue` had
   one; the generic form has no equivalent slot for it yet.
 - The price widget's hardcoded `currency: 'BRL'` is preserved as-is, not fixed, in this pass —
