@@ -17,7 +17,7 @@ The table is defined in this layer's `db/migrations/` directory. It has these co
 - `slug` — text. Unique. It forms the public product path, `/product/<slug>`.
 - `name` — text. Required.
 - `description` — text. Optional.
-- `price` — bigint. Required. Stored as a whole number, in the smallest currency unit.
+- `price` — bigint. Required. Integer cents: `4990` means R$ 49,90. See "Price in cents" below.
 - `created_at` — timestamptz. The database sets it when a row is created. There is no
   `updated_at` column.
 - `category` — bigint. A foreign key to `product_category`. Null when uncategorized.
@@ -83,9 +83,13 @@ default for every layer's fields of that type):
 
 - **`product-media`** (`PlutoProductMediaField.vue`) — the media gallery. See "The media field
   and its reconciliation hook" below.
-- **`product-price`** (`PlutoProductPriceField.vue`) — a `UInputNumber` with a hardcoded
-  `currency: 'BRL'` format. This is a known, separate issue, not fixed in this pass — the list
-  view shows the raw number for the same reason (see "Known gaps" below).
+- **`product-price`** (`PlutoProductPriceField.vue`) — a `UInput` with a cents mask. It stores
+  integer cents (see "Price in cents"). Each typed digit enters from the right (5 -> 0,05 ->
+  0,50 -> 5,09 -> 50,90), Backspace removes the last digit, and Backspace on R$ 0,00 empties the
+  field. `digitsToCents` reads the digits of the whole text on each input event, so phone
+  keyboards and paste work. It does not use `UInputNumber`, because that input snaps the value to
+  its `step` (1), so 50,90 became 51. The text uses `formatProductPrice`, with a hardcoded `BRL`
+  currency. This is a known, separate issue (see "Known gaps" below).
 - **`product-is-custom`**, **`product-availability`**, **`product-stock`** — the cross-field
   rule. See "The is-custom/availability/stock rule" below.
 - **`product-category`** (`PlutoProductCategoryField.vue`) — a searchable menu over
@@ -217,6 +221,27 @@ with a short random suffix (`productMediaSuffixedName`: `chair.glb` → `chair-x
 stores the final name in the row. If the row insert fails after the upload, the route removes
 the uploaded file, then returns the insert error.
 
+## Price in cents
+
+`products.price` holds integer cents. `4990` means R$ 49,90. The column is `bigint`. The field
+keeps `integer: true` and `min: 0`.
+
+- `db/migrations/004_price_in_cents.sql` runs `update public.products set price = price * 100`.
+  It is not safe to run twice. The migration ledger records it, so the admin UI applies it once.
+  The user applies it from `/admin/migrations`. An older app that is not updated shows prices
+  100 times too big until it divides by 100.
+- `shared/utils/product-price.ts` is the one place for the conversion. Nuxt auto-imports it in
+  `app/`, `server/` and `shared/`:
+  - `centsToAmount(cents)` gives the amount in reais. A missing value gives 0.
+  - `amountToCents(amount)` gives exact integer cents. It rounds, so `0.1 + 0.2` gives `30` and
+    `1.005` gives `101`. A missing value gives `null`.
+  - `formatProductPrice(cents, options?)` formats cents with `formatCurrency` from
+    `@plutocms/utils`. The currency is BRL by default. `formatCurrency` itself did not change.
+- `PlutoProductPriceField.vue` shows `centsToAmount(modelValue)` and emits `amountToCents(input)`.
+- No code in this layer reads the price today. A storefront must call `formatProductPrice`, not
+  `formatCurrency(product.price)`, and must not write `/ 100` by hand.
+- Tests: `test/product-price.test.ts`.
+
 ## Translation
 
 The admin text of this layer uses the i18n system of `@plutocms/pluto` (see the `i18n` skill
@@ -234,8 +259,8 @@ byte, as before.
   and the capability labels. Pluto resolves them with `tx()`.
 - A count uses plural forms (`zero | one | other`): `supabase-shop.media.showing`. pt-BR treats
   0 as singular, so the `zero` form sets the 0 text.
-- The price widget keeps the `BRL` currency. It passes the admin locale to `UInputNumber`, so
-  the number format follows the admin language ("R$ 1.234,56" in pt-BR).
+- The price widget keeps the `BRL` currency. Its text uses `formatProductPrice`, so it has the
+  store format ("R$ 1.234,56") in every admin language.
 - Category and availability names come from the database. They stay as stored.
 
 ### Upload problems and server errors
@@ -266,8 +291,9 @@ a full literal. `test/fixtures/i18n-stub.ts` builds a translator over the Englis
 
 ## Known gaps
 
-- The product list view shows a raw, unformatted price, and drops the category and created-at
-  columns the old hand-written table had. `@plutocms/pluto`'s generic list only renders columns
+- The product list view has no price column. The price is integer cents, and the generic list
+  would show the raw value (`4990`, not R$ 49,90), so the field has no `inList`. The list also
+  drops the category and created-at columns the old hand-written table had. `@plutocms/pluto`'s generic list only renders columns
   a field marks `inList`, with no per-column custom cell rendering yet — a later wave's gap, not
   worked around here.
 - The edit page has no "Preview" link to the live product page anymore. The old `Post.vue` had
