@@ -49,7 +49,7 @@ This layer provides the following composables:
 
 - `useProductAvailability`: retrieves a list of product availability statuses (in stock, commission, etc.).
 - `useProduct`: retrieves a list of products or a single product by ID.
-- `useProductCategory`: retrieves a list of product categories.
+- `useProductCategory`: retrieves a list of product categories. It waits for the list by default. Pass `{ lazy: true }` so it does not block navigation: then `categories` is empty while `pending` is true.
 
 ### API Routes
 

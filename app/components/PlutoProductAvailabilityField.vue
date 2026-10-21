@@ -87,6 +87,12 @@ watch(
     }
   }
 )
+
+// Same reason as the reset in `PlutoProductIsCustomField.vue`: the next
+// product form starts with no stale slug.
+onUnmounted(() => {
+  bridge.value.availabilitySlug = null
+})
 </script>
 
 <template>

@@ -96,6 +96,10 @@ default for every layer's fields of that type):
   `/api/category/list`, with inline "create new category" support (posts to
   `/api/category/new`, gated on the separate `shop:manage_taxonomy` capability).
 
+All six widgets are registered with `defineAsyncComponent`, so their code stays out of the entry
+chunk. Core shows a skeleton for each field while its chunk loads. `NavbarAdminActions` stays
+eager, because it is in the navbar.
+
 `product-price`, `product-availability`, and `product-category` load their own options with a
 plain `onMounted` fetch, instead of an `async` composable (`useProductCategory`,
 `useProductAvailability`). A content field widget is resolved and mounted dynamically — an
@@ -125,6 +129,11 @@ sharing one piece of state:
   value when the field has none yet (a brand-new product, or the first time it becomes visible)
   or when `isCustom` actually changes — never on every mount — so opening an existing "in stock"
   product for edit never clobbers its real stock quantity with a default.
+- The widgets load on demand, so they can mount in any order. The bridge is a `useState`, and it
+  lives on after the form closes. `PlutoProductIsCustomField.vue` resets `isCustom` to false and
+  `PlutoProductAvailabilityField.vue` resets `availabilitySlug` to null when they unmount. The
+  next form then starts clean, and a stale flag never looks like a change to a widget that mounts
+  before `product-is-custom`.
 
 ### The media field and its reconciliation hook
 
@@ -182,7 +191,7 @@ These hand-written routes are unchanged, and still load-bearing — the public s
   listed and uploaded to from `UploadProductMedia.vue` and the standalone
   `/admin/product-media` page.
 - `app/composables/product.ts` (`useProduct`), `app/composables/category.ts`
-  (`useProductCategory`), `app/composables/media.ts` (`useProductMedia`),
+  (`useProductCategory`: it waits for the list by default, because store pages read it right after `await`; `{ lazy: true }` does not block navigation, and it returns `pending`), `app/composables/media.ts` (`useProductMedia`),
   `app/components/UploadProductMedia.vue`, `app/pages/admin/product-media.vue` — all still in
   use. Only the upload path changed (see "Product media upload rules" below).
 
