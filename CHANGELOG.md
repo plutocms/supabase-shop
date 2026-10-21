@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.1](https://github.com/plutocms/supabase-shop/compare/v0.11.0...v0.11.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **product:** show the price column in the admin list again ([#81](https://github.com/plutocms/supabase-shop/issues/81)) ([0472d62](https://github.com/plutocms/supabase-shop/commit/0472d62100ee4800a55181b0cee151416955118b))
+
+
+### Performance Improvements
+
+* **product:** load the product field widgets on demand ([#80](https://github.com/plutocms/supabase-shop/issues/80)) ([6265c8a](https://github.com/plutocms/supabase-shop/commit/6265c8a75f943cc16ab01942091096f6c8a9b63f))
+
 ## [0.11.0](https://github.com/plutocms/supabase-shop/compare/v0.10.2...v0.11.0) (2026-10-21)
 
 
