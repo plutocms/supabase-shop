@@ -1,7 +1,7 @@
 {
   "name": "@plutocms/supabase-shop",
   "type": "module",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "trustedDependencies": [
     "@parcel/watcher",
     "@plutocms/pluto",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@nuxtjs/supabase": "^2.1.0",
-    "@plutocms/supabase": "^0.11.1",
+    "@plutocms/supabase": "^0.11.0",
     "@plutocms/ui": "^0.3.0",
     "@plutocms/utils": "^0.2.1",
     "@vueuse/integrations": "14.1.0",
