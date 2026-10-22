@@ -308,3 +308,7 @@ a full literal. `test/fixtures/i18n-stub.ts` builds a translator over the Englis
   one; the generic form has no equivalent slot for it yet.
 - The price widget's hardcoded `currency: 'BRL'` is preserved as-is, not fixed, in this pass —
   the same known, separate issue `Post.vue` already had.
+
+## Data API grants
+
+`db/migrations/005_data_api_grants.sql` grants the shop tables for the Data API (anon `select` only, authenticated and service_role `select, insert, update, delete`). A new table in this layer needs a grant in the same migration file. See the `layer-migrations` skill in `@plutocms/supabase`.
