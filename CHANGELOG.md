@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/plutocms/supabase-shop/compare/v0.11.2...v0.11.3) (2026-10-22)
+
+
+### Bug Fixes
+
+* **db:** grant Data API access to the shop tables explicitly ([#85](https://github.com/plutocms/supabase-shop/issues/85)) ([8387b98](https://github.com/plutocms/supabase-shop/commit/8387b989f5d175454c76ebb81b437186394d04ec))
+
 ## [0.11.2](https://github.com/plutocms/supabase-shop/compare/v0.11.1...v0.11.2) (2026-10-21)
 
 
