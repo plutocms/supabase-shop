@@ -1,4 +1,4 @@
-# E-commerce layer for Pluto CMS with Supabase
+# E-commerce layer for Pluto with Supabase
 
 This layer provides e-commerce functionalities upon [`@plutocms/supabase`](https://github.com/plutocms/supabase) layer.
 
