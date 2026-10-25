@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/plutocms/supabase-shop/compare/v0.12.0...v0.13.0) (2026-10-25)
+
+
+### Features
+
+* **deps:** raise @plutocms/supabase to ^0.13.0 ([#90](https://github.com/plutocms/supabase-shop/issues/90)) ([ba1f091](https://github.com/plutocms/supabase-shop/commit/ba1f091f8ac844bbd9d8eeecdd1a0076f8e22dfd))
+
 ## [0.12.0](https://github.com/plutocms/supabase-shop/compare/v0.11.3...v0.12.0) (2026-10-25)
 
 
