@@ -13,7 +13,7 @@
     "unrs-resolver",
     "vue-demi"
   ],
-  "description": "Shop dashboard layer for Pluto CMS",
+  "description": "Shop dashboard layer for Pluto",
   "author": "Victor Ribeiro",
   "homepage": "https://github.com/plutocms/supabase-shop#readme",
   "repository": {
