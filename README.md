@@ -4,14 +4,11 @@ This layer provides e-commerce functionalities upon [`@plutocms/supabase`](https
 
 ## Installation
 
-Install the `supabase-shop` layer and include it via `extends` option in your `nuxt.config.ts`, it should come after the `@plutocms/pluto` and `@plutocms/supabase` layers:
+Install the `supabase-shop` layer. Your app extends only this layer. It brings `@plutocms/supabase` (and with it `@plutocms/pluto`), `@plutocms/ui` and `@plutocms/utils`.
 
 ```bash
 # npm
 npm i @plutocms/supabase-shop
-
-# yarn
-yarn add @plutocms/supabase-shop
 
 # pnpm
 pnpm add @plutocms/supabase-shop
@@ -23,15 +20,11 @@ bun add @plutocms/supabase-shop
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  extends: [
-    '@plutocms/pluto',
-    '@plutocms/supabase',
-
-    // Make sure to add this layer after the Pluto and Supabase layers
-    '@plutocms/supabase-shop',
-  ],
+  extends: [['@plutocms/supabase-shop', { install: true }]],
 })
 ```
+
+The `package.json` of the app lists only `@plutocms/supabase-shop`, besides `nuxt`, `vue` and `vue-router`.
 
 ## Features
 
@@ -42,25 +35,27 @@ This layer provides the following dashboard views for managing products:
 - `/admin/products`: view a list of products.
 - `/admin/product/new`: create a new product.
 - `/admin/product/edit/:id`: edit an existing product.
+- `/admin/product-media`: the shared media library for product images and 3D models (`.glb`).
 
 ### Composables
 
 This layer provides the following composables:
 
-- `useProductAvailability`: retrieves a list of product availability statuses (in stock, commission, etc.).
 - `useProduct`: retrieves a list of products or a single product by ID.
+- `useProductMedia`: reads the product media library.
 - `useProductCategory`: retrieves a list of product categories. It waits for the list by default. Pass `{ lazy: true }` so it does not block navigation: then `categories` is empty while `pending` is true.
 
 ### API Routes
 
-The layer includes API routes for interacting with Supabase services, such as creating, editing, deleting, and fetching products:
+The admin creates, edits, deletes and lists products through the generic content routes of
+`@plutocms/pluto`: `/api/_pluto/content/product/*`. The layer adds these routes for the storefront and
+the admin forms:
 
-- DELETE `/api/product/delete/:id`
-- POST `/api/product/edit/:id`
 - GET `/api/product/get/:id`
-- GET `/api/product/availability-statuses`
 - GET `/api/product/list`
-- POST `/api/product/create`
+- GET `/api/product/availability-statuses`
+- GET `/api/category/list`, POST `/api/category/new`
+- GET `/api/product-media/list`, POST `/api/product-media/new`
 
 ### Types
 
