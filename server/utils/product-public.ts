@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { PublicProductMedia, PublicProductTaxonomy } from '#shared/types/product'
+import type { PublicProductMedia, PublicProductTaxonomy } from '../../shared/types/product'
 import { serverSupabaseClient } from '#supabase/server'
 
 /**
