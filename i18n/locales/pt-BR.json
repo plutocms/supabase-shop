@@ -72,7 +72,11 @@
     "errors": {
       "noFileSent": "Nenhum arquivo enviado.",
       "productNotFound": "Produto não encontrado",
-      "mediaListFailed": "Não foi possível carregar a biblioteca de mídias."
+      "mediaListFailed": "Não foi possível carregar a biblioteca de mídias.",
+      "productsLoadFailed": "Não foi possível carregar os produtos.",
+      "categoriesLoadFailed": "Não foi possível carregar as categorias.",
+      "categoryCreateFailed": "Não foi possível criar a categoria.",
+      "availabilityLoadFailed": "Não foi possível carregar as disponibilidades."
     }
   },
   "content": {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // The `product.availability` field widget. Loads
-// `/api/product/availability-statuses` directly in `onMounted`, instead of
-// `useProductAvailability()` — same reasoning as `PlutoProductCategoryField.vue`:
-// that composable awaits at its own top level, which can re-suspend an
-// already-mounted page when resolved dynamically as a widget.
+// `/api/_pluto/shop/availability` directly in `onMounted`, with a plain
+// `$fetch` — same reasoning as `PlutoProductCategoryField.vue`: a top-level
+// await can re-suspend an already-mounted page when the widget resolves
+// dynamically.
 //
 // While `bridge.isCustom` is true, every option other than "commission" is
 // disabled, and flipping `isCustom` to true forces this field to
@@ -37,7 +37,7 @@ async function loadOptions() {
 
   try {
     const result = await $fetch<{ data: Array<{ id: number, label: string, slug: string }> }>(
-      '/api/product/availability-statuses'
+      '/api/_pluto/shop/availability'
     )
 
     options.value = result.data.map((row) => ({ label: row.label, value: row.id, slug: row.slug }))

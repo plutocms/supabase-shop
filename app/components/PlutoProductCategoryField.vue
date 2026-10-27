@@ -1,10 +1,8 @@
 <script setup lang="ts">
-// The `product.category` field widget. Loads `/api/category/list` directly
-// in `onMounted`, instead of `useProductCategory()` — that composable is
-// `async` (it awaits its own initial fetch at the top level), and a
-// top-level await inside a widget resolved dynamically by
-// `usePlutoContentFieldWidget` can re-suspend an already-mounted page. See
-// the shop-products skill.
+// The `product.category` field widget. Loads `/api/_pluto/shop/categories` directly
+// in `onMounted`, with a plain `$fetch`. A top-level await inside a widget
+// resolved dynamically by `usePlutoContentFieldWidget` can re-suspend an
+// already-mounted page. See the shop-products skill.
 const props = defineProps<{
   field: PlutoReferenceField
   modelValue: unknown
@@ -30,7 +28,7 @@ async function loadOptions() {
   pending.value = true
 
   try {
-    const result = await $fetch<{ data: Array<{ id: number, label: string }> }>('/api/category/list')
+    const result = await $fetch<{ data: Array<{ id: number, label: string }> }>('/api/_pluto/shop/categories')
 
     options.value = result.data.map((row) => ({ label: row.label, value: row.id }))
   } finally {
@@ -46,7 +44,7 @@ async function createCategory(name: string) {
   pending.value = true
 
   try {
-    const { data } = await $fetch<{ data: { id: number, label: string } }>('/api/category/new', {
+    const { data } = await $fetch<{ data: { id: number, label: string } }>('/api/_pluto/shop/categories', {
       method: 'POST',
       body: { label: name, slug: slugify(name) },
     })

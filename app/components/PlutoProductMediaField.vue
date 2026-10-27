@@ -8,8 +8,8 @@
 // Because `media` is virtual, `item.media` is always undefined when the
 // form first loads (see `mapColumnsToFields` in `@plutocms/pluto`) — this
 // widget loads its own starting gallery in `onMounted`, from the
-// hand-written `GET /api/product/get/:id` route, which still returns
-// `product_media` with public URLs. A brand-new product (no route id)
+// `GET /api/_pluto/shop/products/:id/media` route, which returns the
+// `product_media` rows with public URLs. A brand-new product (no route id)
 // skips that fetch entirely and starts with an empty gallery.
 //
 // The widget never writes to the database. It sends `{ items, removedIds }`
@@ -69,11 +69,11 @@ async function loadMedia() {
   loadStatus.value = 'pending'
 
   try {
-    const { data } = await $fetch<{ data: { product_media: MediaWithSaved[] | null } }>(
-      `/api/product/get/${productId.value}`
+    const { data } = await $fetch<{ data: MediaWithSaved[] }>(
+      `/api/_pluto/shop/products/${productId.value}/media`
     )
 
-    items.value = (data.product_media ?? []).map((entry) => ({ ...entry, is_saved: true }))
+    items.value = data.map((entry) => ({ ...entry, is_saved: true }))
     loadStatus.value = 'ready'
   } catch {
     loadStatus.value = 'error'

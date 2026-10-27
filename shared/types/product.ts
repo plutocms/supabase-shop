@@ -1,23 +1,42 @@
 import type { Database } from '#shared/types/supabase'
 
-export interface ProductData {
-  data: ProductItem[]
+/** A category or an availability status in the public answer of a product. */
+export type PublicProductTaxonomy = Pick<
+  Database['public']['Tables']['product_category']['Row'],
+  'id' | 'label' | 'slug'
+>
+
+/** One media file in the public answer of a product. */
+export interface PublicProductMedia {
+  id: number
+  name: string
+  alt: string | null
+  url: string
+  mime_type: string | null
 }
 
-export interface ProductItem extends PartialProduct {
-  product_media: ProductMedia[] | null
-  product_availability: ProductAvailability | null
-  product_category: ProductCategory | null
+/**
+ * One product in the answer of `/api/pluto/v1/content/product`. The
+ * `toPublic` hook of the layer adds `media` and turns `category` and
+ * `availability` into objects.
+ */
+export interface PublicProduct {
+  id: number
+  name: string
+  slug: string
+  description: string | null
+  price: number
+  is_custom: boolean
+  stock_quantity: number
+  category: PublicProductTaxonomy | null
+  availability: PublicProductTaxonomy | null
+  media: PublicProductMedia[]
+  createdAt?: string
 }
-
-type ProductAvailability =
-  Database['public']['Tables']['product_availability']['Row']
-type ProductCategory = Database['public']['Tables']['product_category']['Row']
 
 export type ProductMedia = Database['public']['Tables']['product_media']['Row']
 
 export type Product = Database['public']['Tables']['products']['Row']
-export type PartialProduct = Omit<Product, 'availability' | 'category'>
 
 /**
  * A `product_media` row, plus a client-only `is_saved` flag. The media
