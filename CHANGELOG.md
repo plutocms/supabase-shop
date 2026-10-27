@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.14.0](https://github.com/plutocms/supabase-shop/compare/v0.13.0...v0.14.0) (2026-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* `/api/product/**`, `/api/category/**` and `/api/product-media/**` are gone, and so are `useProduct` and `useProductCategory`. Read products from `/api/pluto/v1/content/product`.
+
+### Features
+
+* products and taxonomies on the public API, internal routes under /api/_pluto/shop ([#93](https://github.com/plutocms/supabase-shop/issues/93)) ([6aed578](https://github.com/plutocms/supabase-shop/commit/6aed578c0f0d3fb8415fcf9c05e32cc3ce1ebd19))
+
 ## [0.13.0](https://github.com/plutocms/supabase-shop/compare/v0.12.0...v0.13.0) (2026-10-25)
 
 
