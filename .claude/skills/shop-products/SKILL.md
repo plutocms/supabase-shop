@@ -27,7 +27,7 @@ The table is defined in this layer's `db/migrations/` directory. It has these co
 
 Row Level Security gates `products` writes on two capabilities (see
 `db/migrations/003_capability_policies.sql`): `products:manage` (insert, update) and
-`products:delete` (delete). Reading a product needs no capability — the public storefront reads
+`products:delete` (delete). Reading a product needs no capability — the public API reads
 every product.
 
 ## The `product_media` table
@@ -93,16 +93,15 @@ default for every layer's fields of that type):
 - **`product-is-custom`**, **`product-availability`**, **`product-stock`** — the cross-field
   rule. See "The is-custom/availability/stock rule" below.
 - **`product-category`** (`PlutoProductCategoryField.vue`) — a searchable menu over
-  `/api/category/list`, with inline "create new category" support (posts to
-  `/api/category/new`, gated on the separate `shop:manage_taxonomy` capability).
+  `/api/_pluto/shop/categories`, with inline "create new category" support (posts to
+  `POST /api/_pluto/shop/categories`, gated on the separate `shop:manage_taxonomy` capability).
 
 All six widgets are registered with `defineAsyncComponent`, so their code stays out of the entry
 chunk. Core shows a skeleton for each field while its chunk loads. `NavbarAdminActions` stays
 eager, because it is in the navbar.
 
 `product-price`, `product-availability`, and `product-category` load their own options with a
-plain `onMounted` fetch, instead of an `async` composable (`useProductCategory`,
-`useProductAvailability`). A content field widget is resolved and mounted dynamically — an
+plain `onMounted` fetch, instead of an `async` composable. A content field widget is resolved and mounted dynamically — an
 `async` composable's top-level `await` can re-suspend an already-mounted page in that position,
 so each widget fetches for itself instead.
 
@@ -145,9 +144,8 @@ image, remove button, and `.glb` 3D-model handling from the old `Post.vue`, reus
 `UploadProductMedia.vue` unchanged as the picker.
 
 Because the field is virtual, a freshly loaded form never has a starting value for it — the
-widget loads its own starting gallery in `onMounted`, from the hand-written
-`GET /api/product/get/:id` route (kept for exactly this, and for the public storefront — see
-"Public routes kept" below). A brand-new product (no route id yet) skips that fetch and starts
+widget loads its own starting gallery in `onMounted`, from
+`GET /api/_pluto/shop/products/:id/media` (see "The internal routes" below). A brand-new product (no route id yet) skips that fetch and starts
 with an empty gallery.
 
 The widget shows the photos as a main image with a thumbnail strip. It shows the one 3D model as its own tile, with a replace button (opens the picker on the 3D models tab, through the picker prop `startTab`) and a remove button. A new `.glb` puts the id of the old one in `removedIds`. A `.glb` is never the main image. `isProductMediaModel` (in `shared/utils/product-media-upload.ts`) decides what a model is. Add and remove show one muted line, "changes apply on save", not toasts. The first fetch has a skeleton and an error alert with retry.
@@ -175,25 +173,61 @@ into `product_media`, batched — one query per group, never a per-item loop:
 The hook reads a Supabase client through `serverSupabaseClient`, as the calling user, so
 `product_media`'s own RLS still applies underneath it.
 
-## Public routes kept
+## The public API and the internal routes
 
-These hand-written routes are unchanged, and still load-bearing — the public storefront
-(`pluto-supabase-shop-template`) and the kept product-media admin page both call them:
+### The public API (the storefront)
 
-- `GET /api/product/list`, `GET /api/product/get/:id` — read a product (or every product), with
-  `product_media`/`product_category`/`product_availability` joined in and public media URLs
-  resolved.
-- `GET /api/product/availability-statuses` — every availability status, also reused as this
-  content type's `availability` field's `optionsUrl`.
-- `GET /api/category/list`, `POST /api/category/new` — categories, also reused as the `category`
-  field's `optionsUrl` and the category widget's inline-create endpoint.
-- `GET /api/product-media/list`, `POST /api/product-media/new` — the shared media library,
-  listed and uploaded to from `UploadProductMedia.vue` and the standalone
-  `/admin/product-media` page.
-- `app/composables/product.ts` (`useProduct`), `app/composables/category.ts`
-  (`useProductCategory`: it waits for the list by default, because store pages read it right after `await`; `{ lazy: true }` does not block navigation, and it returns `pending`), `app/composables/media.ts` (`useProductMedia`),
-  `app/components/UploadProductMedia.vue`, `app/pages/admin/product-media.vue` — all still in
-  use. Only the upload path changed (see "Product media upload rules" below).
+A storefront reads this layer through the public API of `@plutocms/pluto`
+(https://pluto.vulmix.dev/core/public-api). It needs no hand-written route:
+
+- `GET /api/pluto/v1/content/product` and `GET /api/pluto/v1/content/product/<id or slug>`.
+- `GET /api/pluto/v1/content/product-category` and `.../product-availability`.
+- In a page, use `usePlutoPublicList('product')`, `usePlutoPublicItem('product', slug)`,
+  `usePlutoPublicList('product-category')` and `usePlutoPublicList('product-availability')`.
+  Types: `PublicProduct` (in `shared/types/product.ts`).
+
+The `product` type sets `api: { public: true, fields: [...] }`. The list of fields is explicit:
+`name`, `slug`, `description`, `price`, `is_custom`, `stock_quantity`, `category`,
+`availability`. A column that someone adds later stays private until it is in this list. The
+answer of a product also has `id` and `createdAt` (core adds them).
+
+`hooks.toPublic` (`productToPublic` in `server/utils/product-public.ts`, attached in
+`server/plugins/content.ts`) changes the answer:
+
+- `media` is a new key. It is a list of `{ id, name, alt, url, mime_type }`, ordered by `id`.
+  `url` is the public URL of the file in the `product-media` bucket.
+- `category` and `availability` change from an id to `{ id, label, slug }`, or `null`.
+  A filter still uses the id: `?filter[category]=3`.
+- The hook loads the related rows once for the whole answer: one query per relation, with
+  `.in(...)`. A list of 20 products makes 3 queries. The rows stay on `event.context` under
+  the key `shopProductRelations`.
+
+`product-category` and `product-availability` are content types for the public API only
+(`shared/utils/content-taxonomy.ts`). The server plugin registers them. The client does not, so
+the admin has no nav entry, dashboard tile or command palette item for them. Both set
+`status: false`, `timestamps: false` and `autoRoutes: false`. The category writes need
+`shop:manage_taxonomy`. The availability writes need `shop:manage_availability`. No role has
+that capability, so only an admin passes. A type with no write capability would fail open in core.
+
+### The internal routes (the admin)
+
+The routes of this layer are under `/api/_pluto/shop/`. Core blocks every cross-site request
+that is not a GET on `/api/_pluto/**`.
+
+| Route | Use |
+| --- | --- |
+| `GET /api/_pluto/shop/categories` | Options of the `category` field. |
+| `POST /api/_pluto/shop/categories` | Inline "create category". Needs `shop:manage_taxonomy`. |
+| `GET /api/_pluto/shop/availability` | Options of the `availability` field. |
+| `GET /api/_pluto/shop/product-media` | The shared media library, with public URLs. |
+| `POST /api/_pluto/shop/product-media` | Upload to the library. Needs `products:manage`. |
+| `GET /api/_pluto/shop/products/:id/media` | The media of one product, for the media widget. Answers `{ data: rows[] }`. |
+
+Errors use `createPlutoError` with `supabase-shop.errors.*` keys.
+
+`app/composables/media.ts` (`useProductMedia`), `app/components/UploadProductMedia.vue` and
+`app/pages/admin/product-media.vue` use these routes. The layer has no composable for a
+storefront read: the old `useProduct` and `useProductCategory` are gone.
 
 ## Product media upload rules
 
@@ -211,7 +245,7 @@ The upload route and the picker both use it:
   or `null` when the file passes. `message` is English. `key` and `params` are the translation key
   and its values (see "Translation" below).
 
-`POST /api/product-media/new` checks every file before it touches storage. A wrong type
+`POST /api/_pluto/shop/product-media` checks every file before it touches storage. A wrong type
 returns 415, and a file that is too big returns 413. The `statusMessage` tells the user what to
 do. The route reads the file part by its `filename` and the `alt` part by name, not by position.
 

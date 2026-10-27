@@ -41,26 +41,40 @@ This layer provides the following dashboard views for managing products:
 
 This layer provides the following composables:
 
-- `useProduct`: retrieves a list of products or a single product by ID.
-- `useProductMedia`: reads the product media library.
-- `useProductCategory`: retrieves a list of product categories. It waits for the list by default. Pass `{ lazy: true }` so it does not block navigation: then `categories` is empty while `pending` is true.
+- `useProductMedia`: reads the product media library (admin).
+
+The layer has no composable for a storefront read. A storefront uses the composables of
+`@plutocms/pluto`: `usePlutoPublicList('product')`, `usePlutoPublicItem('product', slug)`,
+`usePlutoPublicList('product-category')` and `usePlutoPublicList('product-availability')`.
 
 ### API Routes
 
-The admin creates, edits, deletes and lists products through the generic content routes of
-`@plutocms/pluto`: `/api/_pluto/content/product/*`. The layer adds these routes for the storefront and
-the admin forms:
+#### The public API
 
-- GET `/api/product/get/:id`
-- GET `/api/product/list`
-- GET `/api/product/availability-statuses`
-- GET `/api/category/list`, POST `/api/category/new`
-- GET `/api/product-media/list`, POST `/api/product-media/new`
+The storefront reads the public API of `@plutocms/pluto` (see https://pluto.vulmix.dev/core/public-api):
+
+- GET `/api/pluto/v1/content/product` and GET `/api/pluto/v1/content/product/<id or slug>`
+- GET `/api/pluto/v1/content/product-category`
+- GET `/api/pluto/v1/content/product-availability`
+
+A product has `id`, `name`, `slug`, `description`, `price` (cents), `is_custom`, `stock_quantity`,
+`createdAt`, `category` and `availability` (each `{ id, label, slug }` or `null`), and `media` (a list of
+`{ id, name, alt, url, mime_type }`). Filter a list with `?filter[category]=<id>`.
+
+#### Internal routes
+
+The admin creates, edits and deletes products through the generic content routes of
+`@plutocms/pluto`: `/api/_pluto/content/product/*`. The layer adds these routes for the admin forms:
+
+- GET `/api/_pluto/shop/categories`, POST `/api/_pluto/shop/categories`
+- GET `/api/_pluto/shop/availability`
+- GET `/api/_pluto/shop/product-media`, POST `/api/_pluto/shop/product-media`
+- GET `/api/_pluto/shop/products/:id/media`
 
 ### Types
 
-- `ProductData`: Auto-imported for product data API response.
-- `ProductItem`: Auto-imported type representing a product item.
+- `PublicProduct`: Auto-imported type of one product in the public API answer.
+- `PublicProductMedia`, `PublicProductTaxonomy`: the media and the category or availability of a `PublicProduct`.
 
 ### Product prices are integer cents
 

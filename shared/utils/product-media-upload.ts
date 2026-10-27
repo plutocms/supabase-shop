@@ -1,5 +1,5 @@
 // Upload rules for the product-media library. Pure functions, used by the
-// upload route (server/api/product-media/new.post.ts) and the picker
+// upload route (server/api/_pluto/shop/product-media.post.ts) and the picker
 // (UploadProductMedia.vue), so both apply the same rules. Unit-tested in
 // test/product-media-upload.test.ts.
 //

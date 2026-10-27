@@ -1,12 +1,6 @@
 import { z } from 'zod'
 import { serverSupabaseClient } from '#supabase/server'
 
-interface Payload {
-  slug: string
-  label: string
-  description?: string | null
-}
-
 /** Matches `product_category`'s real columns (see db/migrations/001_baseline.sql): `slug` and `label` are required, `description` is optional. */
 export const newCategoryPayloadSchema = z.object({
   slug: z.string().trim().min(1, 'A non-empty slug is required.'),
@@ -21,26 +15,22 @@ export default defineEventHandler(async (event) => {
 
   const body = await parseBody(event, newCategoryPayloadSchema)
 
-  const payload: Payload = {
-    slug: body.slug,
-    label: body.label,
-    description: body.description ?? null,
-  }
-
   const { data, error } = await client
     .from('product_category')
-    .insert(payload)
+    .insert({
+      slug: body.slug,
+      label: body.label,
+      description: body.description ?? null,
+    })
     .select()
     .single()
 
   if (error) {
-    throw createError({
-      message: error.message,
+    throw createPlutoError({
+      statusCode: 500,
+      message: 'Could not create the category.',
+      key: 'supabase-shop.errors.categoryCreateFailed',
     })
-  }
-
-  if (error) {
-    throw createError({ message: 'error' })
   }
 
   return { data }

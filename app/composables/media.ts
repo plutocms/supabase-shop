@@ -3,8 +3,8 @@ export function useProductMedia() {
     data: mediaList,
     refresh: refreshMediaList,
     status: mediaStatus,
-  } = useFetch('/api/product-media/list', {
-    key: '/api/product-media/list',
+  } = useFetch('/api/_pluto/shop/product-media', {
+    key: '/api/_pluto/shop/product-media',
   })
 
   return { mediaList, refreshMediaList, mediaStatus }

@@ -1,7 +1,7 @@
 import { defineEventHandler } from 'h3'
 import { describe, expect, it, vi } from 'vitest'
 
-// server/api/category/new.post.ts imports `serverSupabaseClient` from
+// server/api/_pluto/shop/categories.post.ts imports `serverSupabaseClient` from
 // '#supabase/server', a virtual module Nitro only resolves inside a real
 // Nuxt build, and calls the auto-imported `defineEventHandler` at module
 // load time. Stubbed here so the module can load under plain `vitest run`,
@@ -11,7 +11,7 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('#supabase/server', () => ({ serverSupabaseClient: vi.fn() }))
 vi.stubGlobal('defineEventHandler', defineEventHandler)
 
-const { newCategoryPayloadSchema } = await import('../server/api/category/new.post')
+const { newCategoryPayloadSchema } = await import('../server/api/_pluto/shop/categories.post')
 
 describe('newCategoryPayloadSchema', () => {
   it('accepts a slug and label, with description optional', () => {

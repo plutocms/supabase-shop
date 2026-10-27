@@ -171,7 +171,7 @@ async function uploadMedia() {
     isUploading.value = true
     uploadError.value = null
 
-    response = await $fetch('/api/product-media/new', {
+    response = await $fetch('/api/_pluto/shop/product-media', {
       method: 'POST',
       body: formData,
     })

@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 
+/** The shared media library, with the public URL of each file. */
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient<Database>(event)
 
@@ -15,9 +16,7 @@ export default defineEventHandler(async (event) => {
 
   const dataWithUrls = data?.map((item) => ({
     ...item,
-    url: client.storage
-      .from('product-media')
-      .getPublicUrl(`uploads/${item.name}`).data.publicUrl,
+    url: productMediaUrl(client, item.name),
   }))
 
   return { data: dataWithUrls }

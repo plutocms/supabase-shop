@@ -72,7 +72,11 @@
     "errors": {
       "noFileSent": "No file sent.",
       "productNotFound": "Product not found",
-      "mediaListFailed": "Could not load the media library."
+      "mediaListFailed": "Could not load the media library.",
+      "productsLoadFailed": "Could not load the products.",
+      "categoriesLoadFailed": "Could not load the categories.",
+      "categoryCreateFailed": "Could not create the category.",
+      "availabilityLoadFailed": "Could not load the availability statuses."
     }
   },
   "content": {

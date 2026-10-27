@@ -52,9 +52,9 @@ export const productType = defineContentType({
     // The price is integer cents. `listFormat` shows it as money in the generic list.
     { name: 'price', type: 'number', label: 'Price', description: 'The price shown in the store.', required: true, integer: true, min: 0, inList: true, listFormat: (value) => (typeof value === 'number' ? formatProductPrice(value) : ''), widget: 'product-price', region: 'side', order: 50 },
     { name: 'is_custom', type: 'boolean', label: 'Is custom', description: 'Turn this on if you make the piece only when a customer orders it. The availability becomes "commission".', widget: 'product-is-custom', region: 'side', order: 60 },
-    { name: 'availability', type: 'reference', label: 'Availability', description: 'Tells the customer if the piece can be bought now.', optionsUrl: '/api/product/availability-statuses', labelKey: 'label', valueKey: 'id', widget: 'product-availability', region: 'side', order: 70 },
+    { name: 'availability', type: 'reference', label: 'Availability', description: 'Tells the customer if the piece can be bought now.', optionsUrl: '/api/_pluto/shop/availability', labelKey: 'label', valueKey: 'id', widget: 'product-availability', region: 'side', order: 70 },
     { name: 'stock_quantity', type: 'number', label: 'Stock quantity', description: 'How many units you have. It shows only for pieces in stock.', min: 0, widget: 'product-stock', region: 'side', order: 80 },
-    { name: 'category', type: 'reference', label: 'Category', description: 'Groups similar pieces in the store.', optionsUrl: '/api/category/list', labelKey: 'label', valueKey: 'id', widget: 'product-category', region: 'side', order: 90 },
+    { name: 'category', type: 'reference', label: 'Category', description: 'Groups similar pieces in the store.', optionsUrl: '/api/_pluto/shop/categories', labelKey: 'label', valueKey: 'id', widget: 'product-category', region: 'side', order: 90 },
     { name: 'slug', type: 'slug', label: 'Slug', description: 'The last part of the product link. It comes from the name. Use lowercase letters, numbers and hyphens.', from: 'name', preview: '/product/', required: true, inList: true, region: 'side', order: 100 },
   ],
   slug: { field: 'slug' },
@@ -62,6 +62,15 @@ export const productType = defineContentType({
   timestamps: { created: 'created_at', updated: false },
   capabilities: { write: 'products:manage', delete: 'products:delete' },
   autoRoutes: false,
+  // The public API (`/api/pluto/v1/content/product`). The list of fields is
+  // explicit, so a column added later stays private until someone adds it
+  // here. The virtual `media` field is not in it: the server hook
+  // `toPublic` adds `media` with the public URLs. The hook also turns
+  // `category` and `availability` into objects.
+  api: {
+    public: true,
+    fields: ['name', 'slug', 'description', 'price', 'is_custom', 'stock_quantity', 'category', 'availability'],
+  },
   basePath: '/admin/products',
   newPath: '/admin/product/new',
   editPath: (id) => `/admin/product/edit/${id}`,
