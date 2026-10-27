@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/plutocms/supabase-shop/compare/v0.14.1...v0.14.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* import the product types by a relative path, so an app typechecks ([#97](https://github.com/plutocms/supabase-shop/issues/97)) ([27c7d10](https://github.com/plutocms/supabase-shop/commit/27c7d1092adf1093d1128cb0d44175ba57bceadd))
+
 ## [0.14.1](https://github.com/plutocms/supabase-shop/compare/v0.14.0...v0.14.1) (2026-10-27)
 
 
