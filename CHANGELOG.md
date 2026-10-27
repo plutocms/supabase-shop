@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/plutocms/supabase-shop/compare/v0.14.0...v0.14.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** use @plutocms/pluto 0.28 through supabase 0.14.1, and drop the copy of parseBody ([#95](https://github.com/plutocms/supabase-shop/issues/95)) ([d380344](https://github.com/plutocms/supabase-shop/commit/d380344ae046218df8c4c599587e63d94b75a71f))
+
 ## [0.14.0](https://github.com/plutocms/supabase-shop/compare/v0.13.0...v0.14.0) (2026-10-27)
 
 
