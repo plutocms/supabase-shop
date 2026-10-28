@@ -1,5 +1,6 @@
 // @ts-check
 import antfu from '@antfu/eslint-config'
+import prettier from 'eslint-config-prettier'
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss'
 import { getDefaultSelectors } from 'eslint-plugin-better-tailwindcss/defaults'
 import withNuxt from './.nuxt/eslint.config.mjs'
@@ -7,14 +8,13 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 // See: https://eslint.vuejs.org/rules
 export default withNuxt(
   antfu({
+    // Prettier formats the code (format on save, `bun run prettier`). ESLint checks the code,
+    // not its layout, so the two never undo each other.
+    stylistic: false,
     rules: {
       'antfu/consistent-chaining': 'off',
 
       'node/prefer-global/process': ['off', 'never'],
-
-      'style/arrow-parens': ['warn', 'always'],
-
-      'style/brace-style': ['warn', '1tbs'],
 
       'vue/block-order': [
         'warn',
@@ -61,36 +61,6 @@ export default withNuxt(
       'vue/multi-word-component-names': 'off',
 
       'vue/eqeqeq': ['error', 'always'],
-
-      'style/comma-dangle': [
-        'warn',
-        {
-          arrays: 'always-multiline',
-          objects: 'always-multiline',
-          functions: 'never',
-        },
-      ],
-
-      'vue/comma-dangle': [
-        'warn',
-        {
-          arrays: 'always-multiline',
-          objects: 'always-multiline',
-          functions: 'never',
-        },
-      ],
-
-      'style/operator-linebreak': 'off',
-
-      'vue/singleline-html-element-content-newline': 'off',
-
-      'style/no-mixed-operators': 'off',
-
-      'style/indent': 'off',
-
-      'vue/html-indent': 'off',
-      'vue/brace-style': 'off',
-      'style/indent-binary-ops': 'off',
     },
   }),
   // Canonical Tailwind classes (the same suggestion as Tailwind IntelliSense,
@@ -106,7 +76,11 @@ export default withNuxt(
         rootFontSize: 16,
         selectors: [
           ...getDefaultSelectors(),
-          { kind: 'attribute', name: '^(?:v-bind:)?ui$', match: [{ type: 'objectValues' }] },
+          {
+            kind: 'attribute',
+            name: '^(?:v-bind:)?ui$',
+            match: [{ type: 'objectValues' }],
+          },
         ],
       },
     },
@@ -115,5 +89,7 @@ export default withNuxt(
       // The fix of the rule above can leave double spaces in a class list.
       'better-tailwindcss/no-unnecessary-whitespace': 'error',
     },
-  }
+  },
+  // Last: turns off every rule that Prettier covers (the Vue template layout rules too).
+  prettier
 )
