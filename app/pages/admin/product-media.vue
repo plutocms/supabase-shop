@@ -71,7 +71,7 @@ function selectMedia(id: number) {
             class="group/image-select relative aspect-square overflow-hidden rounded-2xl bg-black select-none hover:ring-1 has-aria-checked:ring-2 has-aria-checked:ring-green-400"
           >
             <label
-              class="absolute top-0 left-0 grid h-full w-full items-start justify-end"
+              class="absolute top-0 left-0 grid size-full items-start justify-end"
             >
               <div class="rounded-bl-2xl bg-black/80 p-2">
                 <UCheckbox
@@ -85,7 +85,7 @@ function selectMedia(id: number) {
               v-if="file.name"
               :src="file.url"
               :alt="file.alt || file.name"
-              class="h-full w-full object-contain"
+              class="size-full object-contain"
             />
           </div>
         </div>
