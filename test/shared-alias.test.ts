@@ -10,7 +10,11 @@ const ALLOWED = new Set(['#shared/types/supabase'])
 function files(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name)
-    return statSync(path).isDirectory() ? files(path) : /\.(?:ts|vue)$/.test(name) ? [path] : []
+    return statSync(path).isDirectory()
+      ? files(path)
+      : /\.(?:ts|vue)$/.test(name)
+        ? [path]
+        : []
   })
 }
 
@@ -20,7 +24,8 @@ describe('#shared imports', () => {
       [...readFileSync(file, 'utf8').matchAll(/from '(#shared\/[^']+)'/g)]
         .map((match) => match[1]!)
         .filter((specifier) => !ALLOWED.has(specifier))
-        .map((specifier) => `${file}: ${specifier}`))
+        .map((specifier) => `${file}: ${specifier}`)
+    )
 
     expect(bad).toEqual([])
   })

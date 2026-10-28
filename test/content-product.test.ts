@@ -20,7 +20,9 @@ describe('productType', () => {
   it('titleField names a real field', async () => {
     const { productType } = await import('../shared/utils/content-product')
 
-    expect(productType.fields.some((field) => field.name === productType.titleField)).toBe(true)
+    expect(
+      productType.fields.some((field) => field.name === productType.titleField)
+    ).toBe(true)
   })
 
   it('slug.field names a field of type "slug"', async () => {
@@ -29,7 +31,9 @@ describe('productType', () => {
     expect(productType.slug).not.toBe(false)
 
     const slug = productType.slug as { field: string }
-    const field = productType.fields.find((candidate) => candidate.name === slug.field)
+    const field = productType.fields.find(
+      (candidate) => candidate.name === slug.field
+    )
 
     expect(field?.type).toBe('slug')
   })
@@ -38,7 +42,9 @@ describe('productType', () => {
     const { productType } = await import('../shared/utils/content-product')
 
     const side = productType.fields.filter((field) => field.region === 'side')
-    const last = side.reduce((a, b) => ((b.order ?? 0) > (a.order ?? 0) ? b : a))
+    const last = side.reduce((a, b) =>
+      (b.order ?? 0) > (a.order ?? 0) ? b : a
+    )
 
     expect(last.name).toBe('slug')
   })
@@ -60,7 +66,10 @@ describe('productType', () => {
   it('declares no created-timestamp override, and disables updated', async () => {
     const { productType } = await import('../shared/utils/content-product')
 
-    expect(productType.timestamps).toEqual({ created: 'created_at', updated: false })
+    expect(productType.timestamps).toEqual({
+      created: 'created_at',
+      updated: false,
+    })
   })
 
   it('the media field is virtual, so it never reaches a storage column', async () => {

@@ -36,7 +36,12 @@ export function partitionProductMedia(
   ownerMap: Map<number, number | null>,
   productId: number
 ): ProductMediaPartition {
-  const partition: ProductMediaPartition = { noop: [], attach: [], clone: [], fresh: [] }
+  const partition: ProductMediaPartition = {
+    noop: [],
+    attach: [],
+    clone: [],
+    fresh: [],
+  }
 
   for (const item of items) {
     if (!item.id) {
@@ -59,7 +64,10 @@ export function partitionProductMedia(
 }
 
 /** Strips the columns a clone or a brand-new insert must never carry over: the old row's own id, the client-only `is_saved` flag, and its old creation time. */
-function toInsertRow(item: MediaWithSaved, productId: number): Database['public']['Tables']['product_media']['Insert'] {
+function toInsertRow(
+  item: MediaWithSaved,
+  productId: number
+): Database['public']['Tables']['product_media']['Insert'] {
   const { id: _id, is_saved: _isSaved, created_at: _createdAt, ...rest } = item
 
   return { ...rest, product_id: productId }
@@ -103,7 +111,9 @@ export async function reconcileProductMedia(
     }
   }
 
-  const existing = media.items.filter((entry): entry is MediaWithSaved & { id: number } => Boolean(entry.id))
+  const existing = media.items.filter(
+    (entry): entry is MediaWithSaved & { id: number } => Boolean(entry.id)
+  )
 
   const ownerMap = new Map<number, number | null>()
 
@@ -125,7 +135,11 @@ export async function reconcileProductMedia(
     }
   }
 
-  const { attach, clone, fresh } = partitionProductMedia(media.items, ownerMap, productId)
+  const { attach, clone, fresh } = partitionProductMedia(
+    media.items,
+    ownerMap,
+    productId
+  )
 
   if (attach.length > 0) {
     const { error } = await client
@@ -141,7 +155,9 @@ export async function reconcileProductMedia(
     }
   }
 
-  const toInsert = [...clone, ...fresh].map((entry) => toInsertRow(entry, productId))
+  const toInsert = [...clone, ...fresh].map((entry) =>
+    toInsertRow(entry, productId)
+  )
 
   if (toInsert.length > 0) {
     const { error } = await client.from('product_media').insert(toInsert)

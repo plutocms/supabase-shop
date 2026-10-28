@@ -22,7 +22,9 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update:modelValue': [value: { items: MediaWithSaved[], removedIds: number[] }]
+  'update:modelValue': [
+    value: { items: MediaWithSaved[]; removedIds: number[] },
+  ]
 }>()
 
 const route = useRoute()
@@ -42,17 +44,26 @@ const currentSelectedImage = ref(0)
 const isMediaModalOpen = ref(false)
 const pickerStartTab = ref<'gallery' | 'models'>('gallery')
 const hasChanges = ref(false)
-const loadStatus = ref<'pending' | 'error' | 'ready'>(productId.value ? 'pending' : 'ready')
+const loadStatus = ref<'pending' | 'error' | 'ready'>(
+  productId.value ? 'pending' : 'ready'
+)
 
 /** Photos only. A 3D model is never a photo, so it never becomes the main image. */
-const images = computed(() => items.value.filter((entry) => !isProductMediaModel(entry)))
-const model = computed(() => items.value.find((entry) => isProductMediaModel(entry)))
+const images = computed(() =>
+  items.value.filter((entry) => !isProductMediaModel(entry))
+)
+const model = computed(() =>
+  items.value.find((entry) => isProductMediaModel(entry))
+)
 
 const mainImage = computed(() => images.value[currentSelectedImage.value])
 
 function emitUpdate() {
   hasChanges.value = true
-  emit('update:modelValue', { items: [...items.value], removedIds: [...removedIds.value] })
+  emit('update:modelValue', {
+    items: [...items.value],
+    removedIds: [...removedIds.value],
+  })
 }
 
 function markRemoved(entry: MediaWithSaved) {
@@ -105,7 +116,10 @@ function removeImage(entry: MediaWithSaved | undefined) {
     currentSelectedImage.value -= 1
   }
 
-  currentSelectedImage.value = Math.max(0, Math.min(currentSelectedImage.value, images.value.length - 1))
+  currentSelectedImage.value = Math.max(
+    0,
+    Math.min(currentSelectedImage.value, images.value.length - 1)
+  )
 
   emitUpdate()
 }
@@ -151,7 +165,10 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
   }
 
   const knownIds = new Set(items.value.map((entry) => entry.id).filter(Boolean))
-  const newImages = incoming.filter((entry) => !isProductMediaModel(entry) && !(entry.id && knownIds.has(entry.id)))
+  const newImages = incoming.filter(
+    (entry) =>
+      !isProductMediaModel(entry) && !(entry.id && knownIds.has(entry.id))
+  )
 
   if (newImages.length > 0) {
     items.value.push(...newImages)
@@ -170,22 +187,40 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
         v-if="loadStatus === 'error'"
         :title="t('supabase-shop.mediaField.loadFailed')"
         :description="t('supabase-shop.mediaField.loadFailedDescription')"
-        :actions="[{ label: t('supabase-shop.mediaField.retry'), icon: 'lucide:refresh-cw', color: 'error', variant: 'outline', onClick: loadMedia }]"
+        :actions="[
+          {
+            label: t('supabase-shop.mediaField.retry'),
+            icon: 'lucide:refresh-cw',
+            color: 'error',
+            variant: 'outline',
+            onClick: loadMedia,
+          },
+        ]"
         color="error"
         variant="subtle"
         icon="lucide:circle-alert"
       />
 
-      <div v-if="loadStatus === 'pending'" :aria-label="t('supabase-shop.mediaField.loading')" class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start" aria-busy="true">
+      <div
+        v-if="loadStatus === 'pending'"
+        :aria-label="t('supabase-shop.mediaField.loading')"
+        class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start"
+        aria-busy="true"
+      >
         <USkeleton class="aspect-square w-full max-w-96 shrink-0 rounded-md" />
         <div class="flex gap-2 lg:flex-col">
           <USkeleton v-for="n in 3" :key="n" class="size-14 rounded-md" />
         </div>
       </div>
 
-      <div v-else-if="loadStatus === 'ready'" class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start">
+      <div
+        v-else-if="loadStatus === 'ready'"
+        class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start"
+      >
         <!-- Main image -->
-        <div class="aspect-square w-full max-w-96 shrink-0 self-center lg:self-start">
+        <div
+          class="aspect-square w-full max-w-96 shrink-0 self-center lg:self-start"
+        >
           <button
             v-if="images.length === 0"
             :disabled="disabled"
@@ -194,13 +229,20 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
             class="group grid size-full cursor-pointer place-items-center rounded-md bg-muted transition-colors hover:bg-accented focus-visible:outline-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
             @click="openPicker('gallery')"
           >
-            <span class="flex flex-col items-center gap-2 text-muted group-hover:text-default">
+            <span
+              class="flex flex-col items-center gap-2 text-muted group-hover:text-default"
+            >
               <Icon name="lucide:image-plus" class="text-5xl" />
-              <span class="text-sm">{{ t('supabase-shop.mediaField.add') }}</span>
+              <span class="text-sm">{{
+                t('supabase-shop.mediaField.add')
+              }}</span>
             </span>
           </button>
 
-          <div v-else class="relative size-full overflow-hidden rounded-md bg-elevated">
+          <div
+            v-else
+            class="relative size-full overflow-hidden rounded-md bg-elevated"
+          >
             <img
               v-if="mainImage?.name"
               :src="mainImage.url ?? ''"
@@ -224,7 +266,9 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
         </div>
 
         <!-- Thumbnails and the 3D model tile -->
-        <div class="flex flex-row flex-wrap items-start gap-2 lg:flex-col lg:flex-nowrap">
+        <div
+          class="flex flex-row flex-wrap items-start gap-2 lg:flex-col lg:flex-nowrap"
+        >
           <button
             v-for="(image, index) in images"
             :key="image.id ?? `new-${index}`"
@@ -232,14 +276,23 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
               currentSelectedImage === index && 'ring-2 ring-primary',
               !image.is_saved && 'opacity-50',
             ]"
-            :title="!image.is_saved ? t('supabase-shop.mediaField.unsaved') : ''"
-            :aria-label="t('supabase-shop.mediaField.select', { index: index + 1 })"
+            :title="
+              !image.is_saved ? t('supabase-shop.mediaField.unsaved') : ''
+            "
+            :aria-label="
+              t('supabase-shop.mediaField.select', { index: index + 1 })
+            "
             :aria-pressed="currentSelectedImage === index"
             type="button"
             class="size-14 shrink-0 cursor-pointer overflow-hidden rounded-md bg-elevated transition-colors hover:bg-accented focus-visible:outline-2 focus-visible:outline-primary"
             @click="currentSelectedImage = index"
           >
-            <img v-if="image.name" :src="image.url ?? ''" :alt="image.alt || image.name" class="size-full object-cover" />
+            <img
+              v-if="image.name"
+              :src="image.url ?? ''"
+              :alt="image.alt || image.name"
+              class="size-full object-cover"
+            />
           </button>
 
           <button
@@ -259,11 +312,18 @@ function handleInsertMedia(event: MediaWithSaved | MediaWithSaved[] | null) {
             v-if="model"
             class="flex w-full min-w-0 items-center gap-2 rounded-md bg-elevated p-2 lg:w-56"
           >
-            <Icon name="lucide:rotate-3d" class="shrink-0 text-2xl text-muted" />
+            <Icon
+              name="lucide:rotate-3d"
+              class="shrink-0 text-2xl text-muted"
+            />
 
             <div class="min-w-0 grow">
-              <div class="text-xs text-muted">{{ t('supabase-shop.mediaField.model') }}</div>
-              <div :title="model.name ?? ''" class="truncate text-sm">{{ model.name }}</div>
+              <div class="text-xs text-muted">
+                {{ t('supabase-shop.mediaField.model') }}
+              </div>
+              <div :title="model.name ?? ''" class="truncate text-sm">
+                {{ model.name }}
+              </div>
             </div>
 
             <UButton

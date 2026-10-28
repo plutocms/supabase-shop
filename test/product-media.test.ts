@@ -10,7 +10,9 @@ import { describe, expectTypeOf, it } from 'vitest'
 // server-side instead of storing it).
 describe('productMedia shape', () => {
   it('includes the persisted url column', () => {
-    expectTypeOf<ProductMedia>().toHaveProperty('url').toEqualTypeOf<string | null>()
+    expectTypeOf<ProductMedia>()
+      .toHaveProperty('url')
+      .toEqualTypeOf<string | null>()
   })
 
   it('matches the raw product_media Row exactly (no hand-added fields)', () => {

@@ -19,8 +19,12 @@ const emit = defineEmits<{
 
 const input = useTemplateRef('input')
 
-const cents = computed(() => (typeof props.modelValue === 'number' ? props.modelValue : null))
-const display = computed(() => (cents.value === null ? '' : formatProductPrice(cents.value)))
+const cents = computed(() =>
+  typeof props.modelValue === 'number' ? props.modelValue : null
+)
+const display = computed(() =>
+  cents.value === null ? '' : formatProductPrice(cents.value)
+)
 
 function onUpdate(value: string | number) {
   let next = digitsToCents(String(value))
@@ -45,7 +49,11 @@ function onUpdate(value: string | number) {
 </script>
 
 <template>
-  <UFormField :label="field.label" :description="field.description" :required="field.required">
+  <UFormField
+    :label="field.label"
+    :description="field.description"
+    :required="field.required"
+  >
     <UInput
       ref="input"
       :model-value="display"

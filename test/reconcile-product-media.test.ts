@@ -10,7 +10,8 @@ import { describe, expect, it, vi } from 'vitest'
 // helper, which does no I/O of its own.
 vi.mock('#supabase/server', () => ({ serverSupabaseClient: vi.fn() }))
 
-const { partitionProductMedia } = await import('../server/utils/reconcile-product-media')
+const { partitionProductMedia } =
+  await import('../server/utils/reconcile-product-media')
 
 /**
  * Builds a minimal MediaWithSaved fixture, overridden per test. Returns
@@ -34,7 +35,9 @@ function makeMedia(overrides: Partial<MediaWithSaved> = {}): MediaWithSaved {
 }
 
 /** A fixture with no `id` at all — a media item not yet saved to storage. */
-function makeFreshMedia(overrides: Partial<MediaWithSaved> = {}): MediaWithSaved {
+function makeFreshMedia(
+  overrides: Partial<MediaWithSaved> = {}
+): MediaWithSaved {
   const { id: _id, ...rest } = makeMedia(overrides)
   return rest as MediaWithSaved
 }
@@ -95,7 +98,11 @@ describe('partitionProductMedia', () => {
       [3, 77],
     ])
 
-    const result = partitionProductMedia([noopItem, attachItem, cloneItem, freshItem], ownerMap, 10)
+    const result = partitionProductMedia(
+      [noopItem, attachItem, cloneItem, freshItem],
+      ownerMap,
+      10
+    )
 
     expect(result.noop).toEqual([noopItem])
     expect(result.attach).toEqual([attachItem])

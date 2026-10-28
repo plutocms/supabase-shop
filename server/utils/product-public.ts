@@ -1,5 +1,8 @@
 import type { H3Event } from 'h3'
-import type { PublicProductMedia, PublicProductTaxonomy } from '../../shared/types/product'
+import type {
+  PublicProductMedia,
+  PublicProductTaxonomy,
+} from '../../shared/types/product'
 import { serverSupabaseClient } from '#supabase/server'
 
 /**
@@ -23,11 +26,18 @@ interface ProductRelations {
 }
 
 /** The unique, valid ids that `pick` reads from the items. */
-function uniqueIds(items: PlutoContentItem[], pick: (item: PlutoContentItem) => unknown): number[] {
+function uniqueIds(
+  items: PlutoContentItem[],
+  pick: (item: PlutoContentItem) => unknown
+): number[] {
   const ids = new Set<number>()
   for (const item of items) {
     const value = pick(item)
-    if (value !== null && value !== undefined && Number.isFinite(Number(value))) {
+    if (
+      value !== null &&
+      value !== undefined &&
+      Number.isFinite(Number(value))
+    ) {
       ids.add(Number(value))
     }
   }
@@ -35,7 +45,10 @@ function uniqueIds(items: PlutoContentItem[], pick: (item: PlutoContentItem) => 
 }
 
 function relationError(message: string) {
-  console.error('[shop] could not load the related rows of the products:', message)
+  console.error(
+    '[shop] could not load the related rows of the products:',
+    message
+  )
   return createPlutoError({
     statusCode: 500,
     message: 'Could not load the products.',
@@ -43,7 +56,10 @@ function relationError(message: string) {
   })
 }
 
-async function fetchRelations(event: H3Event, batch: PlutoContentItem[]): Promise<ProductRelations> {
+async function fetchRelations(
+  event: H3Event,
+  batch: PlutoContentItem[]
+): Promise<ProductRelations> {
   const client = await serverSupabaseClient<Database>(event)
   const productIds = uniqueIds(batch, (item) => item.id)
   const categoryIds = uniqueIds(batch, (item) => item.category)
@@ -58,10 +74,16 @@ async function fetchRelations(event: H3Event, batch: PlutoContentItem[]): Promis
           .order('id', { ascending: true })
       : { data: [], error: null },
     categoryIds.length > 0
-      ? client.from('product_category').select('id, label, slug').in('id', categoryIds)
+      ? client
+          .from('product_category')
+          .select('id, label, slug')
+          .in('id', categoryIds)
       : { data: [], error: null },
     availabilityIds.length > 0
-      ? client.from('product_availability').select('id, label, slug').in('id', availabilityIds)
+      ? client
+          .from('product_availability')
+          .select('id, label, slug')
+          .in('id', availabilityIds)
       : { data: [], error: null },
   ])
 
@@ -91,18 +113,30 @@ async function fetchRelations(event: H3Event, batch: PlutoContentItem[]): Promis
     result.media.set(row.product_id, list)
   }
   for (const row of categories.data ?? []) {
-    result.categories.set(row.id, { id: row.id, label: row.label, slug: row.slug })
+    result.categories.set(row.id, {
+      id: row.id,
+      label: row.label,
+      slug: row.slug,
+    })
   }
   for (const row of availability.data ?? []) {
-    result.availability.set(row.id, { id: row.id, label: row.label, slug: row.slug })
+    result.availability.set(row.id, {
+      id: row.id,
+      label: row.label,
+      slug: row.slug,
+    })
   }
 
   return result
 }
 
 /** The related rows of one answer. The first call loads them, the next calls reuse them. */
-export function loadProductRelations(event: H3Event, batch: PlutoContentItem[]): Promise<ProductRelations> {
-  const cached = event.context[PRODUCT_RELATIONS_KEY] as Promise<ProductRelations> | undefined
+export function loadProductRelations(
+  event: H3Event,
+  batch: PlutoContentItem[]
+): Promise<ProductRelations> {
+  const cached = event.context[PRODUCT_RELATIONS_KEY] as
+    Promise<ProductRelations> | undefined
   if (cached) {
     return cached
   }
@@ -116,7 +150,11 @@ export function loadProductRelations(event: H3Event, batch: PlutoContentItem[]):
  * change from an id to an object (`null` when the product has none).
  * `media` is a new key, with the files in their order.
  */
-export const productToPublic: PlutoContentToPublic = async (ctx, data, info) => {
+export const productToPublic: PlutoContentToPublic = async (
+  ctx,
+  data,
+  info
+) => {
   const relations = await loadProductRelations(ctx.event, info.batch)
 
   return {

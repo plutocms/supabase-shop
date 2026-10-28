@@ -163,7 +163,7 @@ into `product_media`, batched — one query per group, never a per-item loop:
    - **no-op** — already owned by this product.
    - **attach** — owned by nobody, or the row could not be found. One batched
      `update({ product_id })...in('id', ...)`.
-   - **clone** — owned by a *different* product. **Always cloned, never stolen** — see "The
+   - **clone** — owned by a _different_ product. **Always cloned, never stolen** — see "The
      `product_media` table" above for why. Cloned with one batched `insert`, stripped of `id`,
      `is_saved`, and `created_at`.
 4. Brand-new items (no `id`) insert in that same batched `insert` call.
@@ -214,13 +214,13 @@ that capability, so only an admin passes. A type with no write capability would 
 The routes of this layer are under `/api/_pluto/shop/`. Core blocks every cross-site request
 that is not a GET on `/api/_pluto/**`.
 
-| Route | Use |
-| --- | --- |
-| `GET /api/_pluto/shop/categories` | Options of the `category` field. |
-| `POST /api/_pluto/shop/categories` | Inline "create category". Needs `shop:manage_taxonomy`. |
-| `GET /api/_pluto/shop/availability` | Options of the `availability` field. |
-| `GET /api/_pluto/shop/product-media` | The shared media library, with public URLs. |
-| `POST /api/_pluto/shop/product-media` | Upload to the library. Needs `products:manage`. |
+| Route                                     | Use                                                                         |
+| ----------------------------------------- | --------------------------------------------------------------------------- |
+| `GET /api/_pluto/shop/categories`         | Options of the `category` field.                                            |
+| `POST /api/_pluto/shop/categories`        | Inline "create category". Needs `shop:manage_taxonomy`.                     |
+| `GET /api/_pluto/shop/availability`       | Options of the `availability` field.                                        |
+| `GET /api/_pluto/shop/product-media`      | The shared media library, with public URLs.                                 |
+| `POST /api/_pluto/shop/product-media`     | Upload to the library. Needs `products:manage`.                             |
 | `GET /api/_pluto/shop/products/:id/media` | The media of one product, for the media widget. Answers `{ data: rows[] }`. |
 
 Errors use `createPlutoError` with `supabase-shop.errors.*` keys.

@@ -49,7 +49,11 @@ watch(
 </script>
 
 <template>
-  <UFormField v-if="visible" :label="field.label" :description="field.description">
+  <UFormField
+    v-if="visible"
+    :label="field.label"
+    :description="field.description"
+  >
     <UInputNumber
       :model-value="value"
       :min="field.min"

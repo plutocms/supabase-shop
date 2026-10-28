@@ -20,7 +20,8 @@ const items = computed<NavbarAction[]>(() => [
     // This hides the button only. It is a UI convenience, not a
     // security check. The server route still enforces
     // products:manage on its own.
-    show: !route.path.startsWith('/admin/product/new') && can('products:manage'),
+    show:
+      !route.path.startsWith('/admin/product/new') && can('products:manage'),
   },
 
   {

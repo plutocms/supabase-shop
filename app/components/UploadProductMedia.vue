@@ -302,7 +302,9 @@ const isInsertButtonDisabled = computed(
                 >
                   <div>
                     <span v-if="selectedMedia.length === 0">
-                      {{ t('supabase-shop.media.showing', imageList?.length ?? 0) }}
+                      {{
+                        t('supabase-shop.media.showing', imageList?.length ?? 0)
+                      }}
                     </span>
 
                     <span v-else>
@@ -348,7 +350,7 @@ const isInsertButtonDisabled = computed(
                   class="group/image-select relative aspect-square overflow-hidden rounded-2xl bg-elevated select-none hover:ring-1 hover:ring-accented has-aria-checked:ring-2 has-aria-checked:ring-primary"
                 >
                   <label
-                    class="absolute top-0 left-0 grid h-full w-full items-start justify-end"
+                    class="absolute top-0 left-0 grid size-full items-start justify-end"
                   >
                     <div class="rounded-bl-2xl bg-default/80 p-2">
                       <UCheckbox
@@ -362,7 +364,7 @@ const isInsertButtonDisabled = computed(
                     v-if="file.name"
                     :src="file.url"
                     :alt="file.alt || file.name"
-                    class="h-full w-full object-contain"
+                    class="size-full object-contain"
                   />
                 </div>
               </div>
@@ -397,7 +399,7 @@ const isInsertButtonDisabled = computed(
                   class="group/image-select relative aspect-square overflow-hidden rounded-2xl bg-elevated select-none hover:ring-1 hover:ring-accented has-aria-checked:ring-2 has-aria-checked:ring-primary"
                 >
                   <label
-                    class="absolute top-0 left-0 grid h-full w-full items-start justify-end"
+                    class="absolute top-0 left-0 grid size-full items-start justify-end"
                   >
                     <div class="rounded-bl-2xl bg-default/80 p-2">
                       <UCheckbox
@@ -430,8 +432,15 @@ const isInsertButtonDisabled = computed(
                 v-model="selectedFile"
                 :accept="PRODUCT_MEDIA_ACCEPT"
                 :disabled="isUploading || isUploaded"
-                :description="t('supabase-shop.picker.dropDescription', { size: PRODUCT_MEDIA_MAX_SIZE })"
-                :ui="{ fileLeadingAvatar: 'size-full rounded-lg bg-elevated [&>img]:object-contain' }"
+                :description="
+                  t('supabase-shop.picker.dropDescription', {
+                    size: PRODUCT_MEDIA_MAX_SIZE,
+                  })
+                "
+                :ui="{
+                  fileLeadingAvatar:
+                    'size-full rounded-lg bg-elevated [&>img]:object-contain',
+                }"
                 :label="t('supabase-shop.picker.dropLabel')"
                 icon="lucide:image-up"
                 class="min-h-72 grow"
@@ -452,7 +461,9 @@ const isInsertButtonDisabled = computed(
                   @update:open="uploadError = null"
                 />
 
-                <div v-if="selectedFile" class="wrap-break-word">{{ selectedFile.name }}</div>
+                <div v-if="selectedFile" class="wrap-break-word">
+                  {{ selectedFile.name }}
+                </div>
 
                 <div v-if="isUploaded && uploadedMedia?.url" class="truncate">
                   <ULink :href="uploadedMedia.url" target="_blank">

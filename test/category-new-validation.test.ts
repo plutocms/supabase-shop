@@ -11,11 +11,15 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('#supabase/server', () => ({ serverSupabaseClient: vi.fn() }))
 vi.stubGlobal('defineEventHandler', defineEventHandler)
 
-const { newCategoryPayloadSchema } = await import('../server/api/_pluto/shop/categories.post')
+const { newCategoryPayloadSchema } =
+  await import('../server/api/_pluto/shop/categories.post')
 
 describe('newCategoryPayloadSchema', () => {
   it('accepts a slug and label, with description optional', () => {
-    const result = newCategoryPayloadSchema.safeParse({ slug: 'shoes', label: 'Shoes' })
+    const result = newCategoryPayloadSchema.safeParse({
+      slug: 'shoes',
+      label: 'Shoes',
+    })
 
     expect(result.success).toBe(true)
     expect(result.data).toEqual({ slug: 'shoes', label: 'Shoes' })
@@ -39,7 +43,10 @@ describe('newCategoryPayloadSchema', () => {
   })
 
   it('rejects an empty slug', () => {
-    const result = newCategoryPayloadSchema.safeParse({ slug: '  ', label: 'Shoes' })
+    const result = newCategoryPayloadSchema.safeParse({
+      slug: '  ',
+      label: 'Shoes',
+    })
 
     expect(result.success).toBe(false)
   })
@@ -51,19 +58,29 @@ describe('newCategoryPayloadSchema', () => {
   })
 
   it('rejects an empty label', () => {
-    const result = newCategoryPayloadSchema.safeParse({ slug: 'shoes', label: '' })
+    const result = newCategoryPayloadSchema.safeParse({
+      slug: 'shoes',
+      label: '',
+    })
 
     expect(result.success).toBe(false)
   })
 
   it('rejects a non-string description', () => {
-    const result = newCategoryPayloadSchema.safeParse({ slug: 'shoes', label: 'Shoes', description: 42 })
+    const result = newCategoryPayloadSchema.safeParse({
+      slug: 'shoes',
+      label: 'Shoes',
+      description: 42,
+    })
 
     expect(result.success).toBe(false)
   })
 
   it('trims a slug and label with surrounding whitespace', () => {
-    const result = newCategoryPayloadSchema.safeParse({ slug: '  shoes  ', label: '  Shoes  ' })
+    const result = newCategoryPayloadSchema.safeParse({
+      slug: '  shoes  ',
+      label: '  Shoes  ',
+    })
 
     expect(result.success).toBe(true)
     expect(result.data).toEqual({ slug: 'shoes', label: 'Shoes' })

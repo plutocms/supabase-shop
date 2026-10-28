@@ -36,11 +36,15 @@ async function loadOptions() {
   pending.value = true
 
   try {
-    const result = await $fetch<{ data: Array<{ id: number, label: string, slug: string }> }>(
-      '/api/_pluto/shop/availability'
-    )
+    const result = await $fetch<{
+      data: Array<{ id: number; label: string; slug: string }>
+    }>('/api/_pluto/shop/availability')
 
-    options.value = result.data.map((row) => ({ label: row.label, value: row.id, slug: row.slug }))
+    options.value = result.data.map((row) => ({
+      label: row.label,
+      value: row.id,
+      slug: row.slug,
+    }))
   } finally {
     pending.value = false
   }
@@ -63,7 +67,9 @@ const items = computed(() =>
 watch(
   [value, options],
   ([selectedValue, loadedOptions]) => {
-    const selected = loadedOptions.find((option) => option.value === selectedValue)
+    const selected = loadedOptions.find(
+      (option) => option.value === selectedValue
+    )
     bridge.value.availabilitySlug = selected?.slug ?? null
   },
   { immediate: true }
@@ -80,7 +86,9 @@ watch(
       return
     }
 
-    const commission = options.value.find((option) => option.slug === 'commission')
+    const commission = options.value.find(
+      (option) => option.slug === 'commission'
+    )
 
     if (commission) {
       emit('update:modelValue', commission.value)
@@ -96,7 +104,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UFormField :label="field.label" :description="field.description" :required="field.required">
+  <UFormField
+    :label="field.label"
+    :description="field.description"
+    :required="field.required"
+  >
     <USelect
       :model-value="value"
       :items="items"

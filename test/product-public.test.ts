@@ -14,12 +14,33 @@ vi.mock('#supabase/server', () => ({
   serverSupabaseClient: vi.fn(async () => state.client),
 }))
 
-vi.stubGlobal('createPlutoError', (options: { statusCode: number, message: string, key: string }) =>
-  createError({ statusCode: options.statusCode, statusMessage: options.message, data: { i18n: { key: options.key } } }))
-vi.stubGlobal('productMediaUrl', (client: { storage: { from: (b: string) => { getPublicUrl: (p: string) => { data: { publicUrl: string } } } } }, name: string) =>
-  client.storage.from('product-media').getPublicUrl(`uploads/${name}`).data.publicUrl)
+vi.stubGlobal(
+  'createPlutoError',
+  (options: { statusCode: number; message: string; key: string }) =>
+    createError({
+      statusCode: options.statusCode,
+      statusMessage: options.message,
+      data: { i18n: { key: options.key } },
+    })
+)
+vi.stubGlobal(
+  'productMediaUrl',
+  (
+    client: {
+      storage: {
+        from: (b: string) => {
+          getPublicUrl: (p: string) => { data: { publicUrl: string } }
+        }
+      }
+    },
+    name: string
+  ) =>
+    client.storage.from('product-media').getPublicUrl(`uploads/${name}`).data
+      .publicUrl
+)
 
-const { productToPublic, PRODUCT_RELATIONS_KEY } = await import('../server/utils/product-public')
+const { productToPublic, PRODUCT_RELATIONS_KEY } =
+  await import('../server/utils/product-public')
 
 interface Call {
   table: string
@@ -41,16 +62,20 @@ function makeClient(tables: Record<string, unknown[]>, failTable?: string) {
           return query
         },
         then(resolve: (value: unknown) => void) {
-          resolve(table === failTable
-            ? { data: null, error: { message: 'boom' } }
-            : { data: tables[table] ?? [], error: null })
+          resolve(
+            table === failTable
+              ? { data: null, error: { message: 'boom' } }
+              : { data: tables[table] ?? [], error: null }
+          )
         },
       }
       return query
     },
     storage: {
       from: (bucket: string) => ({
-        getPublicUrl: (path: string) => ({ data: { publicUrl: `https://files.test/${bucket}/${path}` } }),
+        getPublicUrl: (path: string) => ({
+          data: { publicUrl: `https://files.test/${bucket}/${path}` },
+        }),
       }),
     },
   }
@@ -63,14 +88,24 @@ function makeEvent() {
 
 const ctx = (event: H3Event) => ({ event, type: {} }) as never
 
-function product(id: number, category: number | null, availability: number | null) {
+function product(
+  id: number,
+  category: number | null,
+  availability: number | null
+) {
   return { id, name: `P${id}`, slug: `p${id}`, category, availability }
 }
 
 const tables = {
   product_media: [
     { id: 1, name: 'a.jpg', alt: 'A', mime_type: 'image/jpeg', product_id: 1 },
-    { id: 2, name: 'b.glb', alt: null, mime_type: 'model/gltf-binary', product_id: 1 },
+    {
+      id: 2,
+      name: 'b.glb',
+      alt: null,
+      mime_type: 'model/gltf-binary',
+      product_id: 1,
+    },
     { id: 3, name: 'c.jpg', alt: 'C', mime_type: 'image/jpeg', product_id: 2 },
   ],
   product_category: [{ id: 10, label: 'Chibi', slug: 'chibi' }],
@@ -88,7 +123,11 @@ describe('productToPublic', () => {
     const event = makeEvent()
     const items = [product(1, 10, 5), product(2, null, null)]
 
-    const result = await productToPublic(ctx(event), { id: 1, name: 'P1', category: 10, availability: 5 }, { view: 'list', item: items[0] as never, batch: items as never })
+    const result = await productToPublic(
+      ctx(event),
+      { id: 1, name: 'P1', category: 10, availability: 5 },
+      { view: 'list', item: items[0] as never, batch: items as never }
+    )
 
     expect(result).toEqual({
       id: 1,
@@ -96,8 +135,20 @@ describe('productToPublic', () => {
       category: { id: 10, label: 'Chibi', slug: 'chibi' },
       availability: { id: 5, label: 'In stock', slug: 'in-stock' },
       media: [
-        { id: 1, name: 'a.jpg', alt: 'A', mime_type: 'image/jpeg', url: 'https://files.test/product-media/uploads/a.jpg' },
-        { id: 2, name: 'b.glb', alt: null, mime_type: 'model/gltf-binary', url: 'https://files.test/product-media/uploads/b.glb' },
+        {
+          id: 1,
+          name: 'a.jpg',
+          alt: 'A',
+          mime_type: 'image/jpeg',
+          url: 'https://files.test/product-media/uploads/a.jpg',
+        },
+        {
+          id: 2,
+          name: 'b.glb',
+          alt: null,
+          mime_type: 'model/gltf-binary',
+          url: 'https://files.test/product-media/uploads/b.glb',
+        },
       ],
     })
   })
@@ -107,12 +158,22 @@ describe('productToPublic', () => {
     const event = makeEvent()
     const items = [product(1, 10, 5), product(2, null, null)]
 
-    const result = await productToPublic(ctx(event), { id: 2, category: null, availability: null }, { view: 'list', item: items[1] as never, batch: items as never })
+    const result = await productToPublic(
+      ctx(event),
+      { id: 2, category: null, availability: null },
+      { view: 'list', item: items[1] as never, batch: items as never }
+    )
 
     expect(result.category).toBeNull()
     expect(result.availability).toBeNull()
     expect(result.media).toEqual([
-      { id: 3, name: 'c.jpg', alt: 'C', mime_type: 'image/jpeg', url: 'https://files.test/product-media/uploads/c.jpg' },
+      {
+        id: 3,
+        name: 'c.jpg',
+        alt: 'C',
+        mime_type: 'image/jpeg',
+        url: 'https://files.test/product-media/uploads/c.jpg',
+      },
     ])
   })
 
@@ -120,19 +181,34 @@ describe('productToPublic', () => {
     const client = makeClient(tables)
     state.client = client
     const event = makeEvent()
-    const items = Array.from({ length: 20 }, (_, index) => product(index + 1, 10, 5))
+    const items = Array.from({ length: 20 }, (_, index) =>
+      product(index + 1, 10, 5)
+    )
 
-    await Promise.all(items.map((item) =>
-      productToPublic(ctx(event), { id: item.id }, { view: 'list', item: item as never, batch: items as never })))
+    await Promise.all(
+      items.map((item) =>
+        productToPublic(
+          ctx(event),
+          { id: item.id },
+          { view: 'list', item: item as never, batch: items as never }
+        )
+      )
+    )
 
     expect(client.calls).toHaveLength(3)
-    expect(client.calls.find((call) => call.table === 'product_media')).toEqual({
-      table: 'product_media',
-      column: 'product_id',
-      ids: items.map((item) => item.id),
-    })
-    expect(client.calls.find((call) => call.table === 'product_category')?.ids).toEqual([10])
-    expect(client.calls.find((call) => call.table === 'product_availability')?.ids).toEqual([5])
+    expect(client.calls.find((call) => call.table === 'product_media')).toEqual(
+      {
+        table: 'product_media',
+        column: 'product_id',
+        ids: items.map((item) => item.id),
+      }
+    )
+    expect(
+      client.calls.find((call) => call.table === 'product_category')?.ids
+    ).toEqual([10])
+    expect(
+      client.calls.find((call) => call.table === 'product_availability')?.ids
+    ).toEqual([5])
   })
 
   it('keeps the related rows on the event under the shop key', async () => {
@@ -140,7 +216,11 @@ describe('productToPublic', () => {
     const event = makeEvent()
     const item = product(1, 10, 5)
 
-    await productToPublic(ctx(event), { id: 1 }, { view: 'item', item: item as never, batch: [item] as never })
+    await productToPublic(
+      ctx(event),
+      { id: 1 },
+      { view: 'item', item: item as never, batch: [item] as never }
+    )
 
     expect(event.context[PRODUCT_RELATIONS_KEY]).toBeInstanceOf(Promise)
   })
@@ -150,7 +230,11 @@ describe('productToPublic', () => {
     state.client = client
     const item = product(1, null, null)
 
-    await productToPublic(ctx(makeEvent()), { id: 1 }, { view: 'item', item: item as never, batch: [item] as never })
+    await productToPublic(
+      ctx(makeEvent()),
+      { id: 1 },
+      { view: 'item', item: item as never, batch: [item] as never }
+    )
 
     expect(client.calls.map((call) => call.table)).toEqual(['product_media'])
   })
@@ -161,7 +245,14 @@ describe('productToPublic', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
     await expect(
-      productToPublic(ctx(makeEvent()), { id: 1 }, { view: 'item', item: item as never, batch: [item] as never })
-    ).rejects.toMatchObject({ statusCode: 500, data: { i18n: { key: 'supabase-shop.errors.productsLoadFailed' } } })
+      productToPublic(
+        ctx(makeEvent()),
+        { id: 1 },
+        { view: 'item', item: item as never, batch: [item] as never }
+      )
+    ).rejects.toMatchObject({
+      statusCode: 500,
+      data: { i18n: { key: 'supabase-shop.errors.productsLoadFailed' } },
+    })
   })
 })
