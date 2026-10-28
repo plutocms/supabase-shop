@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.15.0](https://github.com/plutocms/supabase-shop/compare/v0.14.2...v0.15.0) (2026-10-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* stop extending @plutocms/ui ([#100](https://github.com/plutocms/supabase-shop/issues/100))
+* remove the public schema stub ([#99](https://github.com/plutocms/supabase-shop/issues/99))
+
+### Features
+
+* remove the public schema stub ([#99](https://github.com/plutocms/supabase-shop/issues/99)) ([282d0bb](https://github.com/plutocms/supabase-shop/commit/282d0bb36967905b2f0858dace3babfe10e0843f))
+* stop extending @plutocms/ui ([#100](https://github.com/plutocms/supabase-shop/issues/100)) ([f5c3dc7](https://github.com/plutocms/supabase-shop/commit/f5c3dc71cf544b0653bc754043e462c002bb1d9c))
+
+
+### Bug Fixes
+
+* **deps:** use @plutocms/supabase 0.15 and @plutocms/utils 0.3 ([#102](https://github.com/plutocms/supabase-shop/issues/102)) ([afb6caa](https://github.com/plutocms/supabase-shop/commit/afb6caa27a1cac063fc2f956c6b34492d0d5f871))
+
 ## [0.14.2](https://github.com/plutocms/supabase-shop/compare/v0.14.1...v0.14.2) (2026-10-27)
 
 
