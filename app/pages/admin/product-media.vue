@@ -39,7 +39,9 @@ function selectMedia(id: number) {
         >
           <div>
             <span v-if="selectedMedia.length === 0">
-              {{ t('supabase-shop.media.showing', mediaList?.data.length ?? 0) }}
+              {{
+                t('supabase-shop.media.showing', mediaList?.data.length ?? 0)
+              }}
             </span>
 
             <span v-else>

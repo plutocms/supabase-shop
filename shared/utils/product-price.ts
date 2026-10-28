@@ -20,7 +20,9 @@ export function centsToAmount(cents: number | null | undefined): number {
  * The result is rounded, so a float error like 0.1 + 0.2 gives exactly 30.
  * A missing or invalid value gives null.
  */
-export function amountToCents(amount: number | null | undefined): number | null {
+export function amountToCents(
+  amount: number | null | undefined
+): number | null {
   if (typeof amount !== 'number' || !Number.isFinite(amount)) {
     return null
   }

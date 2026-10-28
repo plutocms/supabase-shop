@@ -302,7 +302,9 @@ const isInsertButtonDisabled = computed(
                 >
                   <div>
                     <span v-if="selectedMedia.length === 0">
-                      {{ t('supabase-shop.media.showing', imageList?.length ?? 0) }}
+                      {{
+                        t('supabase-shop.media.showing', imageList?.length ?? 0)
+                      }}
                     </span>
 
                     <span v-else>
@@ -430,8 +432,15 @@ const isInsertButtonDisabled = computed(
                 v-model="selectedFile"
                 :accept="PRODUCT_MEDIA_ACCEPT"
                 :disabled="isUploading || isUploaded"
-                :description="t('supabase-shop.picker.dropDescription', { size: PRODUCT_MEDIA_MAX_SIZE })"
-                :ui="{ fileLeadingAvatar: 'size-full rounded-lg bg-elevated [&>img]:object-contain' }"
+                :description="
+                  t('supabase-shop.picker.dropDescription', {
+                    size: PRODUCT_MEDIA_MAX_SIZE,
+                  })
+                "
+                :ui="{
+                  fileLeadingAvatar:
+                    'size-full rounded-lg bg-elevated [&>img]:object-contain',
+                }"
                 :label="t('supabase-shop.picker.dropLabel')"
                 icon="lucide:image-up"
                 class="min-h-72 grow"
@@ -452,7 +461,9 @@ const isInsertButtonDisabled = computed(
                   @update:open="uploadError = null"
                 />
 
-                <div v-if="selectedFile" class="wrap-break-word">{{ selectedFile.name }}</div>
+                <div v-if="selectedFile" class="wrap-break-word">
+                  {{ selectedFile.name }}
+                </div>
 
                 <div v-if="isUploaded && uploadedMedia?.url" class="truncate">
                   <ULink :href="uploadedMedia.url" target="_blank">

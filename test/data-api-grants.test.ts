@@ -53,7 +53,12 @@ describe('data API grants (supabase-shop)', () => {
   const grants = parseGrants(allSql)
 
   it('finds the tables of the layer', () => {
-    expect([...new Set(tables)].sort()).toEqual(['product_availability', 'product_category', 'product_media', 'products'])
+    expect([...new Set(tables)].sort()).toEqual([
+      'product_availability',
+      'product_category',
+      'product_media',
+      'products',
+    ])
   })
 
   it('grants every created table to authenticated', () => {
@@ -87,8 +92,17 @@ describe('data API grants (supabase-shop)', () => {
     const crud = 'delete,insert,select,update'
     const expected: Record<string, Record<string, string>> = {}
 
-    for (const table of ['product_availability', 'product_category', 'product_media', 'products']) {
-      expected[table] = { anon: 'select', authenticated: crud, service_role: crud }
+    for (const table of [
+      'product_availability',
+      'product_category',
+      'product_media',
+      'products',
+    ]) {
+      expected[table] = {
+        anon: 'select',
+        authenticated: crud,
+        service_role: crud,
+      }
     }
 
     expect(matrix(read('005_data_api_grants.sql'))).toEqual(expected)

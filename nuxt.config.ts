@@ -5,10 +5,7 @@ const supabaseLayer = process.env.PLUTO_SUPABASE_PATH || '@plutocms/supabase'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: [
-    utilsLayer,
-    [supabaseLayer, { install: true }],
-  ],
+  extends: [utilsLayer, [supabaseLayer, { install: true }]],
 
   $meta: {
     name: 'supabase-shop',

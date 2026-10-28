@@ -14,7 +14,5 @@ interface StorageClient {
 export function productMediaUrl(client: StorageClient, name: string): string {
   return client.storage
     .from(PRODUCT_MEDIA_BUCKET)
-    .getPublicUrl(`uploads/${name}`)
-    .data
-    .publicUrl
+    .getPublicUrl(`uploads/${name}`).data.publicUrl
 }

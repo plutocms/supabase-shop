@@ -45,11 +45,16 @@ export default defineEventHandler(async (event) => {
   // Never replace an existing file: other product_media rows can point to
   // it by name. On a name clash, retry once with a short random suffix.
   let fileName = fileNameToKebabCase(filePart.filename)
-  let { data: mediaUploadData, error: mediaUploadError } = await upload(fileName)
+  let { data: mediaUploadData, error: mediaUploadError } =
+    await upload(fileName)
 
   if (mediaUploadError && isStorageCollision(mediaUploadError)) {
-    fileName = productMediaSuffixedName(fileName, Math.random().toString(36).slice(2, 6))
-    ;({ data: mediaUploadData, error: mediaUploadError } = await upload(fileName))
+    fileName = productMediaSuffixedName(
+      fileName,
+      Math.random().toString(36).slice(2, 6)
+    )
+    ;({ data: mediaUploadData, error: mediaUploadError } =
+      await upload(fileName))
   }
 
   if (mediaUploadError) {
@@ -76,7 +81,11 @@ export default defineEventHandler(async (event) => {
       .from('product-media')
       .remove([`uploads/${fileName}`])
     if (cleanupError) {
-      console.warn('[product-media] could not remove the orphaned file', fileName, cleanupError.message)
+      console.warn(
+        '[product-media] could not remove the orphaned file',
+        fileName,
+        cleanupError.message
+      )
     }
     throw createError({ statusCode: 500, statusMessage: error.message })
   }
@@ -85,6 +94,12 @@ export default defineEventHandler(async (event) => {
 })
 
 /** True when a Storage upload error means "an object already exists at this path". */
-function isStorageCollision(error: { statusCode?: string | number, message?: string }): boolean {
-  return String(error.statusCode) === '409' || Boolean(error.message?.toLowerCase().includes('already exists'))
+function isStorageCollision(error: {
+  statusCode?: string | number
+  message?: string
+}): boolean {
+  return (
+    String(error.statusCode) === '409' ||
+    Boolean(error.message?.toLowerCase().includes('already exists'))
+  )
 }

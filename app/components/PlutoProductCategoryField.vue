@@ -28,9 +28,14 @@ async function loadOptions() {
   pending.value = true
 
   try {
-    const result = await $fetch<{ data: Array<{ id: number, label: string }> }>('/api/_pluto/shop/categories')
+    const result = await $fetch<{ data: Array<{ id: number; label: string }> }>(
+      '/api/_pluto/shop/categories'
+    )
 
-    options.value = result.data.map((row) => ({ label: row.label, value: row.id }))
+    options.value = result.data.map((row) => ({
+      label: row.label,
+      value: row.id,
+    }))
   } finally {
     pending.value = false
   }
@@ -44,10 +49,13 @@ async function createCategory(name: string) {
   pending.value = true
 
   try {
-    const { data } = await $fetch<{ data: { id: number, label: string } }>('/api/_pluto/shop/categories', {
-      method: 'POST',
-      body: { label: name, slug: slugify(name) },
-    })
+    const { data } = await $fetch<{ data: { id: number; label: string } }>(
+      '/api/_pluto/shop/categories',
+      {
+        method: 'POST',
+        body: { label: name, slug: slugify(name) },
+      }
+    )
 
     await loadOptions()
 
@@ -74,7 +82,11 @@ async function createCategory(name: string) {
 </script>
 
 <template>
-  <UFormField :label="field.label" :description="field.description" :required="field.required">
+  <UFormField
+    :label="field.label"
+    :description="field.description"
+    :required="field.required"
+  >
     <UInputMenu
       v-model:open="isOpen"
       :model-value="value"

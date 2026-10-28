@@ -24,7 +24,10 @@ export const PRODUCT_MEDIA_MIME_TYPES = [
 export const PRODUCT_MEDIA_MAX_BYTES = 52_428_800
 
 /** The `accept` value for the file picker. */
-export const PRODUCT_MEDIA_ACCEPT = [...PRODUCT_MEDIA_MIME_TYPES.filter((type) => type.startsWith('image/')), '.glb'].join(',')
+export const PRODUCT_MEDIA_ACCEPT = [
+  ...PRODUCT_MEDIA_MIME_TYPES.filter((type) => type.startsWith('image/')),
+  '.glb',
+].join(',')
 
 /**
  * The MIME type to store a file under. Browsers often send a `.glb` file as
@@ -32,9 +35,15 @@ export const PRODUCT_MEDIA_ACCEPT = [...PRODUCT_MEDIA_MIME_TYPES.filter((type) =
  * `.glb` name gets this fix: any other unknown file keeps its type, and the
  * allow list rejects it.
  */
-export function productMediaMimeType(mimeType: string | undefined, fileName: string): string {
+export function productMediaMimeType(
+  mimeType: string | undefined,
+  fileName: string
+): string {
   const type = mimeType || 'application/octet-stream'
-  if (type === 'application/octet-stream' && fileName.toLowerCase().endsWith('.glb')) {
+  if (
+    type === 'application/octet-stream' &&
+    fileName.toLowerCase().endsWith('.glb')
+  ) {
     return 'model/gltf-binary'
   }
   return type
@@ -45,7 +54,10 @@ export function productMediaMimeType(mimeType: string | undefined, fileName: str
  * The upload route uses it to give a new file a free name, so an upload
  * never replaces an existing file.
  */
-export function productMediaSuffixedName(fileName: string, suffix: string): string {
+export function productMediaSuffixedName(
+  fileName: string,
+  suffix: string
+): string {
   const match = fileName.match(/^(.+)(\.[^./]+)$/)
   if (!match) {
     return `${fileName}-${suffix}`
@@ -62,7 +74,8 @@ function formatSize(bytes: number): string {
     value /= 1024
     unit++
   }
-  const rounded = unit === 0 || value >= 10 ? Math.round(value) : Math.round(value * 10) / 10
+  const rounded =
+    unit === 0 || value >= 10 ? Math.round(value) : Math.round(value * 10) / 10
   return `${rounded} ${units[unit]}`
 }
 
@@ -86,7 +99,11 @@ export interface ProductMediaUploadProblem {
  * response. The picker shows the translated `key` before it sends the file.
  * The `message` stays English.
  */
-export function productMediaUploadProblem(file: { name: string, type?: string, size: number }): ProductMediaUploadProblem | null {
+export function productMediaUploadProblem(file: {
+  name: string
+  type?: string
+  size: number
+}): ProductMediaUploadProblem | null {
   const mimeType = productMediaMimeType(file.type, file.name)
   if (!(PRODUCT_MEDIA_MIME_TYPES as readonly string[]).includes(mimeType)) {
     return {
@@ -101,7 +118,11 @@ export function productMediaUploadProblem(file: { name: string, type?: string, s
       statusCode: 413,
       message: `"${file.name}" is ${formatSize(file.size)}. The limit is ${PRODUCT_MEDIA_MAX_SIZE}.`,
       key: 'supabase-shop.upload.tooBig',
-      params: { name: file.name, size: formatSize(file.size), limit: PRODUCT_MEDIA_MAX_SIZE },
+      params: {
+        name: file.name,
+        size: formatSize(file.size),
+        limit: PRODUCT_MEDIA_MAX_SIZE,
+      },
     }
   }
   return null
@@ -111,6 +132,11 @@ export function productMediaUploadProblem(file: { name: string, type?: string, s
  * True when a `product_media` row is a 3D model (`.glb`). The check ignores
  * the case of the name, and it also accepts the model MIME type.
  */
-export function isProductMediaModel(entry: { name?: string | null, mime_type?: string | null } | null | undefined): boolean {
-  return Boolean(entry?.name?.toLowerCase().endsWith('.glb') || entry?.mime_type === 'model/gltf-binary')
+export function isProductMediaModel(
+  entry: { name?: string | null; mime_type?: string | null } | null | undefined
+): boolean {
+  return Boolean(
+    entry?.name?.toLowerCase().endsWith('.glb') ||
+    entry?.mime_type === 'model/gltf-binary'
+  )
 }

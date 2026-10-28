@@ -14,13 +14,25 @@ vi.mock('#supabase/server', () => ({
 
 vi.stubGlobal('defineEventHandler', defineEventHandler)
 vi.stubGlobal('getRouterParam', () => state.param)
-vi.stubGlobal('createPlutoError', (options: { statusCode: number, message: string, key: string }) =>
-  createError({ statusCode: options.statusCode, statusMessage: options.message, data: { i18n: { key: options.key } } }))
-vi.stubGlobal('productMediaUrl', (_client: unknown, name: string) => `https://files.test/uploads/${name}`)
+vi.stubGlobal(
+  'createPlutoError',
+  (options: { statusCode: number; message: string; key: string }) =>
+    createError({
+      statusCode: options.statusCode,
+      statusMessage: options.message,
+      data: { i18n: { key: options.key } },
+    })
+)
+vi.stubGlobal(
+  'productMediaUrl',
+  (_client: unknown, name: string) => `https://files.test/uploads/${name}`
+)
 
 /** A fake client. Each table answers with its rows, or with an error. */
-function makeClient(tables: Record<string, { data?: unknown, error?: unknown }>) {
-  const calls: Array<{ table: string, filters: Array<[string, unknown]> }> = []
+function makeClient(
+  tables: Record<string, { data?: unknown; error?: unknown }>
+) {
+  const calls: Array<{ table: string; filters: Array<[string, unknown]> }> = []
   return {
     calls,
     from(table: string) {
@@ -34,7 +46,10 @@ function makeClient(tables: Record<string, { data?: unknown, error?: unknown }>)
           call.filters.push([column, value])
           return query
         },
-        maybeSingle: async () => ({ data: answer.data ?? null, error: answer.error ?? null }),
+        maybeSingle: async () => ({
+          data: answer.data ?? null,
+          error: answer.error ?? null,
+        }),
         then(resolve: (value: unknown) => void) {
           resolve({ data: answer.data ?? null, error: answer.error ?? null })
         },
@@ -53,15 +68,23 @@ beforeEach(() => {
 
 describe('gET /api/_pluto/shop/categories', () => {
   it('answers { data } with the rows', async () => {
-    state.client = makeClient({ product_category: { data: [{ id: 1, label: 'Chibi', slug: 'chibi' }] } })
-    const { default: handler } = await import('../server/api/_pluto/shop/categories.get')
+    state.client = makeClient({
+      product_category: { data: [{ id: 1, label: 'Chibi', slug: 'chibi' }] },
+    })
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/categories.get')
 
-    expect(await handler(event)).toEqual({ data: [{ id: 1, label: 'Chibi', slug: 'chibi' }] })
+    expect(await handler(event)).toEqual({
+      data: [{ id: 1, label: 'Chibi', slug: 'chibi' }],
+    })
   })
 
   it('throws a 500 with an i18n key on a database error', async () => {
-    state.client = makeClient({ product_category: { error: { message: 'boom' } } })
-    const { default: handler } = await import('../server/api/_pluto/shop/categories.get')
+    state.client = makeClient({
+      product_category: { error: { message: 'boom' } },
+    })
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/categories.get')
 
     await expect(handler(event)).rejects.toMatchObject({
       statusCode: 500,
@@ -72,17 +95,27 @@ describe('gET /api/_pluto/shop/categories', () => {
 
 describe('gET /api/_pluto/shop/availability', () => {
   it('answers { data } with the rows', async () => {
-    state.client = makeClient({ product_availability: { data: [{ id: 1, label: 'In stock', slug: 'in-stock' }] } })
-    const { default: handler } = await import('../server/api/_pluto/shop/availability.get')
+    state.client = makeClient({
+      product_availability: {
+        data: [{ id: 1, label: 'In stock', slug: 'in-stock' }],
+      },
+    })
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/availability.get')
 
-    expect(await handler(event)).toEqual({ data: [{ id: 1, label: 'In stock', slug: 'in-stock' }] })
+    expect(await handler(event)).toEqual({
+      data: [{ id: 1, label: 'In stock', slug: 'in-stock' }],
+    })
   })
 })
 
 describe('gET /api/_pluto/shop/product-media', () => {
   it('adds the public url to each row', async () => {
-    state.client = makeClient({ product_media: { data: [{ id: 1, name: 'a.jpg' }] } })
-    const { default: handler } = await import('../server/api/_pluto/shop/product-media.get')
+    state.client = makeClient({
+      product_media: { data: [{ id: 1, name: 'a.jpg' }] },
+    })
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/product-media.get')
 
     expect(await handler(event)).toEqual({
       data: [{ id: 1, name: 'a.jpg', url: 'https://files.test/uploads/a.jpg' }],
@@ -98,18 +131,29 @@ describe('gET /api/_pluto/shop/products/:id/media', () => {
       product_media: { data: [{ id: 1, name: 'a.jpg', product_id: 7 }] },
     })
     state.client = client
-    const { default: handler } = await import('../server/api/_pluto/shop/products/[id]/media.get')
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/products/[id]/media.get')
 
     expect(await handler(event)).toEqual({
-      data: [{ id: 1, name: 'a.jpg', product_id: 7, url: 'https://files.test/uploads/a.jpg' }],
+      data: [
+        {
+          id: 1,
+          name: 'a.jpg',
+          product_id: 7,
+          url: 'https://files.test/uploads/a.jpg',
+        },
+      ],
     })
-    expect(client.calls.find((call) => call.table === 'product_media')?.filters).toEqual([['product_id', 7]])
+    expect(
+      client.calls.find((call) => call.table === 'product_media')?.filters
+    ).toEqual([['product_id', 7]])
   })
 
   it('answers 404 for an id that is not a number', async () => {
     state.param = 'abc'
     state.client = makeClient({})
-    const { default: handler } = await import('../server/api/_pluto/shop/products/[id]/media.get')
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/products/[id]/media.get')
 
     await expect(handler(event)).rejects.toMatchObject({
       statusCode: 404,
@@ -120,7 +164,8 @@ describe('gET /api/_pluto/shop/products/:id/media', () => {
   it('answers 404 when the product does not exist', async () => {
     state.param = '9'
     state.client = makeClient({ products: { data: null } })
-    const { default: handler } = await import('../server/api/_pluto/shop/products/[id]/media.get')
+    const { default: handler } =
+      await import('../server/api/_pluto/shop/products/[id]/media.get')
 
     await expect(handler(event)).rejects.toMatchObject({ statusCode: 404 })
   })

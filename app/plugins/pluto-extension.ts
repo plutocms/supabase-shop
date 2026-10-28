@@ -27,8 +27,16 @@ export default defineNuxtPlugin(() => {
   definePlutoExtension({
     id: 'supabase-shop',
     capabilities: [
-      { id: 'products-manage', key: 'products:manage', label: 'supabase-shop.capabilities.productsManage' },
-      { id: 'products-delete', key: 'products:delete', label: 'supabase-shop.capabilities.productsDelete' },
+      {
+        id: 'products-manage',
+        key: 'products:manage',
+        label: 'supabase-shop.capabilities.productsManage',
+      },
+      {
+        id: 'products-delete',
+        key: 'products:delete',
+        label: 'supabase-shop.capabilities.productsDelete',
+      },
       {
         id: 'shop-manage-taxonomy',
         key: 'shop:manage_taxonomy',
@@ -45,7 +53,10 @@ export default defineNuxtPlugin(() => {
         to: '/admin/products',
         defaultOpen: true,
         children: [
-          { label: 'supabase-shop.nav.createProduct', to: '/admin/product/new' },
+          {
+            label: 'supabase-shop.nav.createProduct',
+            to: '/admin/product/new',
+          },
           { label: 'supabase-shop.nav.allProducts', to: '/admin/products' },
         ],
       },
@@ -58,9 +69,24 @@ export default defineNuxtPlugin(() => {
       },
     ],
     pages: [
-      { id: 'products', path: '/admin/products', title: 'supabase-shop.nav.products', icon: 'lucide:box' },
-      { id: 'product-new', path: '/admin/product/new', title: 'supabase-shop.pages.newProduct', parent: 'supabase-shop:products' },
-      { id: 'product-media', path: '/admin/product-media', title: 'supabase-shop.nav.productMedia', icon: 'lucide:images' },
+      {
+        id: 'products',
+        path: '/admin/products',
+        title: 'supabase-shop.nav.products',
+        icon: 'lucide:box',
+      },
+      {
+        id: 'product-new',
+        path: '/admin/product/new',
+        title: 'supabase-shop.pages.newProduct',
+        parent: 'supabase-shop:products',
+      },
+      {
+        id: 'product-media',
+        path: '/admin/product-media',
+        title: 'supabase-shop.nav.productMedia',
+        icon: 'lucide:images',
+      },
     ],
     contentTypes: [{ id: 'product', type: productType }],
     // Registered by `widget:` name only, never bare `fieldType:` — a
@@ -68,12 +94,36 @@ export default defineNuxtPlugin(() => {
     // layer's fields of that type, which would hijack blog's (or any
     // other layer's) fields of the same type.
     contentFieldWidgets: [
-      { id: 'product-media', widget: 'product-media', component: PlutoProductMediaField },
-      { id: 'product-price', widget: 'product-price', component: PlutoProductPriceField },
-      { id: 'product-is-custom', widget: 'product-is-custom', component: PlutoProductIsCustomField },
-      { id: 'product-availability', widget: 'product-availability', component: PlutoProductAvailabilityField },
-      { id: 'product-stock', widget: 'product-stock', component: PlutoProductStockField },
-      { id: 'product-category', widget: 'product-category', component: PlutoProductCategoryField },
+      {
+        id: 'product-media',
+        widget: 'product-media',
+        component: PlutoProductMediaField,
+      },
+      {
+        id: 'product-price',
+        widget: 'product-price',
+        component: PlutoProductPriceField,
+      },
+      {
+        id: 'product-is-custom',
+        widget: 'product-is-custom',
+        component: PlutoProductIsCustomField,
+      },
+      {
+        id: 'product-availability',
+        widget: 'product-availability',
+        component: PlutoProductAvailabilityField,
+      },
+      {
+        id: 'product-stock',
+        widget: 'product-stock',
+        component: PlutoProductStockField,
+      },
+      {
+        id: 'product-category',
+        widget: 'product-category',
+        component: PlutoProductCategoryField,
+      },
     ],
   })
 })

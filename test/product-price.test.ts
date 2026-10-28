@@ -78,7 +78,9 @@ describe('formatProductPrice', () => {
 
   it('passes options to formatCurrency', async () => {
     const { formatProductPrice } = await load()
-    expect(formatProductPrice(4900, { trailingZero: false })).toMatch(/R\$\s*49$/)
+    expect(formatProductPrice(4900, { trailingZero: false })).toMatch(
+      /R\$\s*49$/
+    )
   })
 })
 
