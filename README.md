@@ -4,7 +4,7 @@ This layer provides e-commerce functionalities upon [`@plutocms/supabase`](https
 
 ## Installation
 
-Install the `supabase-shop` layer. Your app extends only this layer. It brings `@plutocms/supabase` (and with it `@plutocms/pluto`), `@plutocms/ui` and `@plutocms/utils`.
+Install the `supabase-shop` layer. Your app extends only this layer. It brings `@plutocms/supabase` (and with it `@plutocms/pluto`) and `@plutocms/utils`.
 
 ```bash
 # npm
