@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.4](https://github.com/plutocms/supabase-shop/compare/v0.15.3...v0.15.4) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** accept every 0.x version of the [@plutocms](https://github.com/plutocms) packages; shared CI and the update workflow ([#114](https://github.com/plutocms/supabase-shop/issues/114)) ([225c1ac](https://github.com/plutocms/supabase-shop/commit/225c1aca19ab170e7a59c5b91a1dbfc5fd71914f))
+
 ## [0.15.3](https://github.com/plutocms/supabase-shop/compare/v0.15.2...v0.15.3) (2026-10-29)
 
 
