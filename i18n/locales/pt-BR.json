@@ -3,8 +3,7 @@
     "nav": {
       "products": "Produtos",
       "createProduct": "Criar produto",
-      "allProducts": "Ver produtos",
-      "productMedia": "Mídias do produto"
+      "allProducts": "Ver produtos"
     },
     "pages": {
       "newProduct": "Novo produto"
@@ -23,55 +22,7 @@
       "createdDescription": "A categoria foi criada com sucesso.",
       "createFailed": "Ocorreu um erro ao criar a categoria."
     },
-    "mediaField": {
-      "add": "Adicionar fotos",
-      "manage3d": "Trocar modelo 3D",
-      "add3d": "Adicionar modelo 3D",
-      "model": "Modelo 3D",
-      "remove3d": "Remover modelo 3D",
-      "remove": "Remover foto",
-      "select": "Mostrar foto {index}",
-      "unsaved": "Ainda não salva",
-      "applyOnSave": "As alterações nas mídias são aplicadas ao salvar.",
-      "loading": "Carregando mídias",
-      "loadFailed": "Não foi possível carregar as mídias",
-      "loadFailedDescription": "Verifique sua conexão e tente de novo.",
-      "retry": "Tentar de novo"
-    },
-    "media": {
-      "title": "Mídias",
-      "showing": "Mostrando {count} arquivos | Mostrando {count} arquivo | Mostrando {count} arquivos",
-      "selectedOf": "{selected} de {total} arquivos selecionados"
-    },
-    "picker": {
-      "title": "Inserir mídia",
-      "tabs": {
-        "gallery": "Galeria",
-        "models": "Modelos 3D",
-        "upload": "Enviar"
-      },
-      "cancelSelection": "Cancelar seleção",
-      "oneModelOnly": "Só é possível selecionar um modelo 3D por vez.",
-      "dropLabel": "Solte uma imagem ou um modelo 3D .glb aqui",
-      "dropDescription": "Ou clique para procurar. Até {size}.",
-      "errorTitle": "Não foi possível enviar este arquivo",
-      "altText": "Texto alternativo",
-      "altPlaceholder": "ex.: Imagem de um cachorro fofo",
-      "upload": "Enviar",
-      "uploading": "Enviando...",
-      "insert": "Inserir",
-      "selectedCount": "({count} selecionadas) | ({count} selecionada) | ({count} selecionadas)"
-    },
-    "upload": {
-      "unsupportedType": "\"{name}\" não é um tipo de arquivo compatível. Envie uma imagem JPEG, PNG, WebP, GIF ou AVIF, ou um modelo 3D .glb.",
-      "tooBig": "\"{name}\" tem {size}. O limite é {limit}.",
-      "noPermission": "Você não tem permissão para enviar mídias de produto.",
-      "failed": "O envio falhou. Tente novamente."
-    },
     "errors": {
-      "noFileSent": "Nenhum arquivo enviado.",
-      "productNotFound": "Produto não encontrado",
-      "mediaListFailed": "Não foi possível carregar a biblioteca de mídias.",
       "productsLoadFailed": "Não foi possível carregar os produtos.",
       "categoriesLoadFailed": "Não foi possível carregar as categorias.",
       "categoryCreateFailed": "Não foi possível criar a categoria.",

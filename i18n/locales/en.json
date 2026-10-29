@@ -3,8 +3,7 @@
     "nav": {
       "products": "Products",
       "createProduct": "Create new product",
-      "allProducts": "All products",
-      "productMedia": "Product Medias"
+      "allProducts": "All products"
     },
     "pages": {
       "newProduct": "New product"
@@ -23,55 +22,7 @@
       "createdDescription": "Your category has been created successfully.",
       "createFailed": "An error occurred while creating the category."
     },
-    "mediaField": {
-      "add": "Add photos",
-      "manage3d": "Replace 3D model",
-      "add3d": "Add 3D model",
-      "model": "3D model",
-      "remove3d": "Remove 3D model",
-      "remove": "Remove photo",
-      "select": "Show photo {index}",
-      "unsaved": "Not saved yet",
-      "applyOnSave": "Changes to the media apply when you save.",
-      "loading": "Loading media",
-      "loadFailed": "The media did not load",
-      "loadFailedDescription": "Check your connection and try again.",
-      "retry": "Try again"
-    },
-    "media": {
-      "title": "Media",
-      "showing": "Showing {count} files | Showing {count} file | Showing {count} files",
-      "selectedOf": "{selected} of {total} files selected"
-    },
-    "picker": {
-      "title": "Insert media",
-      "tabs": {
-        "gallery": "Gallery",
-        "models": "3D Models",
-        "upload": "Upload"
-      },
-      "cancelSelection": "Cancel selection",
-      "oneModelOnly": "You can only select one 3D model at a time.",
-      "dropLabel": "Drop an image or a .glb 3D model here",
-      "dropDescription": "Or click to browse. Up to {size}.",
-      "errorTitle": "This file cannot be uploaded",
-      "altText": "Alt text",
-      "altPlaceholder": "e.g: Image of a cute dog",
-      "upload": "Upload",
-      "uploading": "Uploading...",
-      "insert": "Insert",
-      "selectedCount": "({count} selected) | ({count} selected) | ({count} selected)"
-    },
-    "upload": {
-      "unsupportedType": "\"{name}\" is not a supported file type. Upload a JPEG, PNG, WebP, GIF, or AVIF image, or a .glb 3D model.",
-      "tooBig": "\"{name}\" is {size}. The limit is {limit}.",
-      "noPermission": "You do not have permission to upload product media.",
-      "failed": "The upload failed. Try again."
-    },
     "errors": {
-      "noFileSent": "No file sent.",
-      "productNotFound": "Product not found",
-      "mediaListFailed": "Could not load the media library.",
       "productsLoadFailed": "Could not load the products.",
       "categoriesLoadFailed": "Could not load the categories.",
       "categoryCreateFailed": "Could not create the category.",

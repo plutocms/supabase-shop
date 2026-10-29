@@ -1,10 +1,9 @@
 import { productToPublic } from '../utils/product-public'
-import { reconcileProductMedia } from '../utils/reconcile-product-media'
 
 /**
  * Registers the content types of this layer with core's generic content
- * routes and with the public API, at Nitro startup. The hooks are attached
- * here, server-side only, so `shared/utils/content-product.ts` itself
+ * routes and with the public API, at Nitro startup. The `toPublic` hook is
+ * attached here, server-side only, so `shared/utils/content-product.ts` itself
  * stays free of server-only imports.
  *
  * `productType` is not explicitly imported — see the doc comment atop
@@ -20,8 +19,6 @@ export default defineNitroPlugin(() => {
   registerContentType({
     ...productType,
     hooks: {
-      afterCreate: reconcileProductMedia,
-      afterUpdate: reconcileProductMedia,
       toPublic: productToPublic,
     },
   })

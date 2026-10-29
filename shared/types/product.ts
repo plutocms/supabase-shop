@@ -6,19 +6,11 @@ export type PublicProductTaxonomy = Pick<
   'id' | 'label' | 'slug'
 >
 
-/** One media file in the public answer of a product. */
-export interface PublicProductMedia {
-  id: number
-  name: string
-  alt: string | null
-  url: string
-  mime_type: string | null
-}
-
 /**
  * One product in the answer of `/api/pluto/v1/content/product`. The
- * `toPublic` hook of the layer adds `media` and turns `category` and
- * `availability` into objects.
+ * `toPublic` hook of the layer turns `category` and `availability` into
+ * objects. Core gives the records of `media` (the media skill of
+ * `@plutocms/pluto`).
  */
 export interface PublicProduct {
   id: number
@@ -30,20 +22,8 @@ export interface PublicProduct {
   stock_quantity: number
   category: PublicProductTaxonomy | null
   availability: PublicProductTaxonomy | null
-  media: PublicProductMedia[]
+  media: PlutoPublicMedia[]
   createdAt?: string
 }
 
-export type ProductMedia = Database['public']['Tables']['product_media']['Row']
-
 export type Product = Database['public']['Tables']['products']['Row']
-
-/**
- * A `product_media` row, plus a client-only `is_saved` flag. The media
- * content field widget (`PlutoProductMediaField.vue`) and the media
- * reconciliation hook (`server/utils/reconcile-product-media.ts`) both use
- * this shape for the virtual `media` field's payload.
- */
-export type MediaWithSaved = ProductMedia & {
-  is_saved?: boolean
-}

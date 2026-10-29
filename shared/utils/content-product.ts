@@ -1,15 +1,16 @@
 // The `product` content type. It maps onto the `products` table columns
 // from `db/migrations/001_baseline.sql`: id, slug, name, description,
-// price, created_at, category, is_custom, stock_quantity, availability.
+// price, created_at, category, is_custom, stock_quantity, availability,
+// and media (`db/migrations/006_core_media.sql`).
 // See the content-model skill in `@plutocms/pluto` for the full
 // field/status/timestamp contract.
 //
 // `defineContentType` and the field types come from `@plutocms/pluto`'s
 // `shared/utils`/`shared/types`, auto-imported the same way every other
 // shared/utils export is across this layer. This file needs no explicit
-// import for them, and no server-only imports either — the media
-// reconciliation hook lives in `server/utils/reconcile-product-media.ts`
-// and is attached in `server/plugins/content.ts`, not here.
+// import for them, and no server-only imports either — the `toPublic`
+// hook lives in `server/utils/product-public.ts` and is attached in
+// `server/plugins/content.ts`, not here.
 //
 // This file lives under `shared/utils/`, not a bespoke `shared/content/`
 // folder — load-bearing, not stylistic. Nuxt's shared-imports auto-import
@@ -26,10 +27,10 @@
 // fix, confirmed the same way for `@plutocms/supabase-blog`'s equivalent
 // `postType` against `pluto-supabase-blog-template`.
 //
-// `media` carries no storage column of its own — `product_media` is a
-// separate table, reconciled by the hook above — so it is `virtual: true`.
-// It still passes through the generic form payload, which is how the hook
-// reads it from `rawBody.media` (see the shop-products skill).
+// `media` holds the ids of the files of the core media library, in order
+// (the `products.media` jsonb column). The core `media` widget edits it, and
+// the public API gives the records in place of the ids. See the media skill
+// in `@plutocms/pluto`.
 //
 // `basePath`/`newPath`/`editPath` point the generic list and form UI at
 // this layer's existing, already-deployed admin URLs
@@ -62,8 +63,7 @@ export const productType = defineContentType({
       label: 'Media',
       description: 'Photos of the piece, and one optional 3D model.',
       multiple: true,
-      virtual: true,
-      widget: 'product-media',
+      accept: ['image/*', 'model/gltf-binary'],
       region: 'main',
       order: 20,
     },
@@ -157,9 +157,8 @@ export const productType = defineContentType({
   autoRoutes: false,
   // The public API (`/api/pluto/v1/content/product`). The list of fields is
   // explicit, so a column added later stays private until someone adds it
-  // here. The virtual `media` field is not in it: the server hook
-  // `toPublic` adds `media` with the public URLs. The hook also turns
-  // `category` and `availability` into objects.
+  // here. Core gives the records of `media` in place of the ids. The server
+  // hook `toPublic` turns `category` and `availability` into objects.
   api: {
     public: true,
     fields: [
@@ -171,6 +170,7 @@ export const productType = defineContentType({
       'stock_quantity',
       'category',
       'availability',
+      'media',
     ],
   },
   basePath: '/admin/products',
