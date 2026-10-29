@@ -97,8 +97,12 @@ default for every layer's fields of that type):
   `POST /api/_pluto/shop/categories`, gated on the separate `shop:manage_taxonomy` capability).
 
 All six widgets are registered with `defineAsyncComponent`, so their code stays out of the entry
-chunk. Core shows a skeleton for each field while its chunk loads. `NavbarAdminActions` stays
-eager, because it is in the navbar.
+chunk. Core shows a skeleton for each field while its chunk loads.
+
+The type sets `adminBar: true`, so the core admin bar shows "New Product" to a user with
+`products:manage`, and "Edit Product" on a public page that calls
+`usePlutoEditLink('product', product.id)`. `previewUrl` gives the form its "View Product" link,
+`/product/<slug>`, the product page of the shop template.
 
 `product-price`, `product-availability`, and `product-category` load their own options with a
 plain `onMounted` fetch, instead of an `async` composable. A content field widget is resolved and mounted dynamically — an

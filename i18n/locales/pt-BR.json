@@ -15,7 +15,6 @@
       "manageTaxonomy": "Gerenciar categorias e disponibilidade dos produtos"
     },
     "navbar": {
-      "addProduct": "Adicionar produto",
       "editProduct": "Editar produto"
     },
     "category": {

@@ -176,4 +176,13 @@ export const productType = defineContentType({
   basePath: '/admin/products',
   newPath: '/admin/product/new',
   editPath: (id) => `/admin/product/edit/${id}`,
+  // "New Product" in the admin bar, and "Edit Product" on a product page that
+  // calls `usePlutoEditLink('product', product.id)`.
+  adminBar: true,
+  // The "View Product" link of the form: the product page of the shop template
+  // (`pages/product/[slug].vue`).
+  previewUrl: (item) =>
+    typeof item.slug === 'string' && item.slug
+      ? `/product/${item.slug}`
+      : undefined,
 })
