@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
-import { defineContentType } from '@plutocms/pluto/shared/utils/content'
+import { defineContentType } from '@plutocms/core/shared/utils/content'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Checks every locale file of this layer against en: same keys, same
@@ -224,7 +224,7 @@ describe('translation keys used in the code', () => {
     expect(missing).toEqual([])
   })
 
-  it('has every pluto.* key in the en.json of @plutocms/pluto', () => {
+  it('has every pluto.* key in the en.json of @plutocms/core', () => {
     const plutoEn = flatten(
       JSON.parse(
         readFileSync(
@@ -232,7 +232,7 @@ describe('translation keys used in the code', () => {
             root,
             'node_modules',
             '@plutocms',
-            'pluto',
+            'core',
             'i18n',
             'locales',
             'en.json'

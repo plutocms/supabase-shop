@@ -1,4 +1,4 @@
-import { defineContentType } from '@plutocms/pluto/shared/utils/content'
+import { defineContentType } from '@plutocms/core/shared/utils/content'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // shared/utils/content-product.ts calls the auto-imported `defineContentType`

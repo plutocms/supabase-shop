@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { defineContentType } from '@plutocms/pluto/shared/utils/content'
+import { defineContentType } from '@plutocms/core/shared/utils/content'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // The module calls the auto-imported `defineContentType`. Plain `vitest run`
