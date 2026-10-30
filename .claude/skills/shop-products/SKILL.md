@@ -1,6 +1,6 @@
 ---
 name: shop-products
-description: Product admin (create, edit, list, delete) built on @plutocms/pluto's content model, with the files of the core media library and the is-custom/availability/stock cross-field rule.
+description: Product admin (create, edit, list, delete) built on @plutocms/core's content model, with the files of the core media library and the is-custom/availability/stock cross-field rule.
 ---
 
 # Shop products
@@ -33,7 +33,7 @@ every product.
 ## The media of a product
 
 `products.media` (jsonb, default `[]`) holds the ids of the files of the **core media library**
-(the media skill of `@plutocms/pluto`), in order: photos, and one optional `.glb` 3D model. The
+(the media skill of `@plutocms/core`), in order: photos, and one optional `.glb` 3D model. The
 Supabase driver of `@plutocms/supabase` stores the files (bucket `media`) and the records
 (`public.media`). The `media` field is `{ type: 'media', multiple: true, accept: ['image/*',
 'model/gltf-binary'] }`, edited by the core `media` widget. A product shows a 3D model when one
@@ -48,7 +48,7 @@ Media page has "Fill in missing image sizes" for the pixel size of those files.
 ## The admin UI: the `product` content type
 
 `/admin/products`, `/admin/product/new`, and `/admin/product/edit/:id` run
-`@plutocms/pluto`'s generic content-model admin UI, against one content type declared in
+`@plutocms/core`'s generic content-model admin UI, against one content type declared in
 `shared/content/product.ts`:
 
 - `app/pages/admin/products.vue` renders `<PlutoContentList type="product" />`.
@@ -63,7 +63,7 @@ content type with no declared capability for an operation leaves that operation 
 `autoRoutes: false` and explicit `basePath`/`newPath`/`editPath` values, so the URLs above never
 changed.
 
-See `@plutocms/pluto`'s content-model skill for what every field on a content type means, and
+See `@plutocms/core`'s content-model skill for what every field on a content type means, and
 `@plutocms/supabase`'s content-adapter skill for how a content type maps onto a real table.
 
 ### The old hand-written admin UI
@@ -140,7 +140,7 @@ sharing one piece of state:
 
 ### The public API (the storefront)
 
-A storefront reads this layer through the public API of `@plutocms/pluto`
+A storefront reads this layer through the public API of `@plutocms/core`
 (https://pluto.vulmix.dev/core/public-api). It needs no hand-written route:
 
 - `GET /api/pluto/v1/content/product` and `GET /api/pluto/v1/content/product/<id or slug>`.
@@ -210,7 +210,7 @@ keeps `integer: true` and `min: 0`.
 
 ## Translation
 
-The admin text of this layer uses the i18n system of `@plutocms/pluto` (see the `i18n` skill
+The admin text of this layer uses the i18n system of `@plutocms/core` (see the `i18n` skill
 in `pluto`). The shipped languages are `en` and `pt-BR`. The English text is the same, byte for
 byte, as before.
 
@@ -245,7 +245,7 @@ a full literal. `test/fixtures/i18n-stub.ts` builds a translator over the Englis
 ## Known gaps
 
 - The product list view shows the name and the price. The price field uses `listFormat`
-  (`@plutocms/pluto` 0.17 or later) with `formatProductPrice`, so the list shows R$ 49,90, not
+  (`@plutocms/core` 0.17 or later) with `formatProductPrice`, so the list shows R$ 49,90, not
   the raw cents. The list drops the category and created-at columns the old hand-written table
   had: a reference field has no `listFormat` that resolves its label yet.
 - The edit page has no "Preview" link to the live product page anymore. The old `Post.vue` had

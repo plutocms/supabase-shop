@@ -10,7 +10,7 @@ export type PublicProductTaxonomy = Pick<
  * One product in the answer of `/api/pluto/v1/content/product`. The
  * `toPublic` hook of the layer turns `category` and `availability` into
  * objects. Core gives the records of `media` (the media skill of
- * `@plutocms/pluto`).
+ * `@plutocms/core`).
  */
 export interface PublicProduct {
   id: number

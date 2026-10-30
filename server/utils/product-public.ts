@@ -6,7 +6,7 @@ import { serverSupabaseClient } from '#supabase/server'
  * The public answer of the `product` type. `productToPublic` is the
  * `hooks.toPublic` of the type. It adds the category and the availability
  * to each product. Core gives the media records (the media skill of
- * `@plutocms/pluto`).
+ * `@plutocms/core`).
  *
  * The related rows load once for the whole answer: two queries, one per
  * relation, with `.in(...)`. A list of 20 products and a list of 1 product

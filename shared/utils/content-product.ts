@@ -2,10 +2,10 @@
 // from `db/migrations/001_baseline.sql`: id, slug, name, description,
 // price, created_at, category, is_custom, stock_quantity, availability,
 // and media (`db/migrations/006_core_media.sql`).
-// See the content-model skill in `@plutocms/pluto` for the full
+// See the content-model skill in `@plutocms/core` for the full
 // field/status/timestamp contract.
 //
-// `defineContentType` and the field types come from `@plutocms/pluto`'s
+// `defineContentType` and the field types come from `@plutocms/core`'s
 // `shared/utils`/`shared/types`, auto-imported the same way every other
 // shared/utils export is across this layer. This file needs no explicit
 // import for them, and no server-only imports either — the `toPublic`
@@ -30,7 +30,7 @@
 // `media` holds the ids of the files of the core media library, in order
 // (the `products.media` jsonb column). The core `media` widget edits it, and
 // the public API gives the records in place of the ids. See the media skill
-// in `@plutocms/pluto`.
+// in `@plutocms/core`.
 //
 // `basePath`/`newPath`/`editPath` point the generic list and form UI at
 // this layer's existing, already-deployed admin URLs

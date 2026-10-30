@@ -4,7 +4,7 @@ This layer provides e-commerce functionalities upon [`@plutocms/supabase`](https
 
 ## Installation
 
-Install the `supabase-shop` layer. Your app extends only this layer. It brings `@plutocms/supabase` (and with it `@plutocms/pluto`) and `@plutocms/utils`.
+Install the `supabase-shop` layer. Your app extends only this layer. It brings `@plutocms/supabase` (and with it `@plutocms/core`) and `@plutocms/utils`.
 
 ```bash
 # npm
@@ -36,20 +36,20 @@ This layer provides the following dashboard views for managing products:
 - `/admin/product/new`: create a new product.
 - `/admin/product/edit/:id`: edit an existing product.
 
-The photos and the 3D model (`.glb`) of a product are files of the media library of `@plutocms/pluto`
+The photos and the 3D model (`.glb`) of a product are files of the media library of `@plutocms/core`
 (the Media page, `/admin/media`). `@plutocms/supabase` stores them in Supabase Storage.
 
 ### Composables
 
 The layer has no composable for a storefront read. A storefront uses the composables of
-`@plutocms/pluto`: `usePlutoPublicList('product')`, `usePlutoPublicItem('product', slug)`,
+`@plutocms/core`: `usePlutoPublicList('product')`, `usePlutoPublicItem('product', slug)`,
 `usePlutoPublicList('product-category')` and `usePlutoPublicList('product-availability')`.
 
 ### API Routes
 
 #### The public API
 
-The storefront reads the public API of `@plutocms/pluto` (see https://pluto.vulmix.dev/core/public-api):
+The storefront reads the public API of `@plutocms/core` (see https://pluto.vulmix.dev/core/public-api):
 
 - GET `/api/pluto/v1/content/product` and GET `/api/pluto/v1/content/product/<id or slug>`
 - GET `/api/pluto/v1/content/product-category`
@@ -62,7 +62,7 @@ media records: `{ id, url, name, mimeType, size, width, height, alt, createdAt }
 #### Internal routes
 
 The admin creates, edits and deletes products through the generic content routes of
-`@plutocms/pluto`: `/api/_pluto/content/product/*`. The layer adds these routes for the admin forms:
+`@plutocms/core`: `/api/_pluto/content/product/*`. The layer adds these routes for the admin forms:
 
 - GET `/api/_pluto/shop/categories`, POST `/api/_pluto/shop/categories`
 - GET `/api/_pluto/shop/availability`
@@ -70,7 +70,7 @@ The admin creates, edits and deletes products through the generic content routes
 ### Types
 
 - `PublicProduct`: Auto-imported type of one product in the public API answer.
-- `PublicProductTaxonomy`: the category or the availability of a `PublicProduct`. A file of `media` is a `PlutoPublicMedia` of `@plutocms/pluto`.
+- `PublicProductTaxonomy`: the category or the availability of a `PublicProduct`. A file of `media` is a `PlutoPublicMedia` of `@plutocms/core`.
 
 ### Product prices are integer cents
 
