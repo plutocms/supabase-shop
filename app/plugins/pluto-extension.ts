@@ -1,8 +1,5 @@
 import { defineAsyncComponent } from 'vue'
-import NavbarAdminActions from '../components/NavbarAdminActions.vue'
-
-// The navbar action stays eager, because it is in the bar. The product field
-// widgets load on demand and stay out of the entry chunk. Core shows a
+// The product field widgets load on demand and stay out of the entry chunk. Core shows a
 // skeleton for each field while its chunk loads.
 const PlutoProductAvailabilityField = defineAsyncComponent(
   () => import('../components/PlutoProductAvailabilityField.vue')
@@ -43,7 +40,6 @@ export default defineNuxtPlugin(() => {
         label: 'supabase-shop.capabilities.manageTaxonomy',
       },
     ],
-    navbarActions: [{ id: 'product-actions', component: NavbarAdminActions }],
     nav: [
       {
         id: 'products',

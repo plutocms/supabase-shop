@@ -100,6 +100,20 @@ describe('productType', () => {
     expect(productType.capabilities?.read).toBeUndefined()
   })
 
+  it('asks for both admin bar buttons', async () => {
+    const { productType } = await import('../shared/utils/content-product')
+
+    expect(productType.adminBar).toBe(true)
+  })
+
+  it('previewUrl links a product to /product/<slug>, and an unsaved one to nothing', async () => {
+    const { productType } = await import('../shared/utils/content-product')
+
+    expect(productType.previewUrl?.({ id: 1, slug: 'mug' })).toBe('/product/mug')
+    expect(productType.previewUrl?.({ id: 1, slug: '' })).toBeUndefined()
+    expect(productType.previewUrl?.({ id: 1 })).toBeUndefined()
+  })
+
   it('defines with no console warnings', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
