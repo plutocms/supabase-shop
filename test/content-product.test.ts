@@ -72,12 +72,14 @@ describe('productType', () => {
     })
   })
 
-  it('the media field is virtual, so it never reaches a storage column', async () => {
+  it('media: a list of core media ids in its own column, images and 3D models, public', async () => {
     const { productType } = await import('../shared/utils/content-product')
 
     const media = productType.fields.find((field) => field.name === 'media')
 
-    expect(media?.virtual).toBe(true)
+    expect(media).toMatchObject({ type: 'media', multiple: true, accept: ['image/*', 'model/gltf-binary'] })
+    expect(media?.virtual).toBeUndefined()
+    expect(productType.api?.fields).toContain('media')
   })
 
   it('every non-virtual field name matches its own column (no column overrides)', async () => {

@@ -35,13 +35,11 @@ This layer provides the following dashboard views for managing products:
 - `/admin/products`: view a list of products.
 - `/admin/product/new`: create a new product.
 - `/admin/product/edit/:id`: edit an existing product.
-- `/admin/product-media`: the shared media library for product images and 3D models (`.glb`).
+
+The photos and the 3D model (`.glb`) of a product are files of the media library of `@plutocms/pluto`
+(the Media page, `/admin/media`). `@plutocms/supabase` stores them in Supabase Storage.
 
 ### Composables
-
-This layer provides the following composables:
-
-- `useProductMedia`: reads the product media library (admin).
 
 The layer has no composable for a storefront read. A storefront uses the composables of
 `@plutocms/pluto`: `usePlutoPublicList('product')`, `usePlutoPublicItem('product', slug)`,
@@ -59,7 +57,7 @@ The storefront reads the public API of `@plutocms/pluto` (see https://pluto.vulm
 
 A product has `id`, `name`, `slug`, `description`, `price` (cents), `is_custom`, `stock_quantity`,
 `createdAt`, `category` and `availability` (each `{ id, label, slug }` or `null`), and `media` (a list of
-`{ id, name, alt, url, mime_type }`). Filter a list with `?filter[category]=<id>`.
+media records: `{ id, url, name, mimeType, size, width, height, alt, createdAt }`). Filter a list with `?filter[category]=<id>`.
 
 #### Internal routes
 
@@ -68,13 +66,11 @@ The admin creates, edits and deletes products through the generic content routes
 
 - GET `/api/_pluto/shop/categories`, POST `/api/_pluto/shop/categories`
 - GET `/api/_pluto/shop/availability`
-- GET `/api/_pluto/shop/product-media`, POST `/api/_pluto/shop/product-media`
-- GET `/api/_pluto/shop/products/:id/media`
 
 ### Types
 
 - `PublicProduct`: Auto-imported type of one product in the public API answer.
-- `PublicProductMedia`, `PublicProductTaxonomy`: the media and the category or availability of a `PublicProduct`.
+- `PublicProductTaxonomy`: the category or the availability of a `PublicProduct`. A file of `media` is a `PlutoPublicMedia` of `@plutocms/pluto`.
 
 ### Product prices are integer cents
 

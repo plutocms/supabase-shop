@@ -1,16 +1,14 @@
 import type { H3Event } from 'h3'
-import type {
-  PublicProductMedia,
-  PublicProductTaxonomy,
-} from '../../shared/types/product'
+import type { PublicProductTaxonomy } from '../../shared/types/product'
 import { serverSupabaseClient } from '#supabase/server'
 
 /**
  * The public answer of the `product` type. `productToPublic` is the
- * `hooks.toPublic` of the type. It adds the media, the category and the
- * availability to each product.
+ * `hooks.toPublic` of the type. It adds the category and the availability
+ * to each product. Core gives the media records (the media skill of
+ * `@plutocms/pluto`).
  *
- * The related rows load once for the whole answer: three queries, one per
+ * The related rows load once for the whole answer: two queries, one per
  * relation, with `.in(...)`. A list of 20 products and a list of 1 product
  * make the same number of queries. The result stays on `event.context`, so
  * the next product of the same answer reuses it.
@@ -20,7 +18,6 @@ import { serverSupabaseClient } from '#supabase/server'
 export const PRODUCT_RELATIONS_KEY = 'shopProductRelations'
 
 interface ProductRelations {
-  media: Map<number, PublicProductMedia[]>
   categories: Map<number, PublicProductTaxonomy>
   availability: Map<number, PublicProductTaxonomy>
 }
@@ -61,18 +58,10 @@ async function fetchRelations(
   batch: PlutoContentItem[]
 ): Promise<ProductRelations> {
   const client = await serverSupabaseClient<Database>(event)
-  const productIds = uniqueIds(batch, (item) => item.id)
   const categoryIds = uniqueIds(batch, (item) => item.category)
   const availabilityIds = uniqueIds(batch, (item) => item.availability)
 
-  const [media, categories, availability] = await Promise.all([
-    productIds.length > 0
-      ? client
-          .from('product_media')
-          .select('id, name, alt, mime_type, product_id')
-          .in('product_id', productIds)
-          .order('id', { ascending: true })
-      : { data: [], error: null },
+  const [categories, availability] = await Promise.all([
     categoryIds.length > 0
       ? client
           .from('product_category')
@@ -87,31 +76,16 @@ async function fetchRelations(
       : { data: [], error: null },
   ])
 
-  const failure = media.error ?? categories.error ?? availability.error
+  const failure = categories.error ?? availability.error
   if (failure) {
     throw relationError(failure.message)
   }
 
   const result: ProductRelations = {
-    media: new Map(),
     categories: new Map(),
     availability: new Map(),
   }
 
-  for (const row of media.data ?? []) {
-    if (row.product_id === null || !row.name) {
-      continue
-    }
-    const list = result.media.get(row.product_id) ?? []
-    list.push({
-      id: row.id,
-      name: row.name,
-      alt: row.alt,
-      url: productMediaUrl(client, row.name),
-      mime_type: row.mime_type,
-    })
-    result.media.set(row.product_id, list)
-  }
   for (const row of categories.data ?? []) {
     result.categories.set(row.id, {
       id: row.id,
@@ -148,7 +122,6 @@ export function loadProductRelations(
 /**
  * `hooks.toPublic` of the `product` type. `category` and `availability`
  * change from an id to an object (`null` when the product has none).
- * `media` is a new key, with the files in their order.
  */
 export const productToPublic: PlutoContentToPublic = async (
   ctx,
@@ -161,6 +134,5 @@ export const productToPublic: PlutoContentToPublic = async (
     ...data,
     category: relations.categories.get(Number(data.category)) ?? null,
     availability: relations.availability.get(Number(data.availability)) ?? null,
-    media: relations.media.get(Number(data.id)) ?? [],
   }
 }

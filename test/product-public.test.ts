@@ -4,8 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // product-public.ts imports `serverSupabaseClient` from '#supabase/server',
 // a virtual module that only a real Nuxt build resolves. It also uses the
-// auto-imported `createPlutoError` and `productMediaUrl`. All three are
-// stubbed here, as the other server tests of this layer do.
+// auto-imported `createPlutoError`. Both are stubbed here, as the other
+// server tests of this layer do.
 const state = vi.hoisted(() => ({
   client: undefined as unknown,
 }))
@@ -23,22 +23,6 @@ vi.stubGlobal(
       data: { i18n: { key: options.key } },
     })
 )
-vi.stubGlobal(
-  'productMediaUrl',
-  (
-    client: {
-      storage: {
-        from: (b: string) => {
-          getPublicUrl: (p: string) => { data: { publicUrl: string } }
-        }
-      }
-    },
-    name: string
-  ) =>
-    client.storage.from('product-media').getPublicUrl(`uploads/${name}`).data
-      .publicUrl
-)
-
 const { productToPublic, PRODUCT_RELATIONS_KEY } =
   await import('../server/utils/product-public')
 
@@ -97,17 +81,6 @@ function product(
 }
 
 const tables = {
-  product_media: [
-    { id: 1, name: 'a.jpg', alt: 'A', mime_type: 'image/jpeg', product_id: 1 },
-    {
-      id: 2,
-      name: 'b.glb',
-      alt: null,
-      mime_type: 'model/gltf-binary',
-      product_id: 1,
-    },
-    { id: 3, name: 'c.jpg', alt: 'C', mime_type: 'image/jpeg', product_id: 2 },
-  ],
   product_category: [{ id: 10, label: 'Chibi', slug: 'chibi' }],
   product_availability: [{ id: 5, label: 'In stock', slug: 'in-stock' }],
 }
@@ -117,7 +90,7 @@ describe('productToPublic', () => {
     state.client = undefined
   })
 
-  it('adds the media, the category and the availability', async () => {
+  it('adds the category and the availability, and leaves media to core', async () => {
     const client = makeClient(tables)
     state.client = client
     const event = makeEvent()
@@ -134,26 +107,10 @@ describe('productToPublic', () => {
       name: 'P1',
       category: { id: 10, label: 'Chibi', slug: 'chibi' },
       availability: { id: 5, label: 'In stock', slug: 'in-stock' },
-      media: [
-        {
-          id: 1,
-          name: 'a.jpg',
-          alt: 'A',
-          mime_type: 'image/jpeg',
-          url: 'https://files.test/product-media/uploads/a.jpg',
-        },
-        {
-          id: 2,
-          name: 'b.glb',
-          alt: null,
-          mime_type: 'model/gltf-binary',
-          url: 'https://files.test/product-media/uploads/b.glb',
-        },
-      ],
     })
   })
 
-  it('gives null and the own media to a product with no category or availability', async () => {
+  it('gives null to a product with no category or availability', async () => {
     state.client = makeClient(tables)
     const event = makeEvent()
     const items = [product(1, 10, 5), product(2, null, null)]
@@ -166,15 +123,7 @@ describe('productToPublic', () => {
 
     expect(result.category).toBeNull()
     expect(result.availability).toBeNull()
-    expect(result.media).toEqual([
-      {
-        id: 3,
-        name: 'c.jpg',
-        alt: 'C',
-        mime_type: 'image/jpeg',
-        url: 'https://files.test/product-media/uploads/c.jpg',
-      },
-    ])
+    expect(result).not.toHaveProperty('media')
   })
 
   it('makes one query per relation for the whole batch', async () => {
@@ -195,14 +144,7 @@ describe('productToPublic', () => {
       )
     )
 
-    expect(client.calls).toHaveLength(3)
-    expect(client.calls.find((call) => call.table === 'product_media')).toEqual(
-      {
-        table: 'product_media',
-        column: 'product_id',
-        ids: items.map((item) => item.id),
-      }
-    )
+    expect(client.calls).toHaveLength(2)
     expect(
       client.calls.find((call) => call.table === 'product_category')?.ids
     ).toEqual([10])
@@ -236,7 +178,7 @@ describe('productToPublic', () => {
       { view: 'item', item: item as never, batch: [item] as never }
     )
 
-    expect(client.calls.map((call) => call.table)).toEqual(['product_media'])
+    expect(client.calls).toEqual([])
   })
 
   it('throws a 500 with an i18n key when a query fails', async () => {

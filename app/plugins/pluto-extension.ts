@@ -10,9 +10,6 @@ const PlutoProductCategoryField = defineAsyncComponent(
 const PlutoProductIsCustomField = defineAsyncComponent(
   () => import('../components/PlutoProductIsCustomField.vue')
 )
-const PlutoProductMediaField = defineAsyncComponent(
-  () => import('../components/PlutoProductMediaField.vue')
-)
 const PlutoProductPriceField = defineAsyncComponent(
   () => import('../components/PlutoProductPriceField.vue')
 )
@@ -56,13 +53,6 @@ export default defineNuxtPlugin(() => {
           { label: 'supabase-shop.nav.allProducts', to: '/admin/products' },
         ],
       },
-      {
-        id: 'product-media',
-        order: 310,
-        label: 'supabase-shop.nav.productMedia',
-        icon: 'lucide:images',
-        to: '/admin/product-media',
-      },
     ],
     pages: [
       {
@@ -77,12 +67,6 @@ export default defineNuxtPlugin(() => {
         title: 'supabase-shop.pages.newProduct',
         parent: 'supabase-shop:products',
       },
-      {
-        id: 'product-media',
-        path: '/admin/product-media',
-        title: 'supabase-shop.nav.productMedia',
-        icon: 'lucide:images',
-      },
     ],
     contentTypes: [{ id: 'product', type: productType }],
     // Registered by `widget:` name only, never bare `fieldType:` — a
@@ -90,11 +74,6 @@ export default defineNuxtPlugin(() => {
     // layer's fields of that type, which would hijack blog's (or any
     // other layer's) fields of the same type.
     contentFieldWidgets: [
-      {
-        id: 'product-media',
-        widget: 'product-media',
-        component: PlutoProductMediaField,
-      },
       {
         id: 'product-price',
         widget: 'product-price',

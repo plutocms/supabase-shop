@@ -1,6 +1,6 @@
 ---
 name: shop-products
-description: Product admin (create, edit, list, delete) built on @plutocms/pluto's content model, with a media gallery and the is-custom/availability/stock cross-field rule.
+description: Product admin (create, edit, list, delete) built on @plutocms/pluto's content model, with the files of the core media library and the is-custom/availability/stock cross-field rule.
 ---
 
 # Shop products
@@ -30,20 +30,20 @@ Row Level Security gates `products` writes on two capabilities (see
 `products:delete` (delete). Reading a product needs no capability — the public API reads
 every product.
 
-## The `product_media` table
+## The media of a product
 
-Each row is one media file: an image, or a `.glb` 3D model. Columns: `id`, `created_at`, `name`,
-`alt`, `url`, `storage_path`, `mime_type`, `size`, and `product_id` (nullable, `ON DELETE
-CASCADE`).
+`products.media` (jsonb, default `[]`) holds the ids of the files of the **core media library**
+(the media skill of `@plutocms/pluto`), in order: photos, and one optional `.glb` 3D model. The
+Supabase driver of `@plutocms/supabase` stores the files (bucket `media`) and the records
+(`public.media`). The `media` field is `{ type: 'media', multiple: true, accept: ['image/*',
+'model/gltf-binary'] }`, edited by the core `media` widget. A product shows a 3D model when one
+of its records has `mimeType: 'model/gltf-binary'`; do not look at the file name.
 
-**`product_media` is a shared, reusable library, not exclusive to one product.** A row with a
-null `product_id` is an unattached library item, pickable by any product through the media
-gallery's "Gallery" tab. This is why the reconciliation hook below always **clones** a media row
-already attached to a different product, and never "steals" it by reassigning `product_id` —
-stealing would silently break whichever other product was using that file.
-
-RLS gates every write on `products:manage`, the same capability as `products` itself. Reading
-needs no capability.
+`db/migrations/006_core_media.sql` moved the old `product_media` rows: one `media` record for each
+file (two products that used one file had two rows), in the `product-media` bucket (no bytes
+moved), with the type and the size from `storage.objects`. `products.media` keeps the old order.
+`product_media` is renamed to `product_media_archived`, to drop in a later release. The core
+Media page has "Fill in missing image sizes" for the pixel size of those files.
 
 ## The admin UI: the `product` content type
 
@@ -77,12 +77,10 @@ gone. `app/composables/availability.ts` (`useProductAvailability`), only ever ca
 
 ## The field widgets
 
-Six fields use a layer-specific widget, each registered in `app/plugins/pluto-extension.ts` by
+Five fields use a layer-specific widget, each registered in `app/plugins/pluto-extension.ts` by
 `widget:` name (never bare `fieldType:` — a `fieldType`-keyed entry would become the app-wide
 default for every layer's fields of that type):
 
-- **`product-media`** (`PlutoProductMediaField.vue`) — the media gallery. See "The media field
-  and its reconciliation hook" below.
 - **`product-price`** (`PlutoProductPriceField.vue`) — a `UInput` with a cents mask. It stores
   integer cents (see "Price in cents"). Each typed digit enters from the right (5 -> 0,05 ->
   0,50 -> 5,09 -> 50,90), Backspace removes the last digit, and Backspace on R$ 0,00 empties the
@@ -138,45 +136,6 @@ sharing one piece of state:
   next form then starts clean, and a stale flag never looks like a change to a widget that mounts
   before `product-is-custom`.
 
-### The media field and its reconciliation hook
-
-`media` is a **virtual** field (`virtual: true` — see the content-model skill): it has no
-`products` column of its own. Its value is `{ items: MediaWithSaved[], removedIds: number[] }`
-(`MediaWithSaved`, exported from `shared/types/product.ts`, is a `product_media` row plus a
-client-only `is_saved` flag). `PlutoProductMediaField.vue` ports the thumbnail strip, main
-image, remove button, and `.glb` 3D-model handling from the old `Post.vue`, reusing
-`UploadProductMedia.vue` unchanged as the picker.
-
-Because the field is virtual, a freshly loaded form never has a starting value for it — the
-widget loads its own starting gallery in `onMounted`, from
-`GET /api/_pluto/shop/products/:id/media` (see "The internal routes" below). A brand-new product (no route id yet) skips that fetch and starts
-with an empty gallery.
-
-The widget shows the photos as a main image with a thumbnail strip. It shows the one 3D model as its own tile, with a replace button (opens the picker on the 3D models tab, through the picker prop `startTab`) and a remove button. A new `.glb` puts the id of the old one in `removedIds`. A `.glb` is never the main image. `isProductMediaModel` (in `shared/utils/product-media-upload.ts`) decides what a model is. Add and remove show one muted line, "changes apply on save", not toasts. The first fetch has a skeleton and an error alert with retry.
-
-`server/utils/reconcile-product-media.ts` (`reconcileProductMedia`) reads `rawBody.media` in
-`type.hooks.afterCreate`/`afterUpdate` (wired in `server/plugins/content.ts`) and reconciles it
-into `product_media`, batched — one query per group, never a per-item loop:
-
-1. `removedIds` — one `update({ product_id: null })...eq('product_id', productId)...in('id', removedIds)`. The `eq` guard means a row of another product is never detached. The row is never
-   deleted, only detached, so it stays in the shared library.
-2. `items` split into those with an `id` (existing rows) and those without (brand new).
-3. For existing ones: one batched `select('id, product_id')...in('id', ...)` fetches real
-   ownership (the client's own claimed `product_id` is never trusted). Each is then grouped by
-   `partitionProductMedia` (a pure, unit-tested function) into:
-   - **no-op** — already owned by this product.
-   - **attach** — owned by nobody, or the row could not be found. One batched
-     `update({ product_id })...in('id', ...)`.
-   - **clone** — owned by a _different_ product. **Always cloned, never stolen** — see "The
-     `product_media` table" above for why. Cloned with one batched `insert`, stripped of `id`,
-     `is_saved`, and `created_at`.
-4. Brand-new items (no `id`) insert in that same batched `insert` call.
-5. Any Postgres error throws a 500 immediately — a hook failure fails the whole write, per the
-   content-model skill's documented hook contract. Nothing here is swallowed.
-
-The hook reads a Supabase client through `serverSupabaseClient`, as the calling user, so
-`product_media`'s own RLS still applies underneath it.
-
 ## The public API and the internal routes
 
 ### The public API (the storefront)
@@ -193,17 +152,16 @@ A storefront reads this layer through the public API of `@plutocms/pluto`
 The `product` type sets `api: { public: true, fields: [...] }`. The list of fields is explicit:
 `name`, `slug`, `description`, `price`, `is_custom`, `stock_quantity`, `category`,
 `availability`. A column that someone adds later stays private until it is in this list. The
-answer of a product also has `id` and `createdAt` (core adds them).
+answer of a product also has `id` and `createdAt` (core adds them). Core gives `media` as a list
+of media records (`{ id, url, name, mimeType, size, width, height, alt, createdAt }`).
 
 `hooks.toPublic` (`productToPublic` in `server/utils/product-public.ts`, attached in
 `server/plugins/content.ts`) changes the answer:
 
-- `media` is a new key. It is a list of `{ id, name, alt, url, mime_type }`, ordered by `id`.
-  `url` is the public URL of the file in the `product-media` bucket.
 - `category` and `availability` change from an id to `{ id, label, slug }`, or `null`.
   A filter still uses the id: `?filter[category]=3`.
 - The hook loads the related rows once for the whole answer: one query per relation, with
-  `.in(...)`. A list of 20 products makes 3 queries. The rows stay on `event.context` under
+  `.in(...)`. A list of 20 products makes 2 queries. The rows stay on `event.context` under
   the key `shopProductRelations`.
 
 `product-category` and `product-availability` are content types for the public API only
@@ -223,50 +181,11 @@ that is not a GET on `/api/_pluto/**`.
 | `GET /api/_pluto/shop/categories`         | Options of the `category` field.                                            |
 | `POST /api/_pluto/shop/categories`        | Inline "create category". Needs `shop:manage_taxonomy`.                     |
 | `GET /api/_pluto/shop/availability`       | Options of the `availability` field.                                        |
-| `GET /api/_pluto/shop/product-media`      | The shared media library, with public URLs.                                 |
-| `POST /api/_pluto/shop/product-media`     | Upload to the library. Needs `products:manage`.                             |
-| `GET /api/_pluto/shop/products/:id/media` | The media of one product, for the media widget. Answers `{ data: rows[] }`. |
 
 Errors use `createPlutoError` with `supabase-shop.errors.*` keys.
 
-`app/composables/media.ts` (`useProductMedia`), `app/components/UploadProductMedia.vue` and
-`app/pages/admin/product-media.vue` use these routes. The layer has no composable for a
+The files go through the core routes (`/api/_pluto/media`). The layer has no composable for a
 storefront read: the old `useProduct` and `useProductCategory` are gone.
-
-## Product media upload rules
-
-`shared/utils/product-media-upload.ts` holds one set of rules for the `product-media` library.
-The upload route and the picker both use it:
-
-- `PRODUCT_MEDIA_MIME_TYPES` — JPEG, PNG, WebP, GIF, AVIF, and `model/gltf-binary`. These are
-  the image and model types of the `product-media` bucket (`db/migrations/001_baseline.sql`).
-  Keep the list in step with the bucket.
-- `PRODUCT_MEDIA_MAX_BYTES` — 50 MB, the `file_size_limit` of the bucket.
-- `productMediaMimeType(type, name)` — browsers often send a `.glb` file as
-  `application/octet-stream`, and the bucket rejects that type. This function stores a `.glb`
-  as `model/gltf-binary`. It changes no other type.
-- `productMediaUploadProblem(file)` — returns `{ statusCode: 415 | 413, message, key, params }`,
-  or `null` when the file passes. `message` is English. `key` and `params` are the translation key
-  and its values (see "Translation" below).
-
-`POST /api/_pluto/shop/product-media` checks every file before it touches storage. A wrong type
-returns 415, and a file that is too big returns 413. The `statusMessage` tells the user what to
-do. The route reads the file part by its `filename` and the `alt` part by name, not by position.
-
-`UploadProductMedia.vue` uses Nuxt UI `UFileUpload`. It runs the same check before it keeps a
-file, and it shows the reason in a `UAlert`. A failed upload shows the route's message, and the
-file stays selected, so the user can try again.
-
-The helper names carry a "product media" prefix on purpose. An app can extend this layer and
-`@plutocms/supabase-storage` together, and that layer auto-imports its own generic upload
-helpers.
-
-The route never replaces an existing file. Several `product_media` rows can point to one file
-by name (the reconciliation hook clones rows), so an overwrite would change the image of every
-product that uses it. The route uploads with `upsert: false`. On a name clash, it retries once
-with a short random suffix (`productMediaSuffixedName`: `chair.glb` → `chair-x7k2.glb`) and
-stores the final name in the row. If the row insert fails after the upload, the route removes
-the uploaded file, then returns the insert error.
 
 ## Price in cents
 
@@ -304,27 +223,14 @@ byte, as before.
   its field. The widgets show `field.label` and `field.description` as they get them.
 - `app/plugins/pluto-extension.ts` holds keys, not text, for the nav labels, the page titles,
   and the capability labels. Pluto resolves them with `tx()`.
-- A count uses plural forms (`zero | one | other`): `supabase-shop.media.showing`. pt-BR treats
-  0 as singular, so the `zero` form sets the 0 text.
 - The price widget keeps the `BRL` currency. Its text uses `formatProductPrice`, so it has the
   store format ("R$ 1.234,56") in every admin language.
 - Category and availability names come from the database. They stay as stored.
 
-### Upload problems and server errors
+### Server errors
 
-`productMediaUploadProblem` returns the English `message` (for the route `statusMessage`) and a
-`key` with `params`. The route throws `createPlutoError({ statusCode, message, key, params })`,
-so the response carries `data.i18n`. The picker translates the problem with
-`t(problem.key, problem.params)` before it sends a file. For a failed upload, it shows the
-translated 403 key (`supabase-shop.upload.noPermission`), or `usePlutoErrorText()` with the
-fallback key `supabase-shop.upload.failed`.
-
-Routes with a fixed message use `supabase-shop.errors.*` keys: `noFileSent`, `productNotFound`,
-`mediaListFailed`. The `statusMessage` stays English. A raw database or storage error message
-stays as the server sends it.
-
-The file size in an upload problem ("60 MB") uses English units and a dot as the decimal mark in
-all languages.
+Routes with a fixed message use `supabase-shop.errors.*` keys. The `statusMessage` stays English. A
+raw database error message stays as the server sends it.
 
 ### Tests
 

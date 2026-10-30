@@ -213,7 +213,7 @@ function usedKeys(namespace: 'supabase-shop' | 'pluto'): Map<string, string[]> {
 
 describe('translation keys used in the code', () => {
   it('finds a useful number of supabase-shop keys', () => {
-    expect(usedKeys('supabase-shop').size).toBeGreaterThan(30)
+    expect(usedKeys('supabase-shop').size).toBeGreaterThan(10)
   })
 
   it('has every supabase-shop.* key in en.json', () => {
