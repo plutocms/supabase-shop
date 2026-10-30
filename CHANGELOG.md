@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.16.0](https://github.com/plutocms/supabase-shop/compare/v0.15.4...v0.16.0) (2026-10-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* the layer no longer adds its own navbar actions. The core admin bar shows New Product, and Edit Product on a page that calls usePlutoEditLink('product', product.id).
+
+### Features
+
+* the core admin bar buttons and a View Product link ([#125](https://github.com/plutocms/supabase-shop/issues/125)) ([1b4cf3f](https://github.com/plutocms/supabase-shop/commit/1b4cf3f155069d4ce1182b347de7634b9d66fe72))
+
 ## [0.15.4](https://github.com/plutocms/supabase-shop/compare/v0.15.3...v0.15.4) (2026-10-29)
 
 
