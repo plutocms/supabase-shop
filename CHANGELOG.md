@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.17.0](https://github.com/plutocms/supabase-shop/compare/v0.16.0...v0.17.0) (2026-10-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* the layer needs @plutocms/supabase >=0.18.0, which extends @plutocms/core instead of @plutocms/pluto. PLUTO_PLUTO_PATH is now PLUTO_CORE_PATH.
+
+### Features
+
+* extend @plutocms/core ([#137](https://github.com/plutocms/supabase-shop/issues/137)) ([84ccbc7](https://github.com/plutocms/supabase-shop/commit/84ccbc7382ed21c882e030c3e42f1b352e978abe))
+
 ## [0.16.0](https://github.com/plutocms/supabase-shop/compare/v0.15.4...v0.16.0) (2026-10-30)
 
 
