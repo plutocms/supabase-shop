@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.1](https://github.com/plutocms/supabase-shop/compare/v0.17.0...v0.17.1) (2026-10-31)
+
+
+### Bug Fixes
+
+* no @plutocms/utils: formatCurrency is in this layer, category slugs use slugifyTitle ([#152](https://github.com/plutocms/supabase-shop/issues/152)) ([4796821](https://github.com/plutocms/supabase-shop/commit/479682104c0d8ef3530bc5e2d1590c19f1d44df7))
+
 ## [0.17.0](https://github.com/plutocms/supabase-shop/compare/v0.16.0...v0.17.0) (2026-10-30)
 
 
