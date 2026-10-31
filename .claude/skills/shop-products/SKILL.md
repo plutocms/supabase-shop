@@ -202,7 +202,7 @@ keeps `integer: true` and `min: 0`.
   - `amountToCents(amount)` gives exact integer cents. It rounds, so `0.1 + 0.2` gives `30` and
     `1.005` gives `101`. A missing value gives `null`.
   - `formatProductPrice(cents, options?)` formats cents with `formatCurrency` from
-    `@plutocms/utils`. The currency is BRL by default. `formatCurrency` itself did not change.
+    `shared/utils/currency.ts`. The currency is BRL by default.
 - `PlutoProductPriceField.vue` shows `centsToAmount(modelValue)` and emits `amountToCents(input)`.
 - No code in this layer reads the price today. A storefront must call `formatProductPrice`, not
   `formatCurrency(product.price)`, and must not write `/ 100` by hand.
