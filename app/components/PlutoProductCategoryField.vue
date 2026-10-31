@@ -53,7 +53,7 @@ async function createCategory(name: string) {
       '/api/_pluto/shop/categories',
       {
         method: 'POST',
-        body: { label: name, slug: slugify(name) },
+        body: { label: name, slug: slugifyTitle(name) },
       }
     )
 

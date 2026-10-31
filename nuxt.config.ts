@@ -1,11 +1,10 @@
-// Point these at a local checkout (e.g. `../utils`, `../supabase`) to test
-// unpublished changes; unset, they resolve to the published npm packages.
-const utilsLayer = process.env.PLUTO_UTILS_PATH || '@plutocms/utils'
+// Point this at a local checkout (e.g. `../supabase`) to test
+// unpublished changes; unset, it resolves to the published npm package.
 const supabaseLayer = process.env.PLUTO_SUPABASE_PATH || '@plutocms/supabase'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: [utilsLayer, [supabaseLayer, { install: true }]],
+  extends: [[supabaseLayer, { install: true }]],
 
   $meta: {
     name: 'supabase-shop',

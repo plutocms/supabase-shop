@@ -1,8 +1,9 @@
-import { formatCurrency } from '@plutocms/utils/shared/utils/currency'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { formatCurrency } from '../shared/utils/currency'
 
 // shared/utils/product-price.ts calls the auto-imported `formatCurrency`.
-// Plain `vitest run` has no Nuxt build step, so stub it with the real one.
+// Plain `vitest run` has no Nuxt build step, so stub it with the real one
+// from shared/utils/currency.ts.
 beforeEach(() => {
   vi.stubGlobal('formatCurrency', formatCurrency)
   vi.resetModules()
